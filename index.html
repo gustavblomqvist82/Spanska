@@ -116,11 +116,22 @@
     const wordBank = [
       ['Hej','Hola'],['Tack','Gracias'],['Vatten','Agua'],['Hund','Perro'],['Katt','Gato'],
       ['Hus','Casa'],['Bok','Libro'],['Äpple','Manzana'],['Mjölk','Leche'],['Vän','Amigo'],
-      ['God morgon','Buenos días'],['God natt','Buenas noches'],['Snälla','Por favor'],['Bröd','Pan'],['Sol','Sol']
+      ['God morgon','Buenos días'],['God natt','Buenas noches'],['Snälla','Por favor'],['Bröd','Pan'],['Sol','Sol'],
+      ['Hejdå','Adiós'],['God kväll','Buenas tardes'],['Ja','Sí'],['Nej','No'],['Ursäkta','Perdón'],
+      ['Kvinna','Mujer'],['Man','Hombre'],['Barn','Niño'],['Familj','Familia'],['Mamma','Madre'],
+      ['Pappa','Padre'],['Vattenflaska','Botella'],['Mat','Comida'],['Frukost','Desayuno'],['Ost','Queso'],
+      ['Ris','Arroz'],['Kyckling','Pollo'],['Fisk','Pescado'],['Kaffe','Café'],['Te','Té'],
+      ['Banan','Plátano'],['Apelsin','Naranja'],['Jordgubbe','Fresa'],['Grönsak','Verdura'],['Socker','Azúcar'],
+      ['Stad','Ciudad'],['Skola','Escuela'],['Butik','Tienda'],['Bil','Coche'],['Tåg','Tren'],
+      ['Väg','Calle'],['Tid','Tiempo'],['Dag','Día'],['Natt','Noche'],['Vecka','Semana'],
+      ['Stor','Grande'],['Liten','Pequeño'],['Bra','Bueno'],['Dålig','Malo'],['Vacker','Bonito'],
+      ['Glad','Feliz'],['Trött','Cansado'],['Varm','Caliente'],['Kall','Frío'],['Snabb','Rápido'],
+      ['Att äta','Comer'],['Att dricka','Beber'],['Att tala','Hablar'],['Att lära sig','Aprender'],['Att gå','Caminar'],
+      ['Att köpa','Comprar'],['Att läsa','Leer'],['Att skriva','Escribir'],['Att arbeta','Trabajar'],['Att sova','Dormir']
     ];
-    const decoys = ['Adiós','Gracias','Casa','Perro','Amigo','Agua','Libro','Leche','Buenos días','Buenas noches','Por favor','Manzana','Gato','Pan','Sol'];
+    const decoys = [...new Set(wordBank.map(([,spanish])=>spanish))];
     let worm = [], direction = {x:1,y:0}, queuedDirection = {x:1,y:0};
-    let targets = [], lives = 3, score = 0, running = false, gameOver = false, tick = null, currentWord = null;
+    let targets = [], lives = 3, score = 0, running = false, gameOver = false, tick = null, currentWord = null, wordDeck = [];
     const say = (message, tone='') => { const el=document.querySelector('#game-message'); el.textContent=message; el.dataset.tone=tone; };
     const updateStats = () => {
       document.querySelector('#lives').textContent = `Liv: ${'♥ '.repeat(lives)}${'♡ '.repeat(5-lives)}`.trim();
@@ -129,14 +140,21 @@
     };
     const tokenWidth = text => Math.max(3, Math.ceil((text.length * 8 + 26) / CELL));
     const overlaps = (a,b,pad=1) => a.x < b.x+b.w+pad && a.x+a.w+pad > b.x && a.y < b.y+b.h+pad && a.y+a.h+pad > b.y;
+    const nextWord = () => {
+      if(!wordDeck.length){
+        wordDeck=[...wordBank].sort(()=>Math.random()-.5);
+        if(wordDeck.length>1 && wordDeck[wordDeck.length-1]===currentWord) [wordDeck[0],wordDeck[wordDeck.length-1]]=[wordDeck[wordDeck.length-1],wordDeck[0]];
+      }
+      return wordDeck.pop();
+    };
     const newRound = () => {
-      currentWord = wordBank[Math.floor(Math.random()*wordBank.length)];
+      currentWord = nextWord();
       document.querySelector('#swedish-word').textContent = currentWord[0];
       const otherWords = [...new Set(decoys.filter(word => word !== currentWord[1]))].sort(()=>Math.random()-.5).slice(0,3);
       const choices = [...otherWords, currentWord[1]].sort(()=>Math.random()-.5);
       targets = [];
       choices.forEach(word => {
-        const w=tokenWidth(word), h=2;
+        const w=tokenWidth(word), h=1;
         for(let tries=0; tries<100; tries++) {
           const spot={x:2+Math.floor(Math.random()*(COLS-w-4)),y:2+Math.floor(Math.random()*(ROWS-h-4)),w,h,word,correct:word===currentWord[1]};
           const tooClose=worm.some(part=>part.x>=spot.x-1&&part.x<spot.x+spot.w+1&&part.y>=spot.y-1&&part.y<spot.y+spot.h+1);
@@ -166,7 +184,7 @@
         const px=t.x*CELL+2, py=t.y*CELL+2, pw=t.w*CELL-4, ph=t.h*CELL-4;
         ctx.fillStyle='#fffefa';ctx.strokeStyle='#d9e2d7';ctx.lineWidth=2;
         roundedRect(px,py,pw,ph,9);ctx.fill();ctx.stroke();
-        ctx.fillStyle='#26382e';ctx.font='700 13px ui-sans-serif,system-ui,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(t.word,px+pw/2,py+ph/2,pw-8);
+        ctx.fillStyle='#26382e';ctx.font='700 12px ui-sans-serif,system-ui,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(t.word,px+pw/2,py+ph/2,pw-8);
       });
       worm.forEach((part,index)=>{
         const px=part.x*CELL+2,py=part.y*CELL+2;
