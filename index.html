@@ -43,6 +43,22 @@
     .phrase { font-size:1.35rem; font-weight:800; margin:10px 0 0 }
     .translation { color:var(--muted); margin-top:2px }
     .quiz { background:#fffefa; border:1px solid var(--line); padding:26px; border-radius:20px }
+    .quiz-game { background:#fffefa; border:1px solid var(--line); padding:26px; border-radius:20px; max-width:760px }
+    .quiz-game[hidden] { display:none }
+    .quiz-meta { display:flex; justify-content:space-between; gap:12px; color:var(--muted); font-size:.9rem; font-weight:750 }
+    .quiz-progress { height:8px; background:#e8eee4; border-radius:99px; overflow:hidden; margin:12px 0 22px }
+    .quiz-progress span { display:block; height:100%; width:0; background:var(--green); transition:width .2s ease }
+    .quiz-question { margin:0 0 5px; font-size:clamp(1.4rem,4vw,2rem) }
+    .quiz-hint { margin:0; color:var(--muted) }
+    .quiz-answers { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:20px 0 0 }
+    .quiz-answer { padding:13px 15px; border:1px solid var(--line); border-radius:12px; background:white; font:inherit; text-align:left; cursor:pointer }
+    .quiz-answer:hover:not(:disabled) { border-color:var(--green); background:#f2f8f2 }
+    .quiz-answer:disabled { cursor:default }
+    .quiz-answer.correct { border-color:var(--green); background:#e8f4e9; color:var(--green); font-weight:800 }
+    .quiz-answer.incorrect { border-color:#d7806b; background:#fff0eb; color:#9d4634 }
+    .quiz-feedback { min-height:28px; margin:14px 0 0; font-weight:750 }
+    .quiz-feedback[data-tone="error"] { color:#a44735 }
+    .quiz-next { margin-top:8px }
     .answers { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:17px 0 0 }
     .answer { padding:12px 14px; border:1px solid var(--line); border-radius:12px; background:white; font:inherit; text-align:left; cursor:pointer }
     .answer:hover { border-color:var(--green); background:#f2f8f2 }
@@ -98,6 +114,19 @@
       </div>
     </section>
     <section class="wrap" id="ovning">
+      <div class="section-head"><h2>Quiz: spanska ord</h2><p>Fem frågor per runda. Hur många kan du?</p></div>
+      <div class="quiz-game" id="quiz-game" aria-labelledby="quiz-title">
+        <div class="quiz-meta"><span id="quiz-count">Redo när du är</span><span id="quiz-score">Poäng: 0</span></div>
+        <div class="quiz-progress" aria-hidden="true"><span id="quiz-progress-bar"></span></div>
+        <h3 class="quiz-question" id="quiz-title">Testa dina spanska glosor</h3>
+        <p class="quiz-hint" id="quiz-hint">Välj rätt översättning av det svenska ordet.</p>
+        <div class="quiz-answers" id="quiz-answers"></div>
+        <p class="quiz-feedback" id="quiz-feedback" aria-live="polite"></p>
+        <button class="button quiz-next" id="quiz-next" type="button">Starta quizet</button>
+      </div>
+    </section>
+    <section class="wrap" aria-labelledby="worm-title">
+      <div class="section-head"><h2 id="worm-title">Ordorm</h2><p>Styr masken till det spanska ordet som matchar ledtråden.</p></div>
       <div class="worm-game">
         <div class="game-top"><span class="game-stat" id="lives">Liv: ♥ ♥ ♥</span><span class="game-stat" id="score">Poäng: 0</span><span class="game-stat" id="length">Mask: 5</span></div>
         <div class="game-prompt"><div><small>Hitta det spanska ordet för</small><strong id="swedish-word">Hej</strong></div><span aria-hidden="true">🇸🇪 → 🇪🇸</span></div>
@@ -108,27 +137,69 @@
       </div>
     </section>
   </main>
-  <footer><div class="wrap">Hecho con cariño · En liten början på din spanska.</div></footer>
+  <footer><div class="wrap">Hecho con cariño · En liten början på din spanska.<br><small>Ordlistan i spelen är bearbetad från <a href="https://sprakresurser.isof.se/lexin/spanska/">Lexin: Svensk-spanskt lexikon</a>, © Institutet för språk och folkminnen och Språkrådet (2020), med medverkan av Álvaro Eljach. Urval och spelmetadata har lagts till. <a href="https://creativecommons.org/licenses/by/4.0/deed.sv">CC BY 4.0</a>. <a href="SOURCES.md">Källinformation och ändringar</a>.</small></div></footer>
+  <script src="wordbank.js"></script>
   <script>
     const canvas = document.querySelector('#worm-board');
     const ctx = canvas.getContext('2d');
     const CELL = 24, COLS = canvas.width / CELL, ROWS = canvas.height / CELL;
-    const wordBank = [
-      ['Hej','Hola'],['Tack','Gracias'],['Vatten','Agua'],['Hund','Perro'],['Katt','Gato'],
-      ['Hus','Casa'],['Bok','Libro'],['Äpple','Manzana'],['Mjölk','Leche'],['Vän','Amigo'],
-      ['God morgon','Buenos días'],['God natt','Buenas noches'],['Snälla','Por favor'],['Bröd','Pan'],['Sol','Sol'],
-      ['Hejdå','Adiós'],['God kväll','Buenas tardes'],['Ja','Sí'],['Nej','No'],['Ursäkta','Perdón'],
-      ['Kvinna','Mujer'],['Man','Hombre'],['Barn','Niño'],['Familj','Familia'],['Mamma','Madre'],
-      ['Pappa','Padre'],['Vattenflaska','Botella'],['Mat','Comida'],['Frukost','Desayuno'],['Ost','Queso'],
-      ['Ris','Arroz'],['Kyckling','Pollo'],['Fisk','Pescado'],['Kaffe','Café'],['Te','Té'],
-      ['Banan','Plátano'],['Apelsin','Naranja'],['Jordgubbe','Fresa'],['Grönsak','Verdura'],['Socker','Azúcar'],
-      ['Stad','Ciudad'],['Skola','Escuela'],['Butik','Tienda'],['Bil','Coche'],['Tåg','Tren'],
-      ['Väg','Calle'],['Tid','Tiempo'],['Dag','Día'],['Natt','Noche'],['Vecka','Semana'],
-      ['Stor','Grande'],['Liten','Pequeño'],['Bra','Bueno'],['Dålig','Malo'],['Vacker','Bonito'],
-      ['Glad','Feliz'],['Trött','Cansado'],['Varm','Caliente'],['Kall','Frío'],['Snabb','Rápido'],
-      ['Att äta','Comer'],['Att dricka','Beber'],['Att tala','Hablar'],['Att lära sig','Aprender'],['Att gå','Caminar'],
-      ['Att köpa','Comprar'],['Att läsa','Leer'],['Att skriva','Escribir'],['Att arbeta','Trabajar'],['Att sova','Dormir']
-    ];
+    // Any game can use HolaWordBank.getWords(), getWord(), getRandomWord() or
+    // getDistractors(). This game keeps the simple pairs it expects internally.
+    const wordBank = HolaWordBank.getWords({level:'A1'}).map(({swedish,spanish})=>[swedish,spanish]);
+    const quizQuestions = [...wordBank];
+    const quizAnswerArea = document.querySelector('#quiz-answers');
+    let quizDeck = [], quizIndex = 0, quizScore = 0, activeQuestion = null, quizLocked = false;
+    const quizNextButton = document.querySelector('#quiz-next');
+    const shuffle = items => [...items].sort(() => Math.random() - .5);
+    const startQuiz = () => {
+      quizDeck = shuffle(quizQuestions).slice(0, 5); quizIndex = 0; quizScore = 0;
+      document.querySelector('#quiz-score').textContent = 'Poäng: 0';
+      quizNextButton.textContent = 'Börja om';
+      showQuizQuestion();
+    };
+    const showQuizQuestion = () => {
+      if (quizIndex >= quizDeck.length) {
+        document.querySelector('#quiz-count').textContent = 'Rundan klar!';
+        document.querySelector('#quiz-progress-bar').style.width = '100%';
+        document.querySelector('#quiz-title').textContent = `Du fick ${quizScore} av ${quizDeck.length} rätt!`;
+        document.querySelector('#quiz-hint').textContent = quizScore === quizDeck.length ? '¡Excelente! Alla rätt.' : 'Bra jobbat. Spela igen och försök slå ditt resultat.';
+        quizAnswerArea.replaceChildren();
+        document.querySelector('#quiz-feedback').textContent = '';
+        quizNextButton.textContent = 'Spela igen';
+        return;
+      }
+      activeQuestion = quizDeck[quizIndex]; quizLocked = false;
+      document.querySelector('#quiz-count').textContent = `Fråga ${quizIndex + 1} av ${quizDeck.length}`;
+      document.querySelector('#quiz-progress-bar').style.width = `${quizIndex / quizDeck.length * 100}%`;
+      document.querySelector('#quiz-title').textContent = `Vad betyder ”${activeQuestion[0]}” på spanska?`;
+      document.querySelector('#quiz-hint').textContent = 'Välj ett svar.';
+      document.querySelector('#quiz-feedback').textContent = '';
+      document.querySelector('#quiz-feedback').dataset.tone = '';
+      quizNextButton.textContent = quizIndex === quizDeck.length - 1 ? 'Visa resultat' : 'Nästa fråga';
+      const options = shuffle([activeQuestion[1], ...shuffle([...new Set(quizQuestions.map(q => q[1]).filter(word => word !== activeQuestion[1]))]).slice(0, 3)]);
+      quizAnswerArea.replaceChildren(...options.map(option => {
+        const button = document.createElement('button'); button.type = 'button'; button.className = 'quiz-answer'; button.textContent = option;
+        button.addEventListener('click', () => answerQuiz(button, option)); return button;
+      }));
+    };
+    const answerQuiz = (button, answer) => {
+      if (quizLocked) return; quizLocked = true;
+      const correct = answer === activeQuestion[1];
+      if (correct) { quizScore++; button.classList.add('correct'); }
+      else {
+        button.classList.add('incorrect');
+        [...quizAnswerArea.children].find(item => item.textContent === activeQuestion[1])?.classList.add('correct');
+      }
+      [...quizAnswerArea.children].forEach(item => item.disabled = true);
+      document.querySelector('#quiz-score').textContent = `Poäng: ${quizScore}`;
+      const feedback = document.querySelector('#quiz-feedback');
+      feedback.textContent = correct ? 'Rätt svar! ¡Muy bien!' : `Inte riktigt. Rätt svar är ${activeQuestion[1]}.`;
+      feedback.dataset.tone = correct ? '' : 'error';
+      quizIndex++;
+    };
+    quizNextButton.addEventListener('click', () => {
+      if (!quizDeck.length || quizIndex >= quizDeck.length) startQuiz(); else if (quizLocked) showQuizQuestion();
+    });
     const decoys = [...new Set(wordBank.map(([,spanish])=>spanish))];
     let worm = [], direction = {x:1,y:0}, queuedDirection = {x:1,y:0};
     let targets = [], lives = 3, score = 0, running = false, gameOver = false, tick = null, currentWord = null, wordDeck = [];
