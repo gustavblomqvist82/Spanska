@@ -47,9 +47,28 @@
     .answer { padding:12px 14px; border:1px solid var(--line); border-radius:12px; background:white; font:inherit; text-align:left; cursor:pointer }
     .answer:hover { border-color:var(--green); background:#f2f8f2 }
     .answer:disabled { cursor:default }
-    #feedback { min-height:28px; margin:13px 0 0; font-weight:700 }
+    .worm-game { background:#fffefa; border:1px solid var(--line); border-radius:20px; padding:20px }
+    .game-top { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:13px }
+    .game-stat { background:var(--mint); color:var(--green); border-radius:999px; padding:6px 12px; font-weight:800; font-size:.9rem }
+    .game-prompt { display:flex; align-items:center; justify-content:space-between; gap:12px; background:#e8eee4; border-radius:15px; padding:13px 17px; margin-bottom:12px }
+    .game-prompt small { display:block; color:var(--muted); text-transform:uppercase; letter-spacing:.1em; font-size:.72rem; font-weight:800 }
+    .game-prompt strong { font-size:1.45rem }
+    #game-message { margin:0; min-height:26px; font-weight:700; color:var(--green) }
+    .board-frame { position:relative; background:#eff4e9; border:1px solid #dbe4d5; border-radius:15px; overflow:hidden }
+    #worm-board { display:block; width:100%; height:auto; touch-action:none; outline:none }
+    #worm-board:focus-visible { box-shadow:inset 0 0 0 3px var(--green) }
+    .game-controls { display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; margin-top:12px }
+    .game-controls p { margin:0; color:var(--muted); font-size:.9rem }
+    .game-controls .button { margin:0; padding:10px 17px }
+    .touch-controls { display:none; grid-template-columns:repeat(3,46px); grid-template-rows:repeat(2,42px); gap:4px; justify-content:center; margin:15px auto 0 }
+    .touch-controls button { border:1px solid var(--line); border-radius:10px; background:white; font-size:1.1rem; cursor:pointer; touch-action:manipulation }
+    .touch-controls button:nth-child(1) { grid-column:2; grid-row:1 }
+    .touch-controls button:nth-child(2) { grid-column:1; grid-row:2 }
+    .touch-controls button:nth-child(3) { grid-column:2; grid-row:2 }
+    .touch-controls button:nth-child(4) { grid-column:3; grid-row:2 }
+    #game-message[data-tone="error"] { color:#a44735 }
     footer { border-top:1px solid var(--line); padding:25px 0 35px; color:var(--muted); font-size:.9rem }
-    @media (max-width:720px) { nav { gap:13px; font-size:.84rem } .hero { grid-template-columns:1fr; padding:48px 0 35px; gap:25px } .art { min-height:230px } .sun { width:145px;height:145px } .cards,.lesson { grid-template-columns:1fr } .section-head { display:block } .section-head p { margin-top:6px } }
+    @media (max-width:720px) { nav { gap:13px; font-size:.84rem } .hero { grid-template-columns:1fr; padding:48px 0 35px; gap:25px } .art { min-height:230px } .sun { width:145px;height:145px } .cards,.lesson { grid-template-columns:1fr } .section-head { display:block } .section-head p { margin-top:6px } .touch-controls { display:grid } }
     @media (max-width:430px) { .wrap { width:min(100% - 28px,1100px) } nav { gap:10px } nav a { font-size:.78rem } .answers { grid-template-columns:1fr } }
   </style>
 </head>
@@ -79,24 +98,114 @@
       </div>
     </section>
     <section class="wrap" id="ovning">
-      <div class="section-head"><h2>Testa vad du kan</h2><p>Välj den svenska betydelsen.</p></div>
-      <div class="lesson">
-        <div class="lesson-box"><div class="eyebrow">Dagens uttryck</div><div class="phrase">¿Qué tal?</div><div class="translation">Uttal ungefär: ke tal</div></div>
-        <div class="quiz"><strong>Vad betyder uttrycket?</strong><div class="answers">
-          <button class="answer" data-correct="false">Tack så mycket</button><button class="answer" data-correct="true">Hur är läget?</button><button class="answer" data-correct="false">God natt</button><button class="answer" data-correct="false">Vi ses imorgon</button>
-        </div><p id="feedback" aria-live="polite"></p></div>
+      <div class="worm-game">
+        <div class="game-top"><span class="game-stat" id="lives">Liv: ♥ ♥ ♥</span><span class="game-stat" id="score">Poäng: 0</span><span class="game-stat" id="length">Mask: 5</span></div>
+        <div class="game-prompt"><div><small>Hitta det spanska ordet för</small><strong id="swedish-word">Hej</strong></div><span aria-hidden="true">🇸🇪 → 🇪🇸</span></div>
+        <p id="game-message" aria-live="polite">Tryck på Starta och styr masken med piltangenterna eller WASD. Ät rätt ord!</p>
+        <div class="board-frame"><canvas id="worm-board" width="720" height="432" tabindex="0" aria-label="Spelplan. Styr masken med piltangenterna eller WASD och ät det spanska ordet som matchar den svenska ledtråden."></canvas></div>
+        <div class="game-controls"><p>Rätt ord: väx +1 och få ett liv. Fel ord: krymp +1. Krock: förlora ett liv.</p><button class="button" id="start-game">Starta spelet</button></div>
+        <div class="touch-controls" aria-label="Pekkontroller"><button type="button" data-dir="up" aria-label="Upp">↑</button><button type="button" data-dir="left" aria-label="Vänster">←</button><button type="button" data-dir="down" aria-label="Ner">↓</button><button type="button" data-dir="right" aria-label="Höger">→</button></div>
       </div>
     </section>
   </main>
   <footer><div class="wrap">Hecho con cariño · En liten början på din spanska.</div></footer>
   <script>
-    const feedback = document.querySelector('#feedback');
-    document.querySelectorAll('.answer').forEach(button => button.addEventListener('click', () => {
-      const correct = button.dataset.correct === 'true';
-      feedback.textContent = correct ? '¡Muy bien! Det betyder ”Hur är läget?”' : 'Inte riktigt. Försök igen!';
-      feedback.style.color = correct ? '#176b4b' : '#a44735';
-      if (correct) document.querySelectorAll('.answer').forEach(answer => answer.disabled = true);
-    }));
+    const canvas = document.querySelector('#worm-board');
+    const ctx = canvas.getContext('2d');
+    const CELL = 24, COLS = canvas.width / CELL, ROWS = canvas.height / CELL;
+    const wordBank = [
+      ['Hej','Hola'],['Tack','Gracias'],['Vatten','Agua'],['Hund','Perro'],['Katt','Gato'],
+      ['Hus','Casa'],['Bok','Libro'],['Äpple','Manzana'],['Mjölk','Leche'],['Vän','Amigo'],
+      ['God morgon','Buenos días'],['God natt','Buenas noches'],['Snälla','Por favor'],['Bröd','Pan'],['Sol','Sol']
+    ];
+    const decoys = ['Adiós','Gracias','Casa','Perro','Amigo','Agua','Libro','Leche','Buenos días','Buenas noches','Por favor','Manzana','Gato','Pan','Sol'];
+    let worm = [], direction = {x:1,y:0}, queuedDirection = {x:1,y:0};
+    let targets = [], lives = 3, score = 0, running = false, gameOver = false, tick = null, currentWord = null;
+    const say = (message, tone='') => { const el=document.querySelector('#game-message'); el.textContent=message; el.dataset.tone=tone; };
+    const updateStats = () => {
+      document.querySelector('#lives').textContent = `Liv: ${'♥ '.repeat(lives)}${'♡ '.repeat(5-lives)}`.trim();
+      document.querySelector('#score').textContent = `Poäng: ${score}`;
+      document.querySelector('#length').textContent = `Mask: ${worm.length}`;
+    };
+    const tokenWidth = text => Math.max(3, Math.ceil((text.length * 8 + 26) / CELL));
+    const overlaps = (a,b,pad=1) => a.x < b.x+b.w+pad && a.x+a.w+pad > b.x && a.y < b.y+b.h+pad && a.y+a.h+pad > b.y;
+    const newRound = () => {
+      currentWord = wordBank[Math.floor(Math.random()*wordBank.length)];
+      document.querySelector('#swedish-word').textContent = currentWord[0];
+      const otherWords = [...new Set(decoys.filter(word => word !== currentWord[1]))].sort(()=>Math.random()-.5).slice(0,3);
+      const choices = [...otherWords, currentWord[1]].sort(()=>Math.random()-.5);
+      targets = [];
+      choices.forEach(word => {
+        const w=tokenWidth(word), h=2;
+        for(let tries=0; tries<100; tries++) {
+          const spot={x:2+Math.floor(Math.random()*(COLS-w-4)),y:2+Math.floor(Math.random()*(ROWS-h-4)),w,h,word,correct:word===currentWord[1]};
+          const tooClose=worm.some(part=>part.x>=spot.x-1&&part.x<spot.x+spot.w+1&&part.y>=spot.y-1&&part.y<spot.y+spot.h+1);
+          if(!tooClose&&!targets.some(other=>overlaps(spot,other,1))){targets.push(spot);break;}
+        }
+      });
+      draw();
+    };
+    const startWorm = () => {
+      worm = Array.from({length:5},(_,i)=>({x:Math.floor(COLS/2)-i,y:Math.floor(ROWS/2)}));
+      direction={x:1,y:0}; queuedDirection={x:1,y:0};
+    };
+    const startGame = () => {
+      clearInterval(tick); lives=3; score=0; gameOver=false; running=true; startWorm(); newRound();
+      document.querySelector('#start-game').textContent='Starta om';
+      say('Nu kör vi! Ät det spanska ordet som betyder: '+currentWord[0]+'.'); updateStats(); canvas.focus();
+      tick=setInterval(step,165);
+    };
+    const roundedRect = (x,y,w,h,r) => {ctx.beginPath();ctx.roundRect(x,y,w,h,r);};
+    const draw = () => {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle='#f1f5eb';ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.strokeStyle='#e4ebde';ctx.lineWidth=1;
+      for(let x=0;x<=canvas.width;x+=CELL){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,canvas.height);ctx.stroke();}
+      for(let y=0;y<=canvas.height;y+=CELL){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(canvas.width,y);ctx.stroke();}
+      targets.forEach(t=>{
+        const px=t.x*CELL+2, py=t.y*CELL+2, pw=t.w*CELL-4, ph=t.h*CELL-4;
+        ctx.fillStyle='#fffefa';ctx.strokeStyle='#d9e2d7';ctx.lineWidth=2;
+        roundedRect(px,py,pw,ph,9);ctx.fill();ctx.stroke();
+        ctx.fillStyle='#26382e';ctx.font='700 13px ui-sans-serif,system-ui,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(t.word,px+pw/2,py+ph/2,pw-8);
+      });
+      worm.forEach((part,index)=>{
+        const px=part.x*CELL+2,py=part.y*CELL+2;
+        ctx.fillStyle=index===0?'#176b4b':'#4b9a6d';roundedRect(px,py,CELL-4,CELL-4,7);ctx.fill();
+        if(index===0){ctx.fillStyle='white';ctx.beginPath();ctx.arc(px+8,py+8,2,0,Math.PI*2);ctx.arc(px+14,py+8,2,0,Math.PI*2);ctx.fill();}
+      });
+      if(!running){ctx.fillStyle='rgba(23,40,32,.55)';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle='white';ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='800 24px ui-sans-serif,system-ui,sans-serif';ctx.fillText(gameOver?'SLUT PÅ LIV':'ORDORM',canvas.width/2,canvas.height/2-12);ctx.font='500 15px ui-sans-serif,system-ui,sans-serif';ctx.fillText(gameOver?`Slutpoäng: ${score} · Tryck Starta om`:'Tryck på Starta spelet',canvas.width/2,canvas.height/2+20);}
+    };
+    const step = () => {
+      direction=queuedDirection;
+      const head={x:worm[0].x+direction.x,y:worm[0].y+direction.y};
+      const ate=targets.find(t=>head.x>=t.x&&head.x<t.x+t.w&&head.y>=t.y&&head.y<t.y+t.h);
+      const bodyToCheck=ate?.correct?worm:worm.slice(0,-1);
+      if(head.x<0||head.x>=COLS||head.y<0||head.y>=ROWS||bodyToCheck.some(part=>part.x===head.x&&part.y===head.y)){
+        lives--; updateStats();
+        if(lives<=0){running=false;gameOver=true;clearInterval(tick);say(`Spelet slut! Du fick ${score} poäng. Tryck på Starta om för en ny runda.`,'error');document.querySelector('#start-game').textContent='Spela igen';}
+        else {startWorm();say(`Aj! Du krockade. Ett liv kvar: ${lives}. Fortsätt leta efter: ${currentWord[0]}.`,'error');}
+        draw();return;
+      }
+      worm.unshift(head);
+      if(ate){
+        targets=targets.filter(t=>t!==ate);
+        if(ate.correct){score++;lives=Math.min(5,lives+1);updateStats();say(`Rätt! ${ate.word} betyder ${currentWord[0]}. Ny svensk ledtråd!`);newRound();}
+        else {if(worm.length>1){worm.pop();if(worm.length>1)worm.pop();}say(`Inte rätt — ${ate.word} gör masken kortare. Hitta ordet för: ${currentWord[0]}.`,'error');if(targets.length===0)newRound();}
+      } else worm.pop();
+      updateStats();draw();
+    };
+    const turn = dir => {
+      if(!running)return;
+      const vectors={up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}};
+      const next=vectors[dir];if(next&&!(next.x===-direction.x&&next.y===-direction.y))queuedDirection=next;
+    };
+    canvas.addEventListener('keydown',event=>{
+      const keys={ArrowUp:'up',w:'up',W:'up',ArrowDown:'down',s:'down',S:'down',ArrowLeft:'left',a:'left',A:'left',ArrowRight:'right',d:'right',D:'right'};
+      if(keys[event.key]){event.preventDefault();turn(keys[event.key]);}
+    });
+    document.querySelectorAll('.touch-controls button').forEach(button=>button.addEventListener('click',()=>turn(button.dataset.dir)));
+    document.querySelector('#start-game').addEventListener('click',startGame);
+    startWorm();updateStats();draw();
   </script>
 </body>
 </html>
