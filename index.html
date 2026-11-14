@@ -141,6 +141,8 @@
     .board-frame { border-color:#e3e6d9; background:#f2f3e9 }
     .touch-controls button { transition:background .15s,border-color .15s }
     .touch-controls button:hover { background:#edf3e9; border-color:#b7c9b4 }
+    .leaderboard-note { margin:8px 0 0; color:var(--muted); font-size:.85rem; }
+    .quiz-level-outcome { margin:12px 0 0; color:var(--muted); font-size:.95rem; }
     .leaderboard { margin-top:22px; padding-top:19px; border-top:1px solid var(--line) }
     .leaderboard-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px }
     .leaderboard-head h3 { margin:0; font-size:1rem }
@@ -152,59 +154,78 @@
     .leaderboard .player { flex:1; font-weight:700 }
     .leaderboard .points { color:var(--green); font-weight:850 }
     .leaderboard-empty { margin:0; color:var(--muted); font-size:.9rem }
-    footer { border-top-color:#ded8ca; line-height:1.8 }
-    footer small { display:inline-block; margin-top:9px; max-width:840px; font-size:.8rem }
-    footer a { text-underline-offset:3px }
+    footer { border-top-color:#ded8ca; line-height:1.65 }
+    .site-signoff { margin:0 0 20px; color:var(--muted); font-size:.88rem }
+    .source-credit { max-width:960px }
+    .source-credit h2 { margin:0 0 12px; font-size:clamp(1.45rem,2.4vw,1.8rem) }
+    .source-list { display:grid; gap:8px; margin:0; padding-left:20px; color:var(--muted); font-size:.9rem }
+    .source-list strong { color:var(--ink) }
+    .source-list a,.source-credit a { text-underline-offset:3px }
+    .source-attribution,.source-details { margin:12px 0 0; color:var(--muted); font-size:.86rem }
+    .source-details { margin-top:6px }
     :focus-visible { outline:3px solid #d99563; outline-offset:3px }
     @media (max-width:720px) { .wrap { width:min(100% - 36px,1120px) } .hero { padding:55px 0 48px; gap:30px } .art { min-height:265px; border-radius:38% 38% 22px 22px } .sun { width:155px;height:155px;right:34px } .tile { width:205px;padding:22px } section { padding-bottom:54px } }
     @media (max-width:430px) { .wrap { width:min(100% - 30px,1120px) } header.wrap { padding:17px 0 } .brand { font-size:1.3rem } nav { gap:0 } nav a { padding:8px 10px; font-size:.78rem } .hero { padding-top:44px } h1 { font-size:3.35rem } .art { min-height:235px } .quiz-game { padding:20px } .quiz-answers { grid-template-columns:1fr } .quiz-difficulties { grid-template-columns:1fr 1fr } .quiz-difficulty { padding:9px 6px; font-size:.9rem } .worm-game { padding:14px } }
+    .game-launchers { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .game-launcher { display:flex; flex-direction:column; align-items:flex-start; width:100%; min-height:205px; color:var(--ink); font:inherit; text-align:left; cursor:pointer; }
+    .game-launcher h3 { margin-top:20px; }
+    .game-launcher p { color:var(--muted); }
+    .game-launcher .launcher-action { margin-top:auto; padding-top:18px; color:var(--green); font-size:.9rem; font-weight:800; }
+    .game-launcher[aria-expanded="true"] { border-color:var(--green); box-shadow:0 0 0 2px #285c4320; }
+    .game-panel { margin-top:32px; scroll-margin-top:20px; }
+    .game-panel[hidden] { display:none; }
+    @media (max-width:720px) { .game-launchers { grid-template-columns:1fr; } .game-launcher { min-height:180px; } }
   </style>
 </head>
 <body>
   <header class="wrap">
     <a class="brand" href="#top">hola<span>!</span></a>
-    <nav aria-label="Huvudmeny"><a href="#lektioner">Lektioner</a><a href="#ovning">Öva</a></nav>
+    <nav aria-label="Huvudmeny"><a href="#spel">Spel</a><a href="#spelval">Välj spel</a></nav>
   </header>
   <main id="top">
     <div class="wrap hero">
       <div>
         <div class="eyebrow">Spanska, steg för steg</div>
         <h1>Lite spanska.<br><em>Varje dag.</em></h1>
-        <p>Lär dig användbara ord och fraser i din egen takt. Börja med en kort lektion och testa sedan vad du minns.</p>
-        <a class="button" href="#lektioner">Börja lära dig <span aria-hidden="true">&nbsp;→</span></a>
+        <p>Träna på spanska ord i din egen takt. Välj ett spel och börja öva.</p>
+        
       </div>
       <div class="art" aria-label="Spanskt gloskort med frasen hola, ¿qué tal?">
         <div class="sun"></div><div class="tile"><small>Dagens fras</small><strong>¡Hola!</strong><span>Hej!</span></div>
       </div>
     </div>
-    <section class="wrap" id="lektioner">
-      <div class="section-head"><h2>Din första lektion</h2><p>Tre fraser som passar direkt i ett samtal.</p></div>
-      <div class="cards">
-        <article class="card"><div class="number">01</div><h3>¡Hola!</h3><p>Hej! Ett enkelt och vanligt sätt att hälsa.</p></article>
-        <article class="card"><div class="number">02</div><h3>¿Qué tal?</h3><p>Hur är läget? En vänlig fråga i vardagliga samtal.</p></article>
-        <article class="card"><div class="number">03</div><h3>Gracias</h3><p>Tack. Säg gärna <em>muchas gracias</em> för ”tack så mycket”.</p></article>
+    <section class="wrap" id="spel">
+      <div class="section-head"><h2>Spel</h2><p>Välj ett spel för att öppna det.</p></div>
+      <div class="cards game-launchers" id="spelval" role="group" aria-label="Välj ett spel">
+        <button class="card game-launcher" type="button" data-game="quiz" aria-expanded="false" aria-controls="quiz-panel">
+          <span class="number">01</span><h3>Quiz: spanska ord</h3><p>Träna på spanska ord och se hur många du kan.</p><span class="launcher-action">Öppna quizet <span aria-hidden="true">→</span></span>
+        </button>
+        <button class="card game-launcher" type="button" data-game="worm" aria-expanded="false" aria-controls="worm-panel">
+          <span class="number">02</span><h3>Ordorm</h3><p>Styr masken till det spanska ord som passar ledtråden.</p><span class="launcher-action">Öppna Ordorm <span aria-hidden="true">→</span></span>
+        </button>
       </div>
-    </section>
-    <section class="wrap" id="ovning">
+      <div class="game-panels">
+    <div class="game-panel" id="quiz-panel" hidden>
       <div class="section-head"><h2>Quiz: spanska ord</h2><p>Femton frågor per runda. Välj svårighetsgrad.</p></div>
       <div class="quiz-game" id="quiz-game" aria-labelledby="quiz-title">
         <div class="quiz-meta"><span id="quiz-count">Redo när du är</span><span id="quiz-score">Poäng: 0</span></div>
         <div class="quiz-progress" aria-hidden="true"><span id="quiz-progress-bar"></span></div>
         <h3 class="quiz-question" id="quiz-title">Testa dina spanska glosor</h3>
         <p class="quiz-hint" id="quiz-hint">Svara på frågor om spanska ord.</p>
-        <div class="quiz-difficulties" role="group" aria-label="Välj svårighetsgrad">
+        <div class="quiz-difficulties" role="group" aria-label="Välj svårighetsgrad" aria-describedby="quiz-level-outcome">
           <button class="quiz-difficulty" type="button" data-difficulty="easy" aria-pressed="true">Lätt</button>
           <button class="quiz-difficulty" type="button" data-difficulty="medium" aria-pressed="false">Medel</button>
           <button class="quiz-difficulty" type="button" data-difficulty="hard" aria-pressed="false">Svår</button>
           <button class="quiz-difficulty" type="button" data-difficulty="expert" aria-pressed="false">Expert</button>
         </div>
+        <p class="quiz-level-outcome" id="quiz-level-outcome" aria-live="polite">Efter rundan har du tränat på att känna igen vanliga ord bland tre svarsalternativ.</p>
         <div class="quiz-answers" id="quiz-answers"></div>
         <p class="quiz-feedback" id="quiz-feedback" aria-live="polite"></p>
         <button class="button quiz-next" id="quiz-next" type="button">Starta quizet</button>
-        <div class="leaderboard" aria-labelledby="quiz-leaderboard-title"><div class="leaderboard-head"><h3 id="quiz-leaderboard-title">Quizets topplista</h3><input class="player-name" id="quiz-player" maxlength="18" aria-label="Namn för quiztopplistan" placeholder="Ditt namn" value="Du"></div><ol id="quiz-leaderboard" aria-live="polite"></ol></div>
+        <div class="leaderboard" aria-labelledby="quiz-leaderboard-title"><div class="leaderboard-head"><h3 id="quiz-leaderboard-title">Quizets topplista</h3><input class="player-name" id="quiz-player" maxlength="18" aria-label="Namn för quiztopplistan" placeholder="Ditt namn" value="Du"></div><ol id="quiz-leaderboard" aria-live="polite"></ol><p class="leaderboard-note">Topplistan sparas i webbläsaren på den här enheten.</p></div>
       </div>
-    </section>
-    <section class="wrap" aria-labelledby="worm-title">
+    </div>
+    <div class="game-panel" id="worm-panel" hidden>
       <div class="section-head"><h2 id="worm-title">Ordorm</h2><p>Styr masken till det spanska ordet som matchar ledtråden.</p></div>
       <div class="worm-game">
         <div class="game-top"><span class="game-stat" id="lives">Liv: ♥ ♥ ♥</span><span class="game-stat" id="score">Poäng: 0</span><span class="game-stat" id="length">Mask: 5</span></div>
@@ -213,11 +234,28 @@
         <div class="board-frame"><canvas id="worm-board" width="720" height="432" tabindex="0" aria-label="Spelplan. Styr masken med piltangenterna eller WASD och ät det spanska ordet som matchar den svenska ledtråden."></canvas></div>
         <div class="game-controls"><p>Rätt ord: väx +1 och få ett liv. Fel ord: krymp +1. Krock: förlora ett liv.</p><button class="button" id="start-game">Starta spelet</button></div>
         <div class="touch-controls" aria-label="Pekkontroller"><button type="button" data-dir="up" aria-label="Upp">↑</button><button type="button" data-dir="left" aria-label="Vänster">←</button><button type="button" data-dir="down" aria-label="Ner">↓</button><button type="button" data-dir="right" aria-label="Höger">→</button></div>
-        <div class="leaderboard" aria-labelledby="worm-leaderboard-title"><div class="leaderboard-head"><h3 id="worm-leaderboard-title">Ordormens topplista</h3><input class="player-name" id="worm-player" maxlength="18" aria-label="Namn för Ordormens topplista" placeholder="Ditt namn" value="Du"></div><ol id="worm-leaderboard" aria-live="polite"></ol></div>
+        <div class="leaderboard" aria-labelledby="worm-leaderboard-title"><div class="leaderboard-head"><h3 id="worm-leaderboard-title">Ordormens topplista</h3><input class="player-name" id="worm-player" maxlength="18" aria-label="Namn för Ordormens topplista" placeholder="Ditt namn" value="Du"></div><ol id="worm-leaderboard" aria-live="polite"></ol><p class="leaderboard-note">Topplistan sparas i webbläsaren på den här enheten.</p></div>
+      </div>
+    </div>
       </div>
     </section>
   </main>
-  <footer><div class="wrap">Hecho con cariño · En liten början på din spanska.<br><small>Ordlistan i spelen är bearbetad från <a href="https://sprakresurser.isof.se/lexin/spanska/">Lexin: Svensk-spanskt lexikon</a>, © Institutet för språk och folkminnen och Språkrådet (2020), med medverkan av Álvaro Eljach. Urval och spelmetadata har lagts till. <a href="https://creativecommons.org/licenses/by/4.0/deed.sv">CC BY 4.0</a>. <a href="SOURCES.md">Källinformation och ändringar</a>.</small></div></footer>
+  <footer>
+    <div class="wrap">
+      <p class="site-signoff">Hecho con cariño · En liten början på din spanska.</p>
+      <div class="source-credit" aria-labelledby="source-credit-title">
+        <h2 id="source-credit-title">Källor och kunskapsunderlag</h2>
+        <ul class="source-list">
+          <li><strong>Ord och översättningar i spelen:</strong> <a href="https://sprakresurser.isof.se/lexin/spanska/">Lexin: Svensk-spanskt lexikon</a> från Institutet för språk och folkminnen (Isof) och Språkrådet (2020), med medverkan av Álvaro Eljach. <a href="https://researchdata.se/sv/catalogue/dataset/ext0289-1">Datasetposten</a> anger källan och licensen.</li>
+          <li><strong>Pedagogiskt underlag:</strong> <a href="https://www.skolverket.se/undervisning/grundskolan/kursplaner-for-grundskolan/subjects/GRGRMSP01">Skolverkets kursplan i moderna språk</a> är referens för skolanknuten progression. Hemsidans spelsteg och svårighetsgrader är egna träningsupplägg, inte officiella skolnivåer eller betyg.</li>
+          <li><strong>Hälsningsfraser och exempel:</strong> <a href="https://cvc.cervantes.es/ENSENANZA/biblioteca_ele/plan_curricular/niveles/05_funciones_inventario_a1-a2.htm">Instituto Cervantes</a> och <a href="https://dle.rae.es/hola">Real Academia Española (RAE), hola</a> samt <a href="https://dle.rae.es/gracia">gracias</a>.</li>
+          <li><strong>Språkreferens:</strong> <a href="https://www.coe.int/en/web/common-european-framework-reference-languages">Europarådets CEFR</a>. Ordlistans A1-etikett är hemsidans egen grova metadata och har inte validerats för varje ord.</li>
+        </ul>
+        <p class="source-attribution">Lexin-ordlistan är ett urval och en bearbetning. Isof och Språkrådet anges som upphovskälla; materialet återanvänds enligt <a href="https://creativecommons.org/licenses/by/4.0/deed.sv">CC BY 4.0</a>.</p>
+        <p class="source-details">Se <a href="SOURCES.md">fullständig källförteckning, licenser, Lexin-ID:n, urval och ändringar</a>.</p>
+      </div>
+    </div>
+  </footer>
   <script src="wordbank.js"></script>
   <script>
     const canvas = document.querySelector('#worm-board');
@@ -232,12 +270,46 @@
     let quizDeck = [], quizIndex = 0, quizScore = 0, activeQuestion = null, quizLocked = false, selectedDifficulty = 'easy';
     const quizNextButton = document.querySelector('#quiz-next');
     const difficultyButtons = [...document.querySelectorAll('.quiz-difficulty')];
+    const gameLaunchers = [...document.querySelectorAll('.game-launcher')];
+    gameLaunchers.forEach(button => button.addEventListener('click', () => {
+      const open = button.getAttribute('aria-expanded') !== 'true';
+      gameLaunchers.forEach(item => {
+        const active = open && item === button;
+        item.setAttribute('aria-expanded', String(active));
+        document.querySelector(`#${item.dataset.game}-panel`).hidden = !active;
+      });
+      if (!open || button.dataset.game !== 'worm') {
+        if (running) {
+          clearInterval(tick); tick = null; running = false; paused = true;
+          document.querySelector('#start-game').textContent = 'Fortsätt spelet';
+          say('Spelet är pausat. Öppna Ordorm igen för att fortsätta.');
+          draw();
+        }
+      } else if (paused && !gameOver) {
+        paused = false; running = true;
+        document.querySelector('#start-game').textContent = 'Starta om';
+        say('Nu kör vi! Fortsätt leta efter: '+currentWord[0]+'.');
+        tick = setInterval(step,165); canvas.focus(); draw();
+      }
+      if (open) document.querySelector(`#${button.dataset.game}-panel`).scrollIntoView({behavior:'smooth',block:'start'});
+    }));
+
     const difficultySettings = {
       easy: { choices: 3, similar: false, reverse: false },
       medium: { choices: 4, similar: false, reverse: false },
       hard: { choices: 4, similar: true, reverse: false },
       expert: { choices: 4, similar: true, reverse: true }
     };
+    const difficultyOutcomes = {
+      easy: 'Efter rundan har du tränat på att känna igen vanliga ord bland tre svarsalternativ.',
+      medium: 'Efter rundan har du tränat på att välja rätt översättning bland fyra svarsalternativ.',
+      hard: 'Efter rundan har du tränat på att skilja rätt översättning från ord inom närliggande ämnen.',
+      expert: 'Efter rundan har du tränat på att översätta ord från svenska till spanska och från spanska till svenska.'
+    };
+    const updateDifficultyOutcome = () => {
+      document.querySelector('#quiz-level-outcome').textContent = difficultyOutcomes[selectedDifficulty];
+    };
+    updateDifficultyOutcome();
     const saveHighScore = (game, score, total = null) => {
       const input = document.querySelector(`#${game}-player`);
       const name = input.value.trim().slice(0, 18) || 'Du';
@@ -328,11 +400,12 @@
     difficultyButtons.forEach(button => button.addEventListener('click', () => {
       selectedDifficulty = button.dataset.difficulty;
       difficultyButtons.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+      updateDifficultyOutcome();
       if (quizDeck.length) startQuiz();
     }));
     const decoys = [...new Set(wordBank.map(([,spanish])=>spanish))];
     let worm = [], direction = {x:1,y:0}, queuedDirection = {x:1,y:0};
-    let targets = [], lives = 3, score = 0, running = false, gameOver = false, tick = null, currentWord = null, wordDeck = [];
+    let targets = [], lives = 3, score = 0, running = false, paused = false, gameOver = false, tick = null, currentWord = null, wordDeck = [];
     const say = (message, tone='') => { const el=document.querySelector('#game-message'); el.textContent=message; el.dataset.tone=tone; };
     const updateStats = () => {
       document.querySelector('#lives').textContent = `Liv: ${'♥ '.repeat(lives)}${'♡ '.repeat(5-lives)}`.trim();
