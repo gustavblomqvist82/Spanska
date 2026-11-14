@@ -154,9 +154,15 @@
     .leaderboard .player { flex:1; font-weight:700 }
     .leaderboard .points { color:var(--green); font-weight:850 }
     .leaderboard-empty { margin:0; color:var(--muted); font-size:.9rem }
-    footer { border-top-color:#ded8ca; line-height:1.8 }
-    footer small { display:inline-block; margin-top:9px; max-width:840px; font-size:.8rem }
-    footer a { text-underline-offset:3px }
+    footer { border-top-color:#ded8ca; line-height:1.65 }
+    .site-signoff { margin:0 0 20px; color:var(--muted); font-size:.88rem }
+    .source-credit { max-width:960px }
+    .source-credit h2 { margin:0 0 12px; font-size:clamp(1.45rem,2.4vw,1.8rem) }
+    .source-list { display:grid; gap:8px; margin:0; padding-left:20px; color:var(--muted); font-size:.9rem }
+    .source-list strong { color:var(--ink) }
+    .source-list a,.source-credit a { text-underline-offset:3px }
+    .source-attribution,.source-details { margin:12px 0 0; color:var(--muted); font-size:.86rem }
+    .source-details { margin-top:6px }
     :focus-visible { outline:3px solid #d99563; outline-offset:3px }
     @media (max-width:720px) { .wrap { width:min(100% - 36px,1120px) } .hero { padding:55px 0 48px; gap:30px } .art { min-height:265px; border-radius:38% 38% 22px 22px } .sun { width:155px;height:155px;right:34px } .tile { width:205px;padding:22px } section { padding-bottom:54px } }
     @media (max-width:430px) { .wrap { width:min(100% - 30px,1120px) } header.wrap { padding:17px 0 } .brand { font-size:1.3rem } nav { gap:0 } nav a { padding:8px 10px; font-size:.78rem } .hero { padding-top:44px } h1 { font-size:3.35rem } .art { min-height:235px } .quiz-game { padding:20px } .quiz-answers { grid-template-columns:1fr } .quiz-difficulties { grid-template-columns:1fr 1fr } .quiz-difficulty { padding:9px 6px; font-size:.9rem } .worm-game { padding:14px } }
@@ -234,7 +240,22 @@
       </div>
     </section>
   </main>
-  <footer><div class="wrap">Hecho con cariño · En liten början på din spanska.<br><small>Ordlistan i spelen är bearbetad från <a href="https://sprakresurser.isof.se/lexin/spanska/">Lexin: Svensk-spanskt lexikon</a>, © Institutet för språk och folkminnen och Språkrådet (2020), med medverkan av Álvaro Eljach. Urval och spelmetadata har lagts till. <a href="https://creativecommons.org/licenses/by/4.0/deed.sv">CC BY 4.0</a>. <a href="SOURCES.md">Källinformation och ändringar</a>.</small></div></footer>
+  <footer>
+    <div class="wrap">
+      <p class="site-signoff">Hecho con cariño · En liten början på din spanska.</p>
+      <div class="source-credit" aria-labelledby="source-credit-title">
+        <h2 id="source-credit-title">Källor och kunskapsunderlag</h2>
+        <ul class="source-list">
+          <li><strong>Ord och översättningar i spelen:</strong> <a href="https://sprakresurser.isof.se/lexin/spanska/">Lexin: Svensk-spanskt lexikon</a> från Institutet för språk och folkminnen (Isof) och Språkrådet (2020), med medverkan av Álvaro Eljach. <a href="https://researchdata.se/sv/catalogue/dataset/ext0289-1">Datasetposten</a> anger källan och licensen.</li>
+          <li><strong>Pedagogiskt underlag:</strong> <a href="https://www.skolverket.se/undervisning/grundskolan/kursplaner-for-grundskolan/subjects/GRGRMSP01">Skolverkets kursplan i moderna språk</a> är referens för skolanknuten progression. Hemsidans spelsteg och svårighetsgrader är egna träningsupplägg, inte officiella skolnivåer eller betyg.</li>
+          <li><strong>Hälsningsfraser och exempel:</strong> <a href="https://cvc.cervantes.es/ENSENANZA/biblioteca_ele/plan_curricular/niveles/05_funciones_inventario_a1-a2.htm">Instituto Cervantes</a> och <a href="https://dle.rae.es/hola">Real Academia Española (RAE), hola</a> samt <a href="https://dle.rae.es/gracia">gracias</a>.</li>
+          <li><strong>Språkreferens:</strong> <a href="https://www.coe.int/en/web/common-european-framework-reference-languages">Europarådets CEFR</a>. Ordlistans A1-etikett är hemsidans egen grova metadata och har inte validerats för varje ord.</li>
+        </ul>
+        <p class="source-attribution">Lexin-ordlistan är ett urval och en bearbetning. Isof och Språkrådet anges som upphovskälla; materialet återanvänds enligt <a href="https://creativecommons.org/licenses/by/4.0/deed.sv">CC BY 4.0</a>.</p>
+        <p class="source-details">Se <a href="SOURCES.md">fullständig källförteckning, licenser, Lexin-ID:n, urval och ändringar</a>.</p>
+      </div>
+    </div>
+  </footer>
   <script src="wordbank.js"></script>
   <script>
     const canvas = document.querySelector('#worm-board');
