@@ -26,7 +26,6 @@ Punkter vi vill jobba vidare med framåt:
 
 
 
-
 - [ ] Meningsuppbyggnad
   Spanska ord visas i oordning. Dra orden till rätt plats för att bilda en korrekt mening.
   Övningen ska ha fyra svårighetsgrader:
@@ -47,6 +46,7 @@ Punkter vi vill jobba vidare med framåt:
 
 
 
+
 - [ ] Stavning
   Användaren får höra ett spanskt ord och skriver det så korrekt som möjligt. Efter svaret visas rätt stavning och eventuell förklaring, till exempel var accenten ska stå.
   Övningen ska ha fyra svårighetsgrader:
@@ -55,3 +55,8 @@ Punkter vi vill jobba vidare med framåt:
   3. **Medel:** Ord med accenttecken eller ljud som stavas på flera sätt, till exempel *b/v*, *c/s/z* och *g/j*.
   4. **Avancerad:** Längre och mindre vanliga ord med flera stavningsutmaningar, inklusive accenter och *ü*.
 
+
+
+  5. På svenska tangentbord kan följande spanska bokstäver vara svåra att skriva:
+     - Små bokstäver: **á, é, í, ó, ú, ü, ñ**
+     - Versaler: **Á, É, Í, Ó, Ú, Ü, Ñ**
