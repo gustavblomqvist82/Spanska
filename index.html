@@ -188,6 +188,8 @@
     .sentence-actions .button { margin:0; }
     .sentence-feedback { min-height:28px; margin:14px 0 0; font-weight:750; }
     .sentence-outcome { margin:10px 0 0; color:var(--muted); }
+    .sentence-label { margin:18px 0 4px; color:var(--muted); font-size:.76rem; font-family:inherit; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
+    .sentence-prompt { display:block; margin:0 0 18px; padding:17px 20px; border-left:4px solid var(--coral); border-radius:0 14px 14px 0; background:#f4ead5; color:var(--ink); font-family:Georgia,"Times New Roman",serif; font-size:clamp(1.45rem,3.5vw,2rem); font-weight:600; line-height:1.25; }
     @media (max-width:720px) { .sentence-levels { grid-template-columns:1fr 1fr; } }
 
     @media (max-width:720px) { .game-launchers { grid-template-columns:1fr; } .game-launcher { min-height:180px; } }
@@ -261,8 +263,8 @@
       <div class="section-head"><h2>Meningsuppbyggnad</h2><p>Ordna orden så att de bildar en korrekt mening.</p></div>
       <div class="sentence-game" aria-labelledby="sentence-title">
         <div class="quiz-meta"><span id="sentence-count">Redo när du är</span><span id="sentence-score">Rätt: 0</span></div>
-        <h3 class="quiz-question" id="sentence-title">Bygg din första mening</h3>
-        <p class="quiz-hint" id="sentence-prompt">Dra varje ord till meningen. Du kan också välja ord med tangentbordet och flytta dem.</p>
+        <h3 class="sentence-label" id="sentence-title">Uppgift</h3>
+        <p class="sentence-prompt" id="sentence-prompt">Dra varje ord till meningen. Du kan också välja ord med tangentbordet och flytta dem.</p>
         <div class="sentence-levels" role="group" aria-label="Välj svårighetsgrad">
           <button class="sentence-level" type="button" data-sentence-level="beginner" aria-pressed="true">Nybörjare</button>
           <button class="sentence-level" type="button" data-sentence-level="easy" aria-pressed="false">Lätt</button>
