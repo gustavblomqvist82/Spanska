@@ -25,7 +25,7 @@ Spanska substantiv, pronomen och adjektiv kan böjas efter genus, numerus och sa
 
 Exemplen (`¡Hola!`, `¿Qué tal?`, `gracias` och `muchas gracias`) är redaktionella exempel, inte poster från spelordlistan. De förekom i den första lektionen; den nuvarande startsidan visar `¡Hola!` som dagens fras och nämner `¿Qué tal?` i gloskortets tillgängliga beskrivning. Använd följande referenser för betydelse och kommunikativ användning:
 
-- [Instituto Cervantes: Plan Curricular, funktioner på nivå A1–A2](https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/niveles/05_funciones_inventario_a1-a2.htm) innehåller exempel på hälsningsfrasen `Hola, ¿qué tal?` och svar med `gracias`.
+- [Instituto Cervantes: Plan Curricular, funktioner på nivå A1–A2](https://cvc.cervantes.es/ENSENANZA/biblioteca_ele/plan_curricular/niveles/05_funciones_inventario_a1-a2.htm) innehåller exempel på hälsningsfrasen `Hola, ¿qué tal?` och svar med `gracias`. Vid kontroll 2026-11-14 omdirigerade sidan till en tillfällig underhållssida; uppgifterna stämmer med sidans indexerade innehåll.
 - [Real Academia Española: DLE, hola](https://dle.rae.es/hola) beskriver användningen av `hola` som hälsning.
 - [Real Academia Española: DLE, gracias](https://dle.rae.es/gracia) beskriver `gracias` som ett uttryck för tacksamhet.
 
