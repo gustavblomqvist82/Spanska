@@ -187,6 +187,9 @@
     .sentence-actions { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:14px; }
     .sentence-actions .button { margin:0; }
     .sentence-feedback { min-height:28px; margin:14px 0 0; font-weight:750; }
+    .sentence-feedback[data-tone="success"] { display:block; padding:12px 15px; border:1px solid #98b991; border-radius:12px; background:#e7f1e2; color:#285c43; font-size:1.05rem; }
+    .sentence-answer.is-correct { border:2px solid #4d8056; background:#e7f1e2; box-shadow:0 0 0 4px #4d805620; }
+    .sentence-answer.is-correct .sentence-token { border-color:#98b991; background:#fff; color:#285c43; }
     .sentence-outcome { margin:10px 0 0; color:var(--muted); }
     .sentence-label { margin:18px 0 4px; color:var(--muted); font-size:.76rem; font-family:inherit; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
     .sentence-prompt { display:block; margin:0 0 18px; padding:17px 20px; border-left:4px solid var(--coral); border-radius:0 14px 14px 0; background:#f4ead5; color:var(--ink); font-family:Georgia,"Times New Roman",serif; font-size:clamp(1.45rem,3.5vw,2rem); font-weight:600; line-height:1.25; }
@@ -381,6 +384,7 @@
       document.querySelector('#sentence-title').textContent='Uppgift';
       document.querySelector('#sentence-prompt').textContent=`Översätt: ${item.sv}`;
       document.querySelector('#sentence-outcome').textContent=set.outcome;
+      sentenceAnswer.classList.remove('is-correct');
       sentenceAnswer.replaceChildren();
       const words=item.es.split(' ');
       let shuffled=sentenceShuffle(words);
@@ -395,7 +399,7 @@
       if(sentenceLocked)return;
       const expected=sentenceLevels[sentenceLevel].sentences[sentenceIndex%sentenceLevels[sentenceLevel].sentences.length].es;
       const actual=[...sentenceAnswer.children].map(token=>token.dataset.word).join(' ');
-      if(actual===expected){if(!sentenceSolved){sentenceScore++;sentenceSolved=true;}sentenceLocked=true;sentenceFeedback.textContent=`Rätt! ${expected}. Nästa mening...`;sentenceFeedback.dataset.tone='';document.querySelector('#sentence-score').textContent=`Rätt: ${sentenceScore}`;sentenceAdvanceTimer=setTimeout(()=>{sentenceIndex++;renderSentence();},1100);}
+      if(actual===expected){if(!sentenceSolved){sentenceScore++;sentenceSolved=true;}sentenceLocked=true;sentenceAnswer.classList.add('is-correct');sentenceFeedback.textContent=`✓ Rätt svar! ${expected}. Nästa mening...`;sentenceFeedback.dataset.tone='success';document.querySelector('#sentence-score').textContent=`Rätt: ${sentenceScore}`;sentenceAdvanceTimer=setTimeout(()=>{sentenceIndex++;renderSentence();},1700);}
       else {sentenceFeedback.textContent='Inte riktigt. Ändra ordningen och kontrollera meningen igen.';sentenceFeedback.dataset.tone='error';}
     });
     document.querySelector('#sentence-reset').addEventListener('click',renderSentence);
