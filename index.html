@@ -330,50 +330,32 @@
     const sentenceTray=document.querySelector('#sentence-tray'), sentenceAnswer=document.querySelector('#sentence-answer');
     const sentenceFeedback=document.querySelector('#sentence-feedback');
     const sentenceShuffle=items=>[...items].sort(()=>Math.random()-.5);
-    const renderSentence=()=>{
-      const set=sentenceLevels[sentenceLevel], item=set.sentences[sentenceIndex%set.sentences.length];
-      sentenceLocked=false; sentenceSolved=false; sentenceSelected=null; sentenceFeedback.textContent=''; sentenceFeedback.dataset.tone='';
-      document.querySelector('#sentence-count').textContent=`${set.title} · Mening ${sentenceIndex%set.sentences.length+1} av ${set.sentences.length}`;
-      document.querySelector('#sentence-score').textContent=`Rätt: ${sentenceScore}`;
-      document.querySelector('#sentence-title').textContent='Bygg meningen';
-      document.querySelector('#sentence-prompt').textContent=`Översätt: ${item.sv}`;
-      document.querySelector('#sentence-outcome').textContent=set.outcome;
-      sentenceAnswer.replaceChildren();
-      const words=item.es.split(' ');
-      let shuffled=sentenceShuffle(words);
-      if(shuffled.join(' ')===words.join(' ')) shuffled=sentenceShuffle(words);
-      sentenceTray.replaceChildren(...shuffled.map((word,inde    const makeSentenceToken=(word,index)=>{
+    const makeSentenceToken=(word,index)=>{
       const button=document.createElement('button'); button.type='button'; button.className='sentence-token'; button.textContent=word;
       button.draggable=true; button.dataset.word=word; button.dataset.id=String(index);
       button.addEventListener('dragstart',event=>{event.dataTransfer.setData('text/plain',button.dataset.id);event.dataTransfer.effectAllowed='move';});
       button.addEventListener('click',event=>{
         if(sentenceSelected && sentenceSelected!==button){
           const rect=button.getBoundingClientRect(), after=event.clientX>rect.left+rect.width/2;
-          moveSentenceToken(sentenceSelected,button.parentElement,button,after);
-          return;
+          moveSentenceToken(sentenceSelected,button.parentElement,button,after); return;
         }
         sentenceSelected=button;
         document.querySelectorAll('.sentence-token').forEach(token=>token.setAttribute('aria-pressed',String(token===button)));
       });
       button.addEventListener('keydown',event=>{
         if(event.key===' '||event.key==='Enter'){event.preventDefault();moveSentenceToken(button,button.parentElement===sentenceTray?sentenceAnswer:sentenceTray);}
-        if(event.key==='ArrowLeft'||event.key==='ArrowRight'){
+        if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(event.key)){
           event.preventDefault();
-          const sibling=event.key==='ArrowLeft'?button.previousElementSibling:button.nextElementSibling;
-          if(sibling) moveSentenceToken(button,button.parentElement,sibling,event.key==='ArrowRight');
-        }
-        if(event.key==='ArrowUp'||event.key==='ArrowDown'){
-          event.preventDefault();
-          const sibling=event.key==='ArrowUp'?button.previousElementSibling:button.nextElementSibling;
-          if(sibling) moveSentenceToken(button,button.parentElement,sibling,event.key==='ArrowDown');
+          const earlier=event.key==='ArrowLeft'||event.key==='ArrowUp';
+          const sibling=earlier?button.previousElementSibling:button.nextElementSibling;
+          if(sibling)moveSentenceToken(button,button.parentElement,sibling,!earlier);
         }
       });
       return button;
     };
     const moveSentenceToken=(token,target,before=null,after=false)=>{
       if(!token||!target)return;
-      if(before && before!==token) target.insertBefore(token,after?before.nextSibling:before);
-      else target.append(token);
+      if(before&&before!==token)target.insertBefore(token,after?before.nextSibling:before); else target.append(token);
       sentenceLocked=false; sentenceSelected=null;
       document.querySelectorAll('.sentence-token').forEach(item=>item.removeAttribute('aria-pressed'));
       token.focus();
@@ -385,15 +367,25 @@
         const id=event.dataTransfer.getData('text/plain');
         const token=[...document.querySelectorAll('.sentence-token')].find(item=>item.dataset.id===id);
         const target=event.target.closest('.sentence-token');
-        if(target && target!==token){
-          const rect=target.getBoundingClientRect();
-          moveSentenceToken(token,zone,target,event.clientX>rect.left+rect.width/2);
-        } else moveSentenceToken(token,zone);
+        if(target&&target!==token){const rect=target.getBoundingClientRect();moveSentenceToken(token,zone,target,event.clientX>rect.left+rect.width/2);}
+        else moveSentenceToken(token,zone);
       });
-      zone.addEventListener('click',event=>{
-        if(event.target===zone && sentenceSelected) moveSentenceToken(sentenceSelected,zone);
-      });
+      zone.addEventListener('click',event=>{if(event.target===zone&&sentenceSelected)moveSentenceToken(sentenceSelected,zone);});
     });
+    const renderSentence=()=>{
+      const set=sentenceLevels[sentenceLevel], item=set.sentences[sentenceIndex%set.sentences.length];
+      sentenceLocked=false; sentenceSolved=false; sentenceSelected=null; sentenceFeedback.textContent=''; sentenceFeedback.dataset.tone='';
+      document.querySelector('#sentence-count').textContent=`${set.title} · Mening ${sentenceIndex%set.sentences.length+1} av ${set.sentences.length}`;
+      document.querySelector('#sentence-score').textContent=`Rätt: ${sentenceScore}`;
+      document.querySelector('#sentence-title').textContent='Uppgift';
+      document.querySelector('#sentence-prompt').textContent=`Översätt: ${item.sv}`;
+      document.querySelector('#sentence-outcome').textContent=set.outcome;
+      sentenceAnswer.replaceChildren();
+      const words=item.es.split(' ');
+      let shuffled=sentenceShuffle(words);
+      if(shuffled.join(' ')===words.join(' '))shuffled=sentenceShuffle(words);
+      sentenceTray.replaceChildren(...shuffled.map((word,index)=>makeSentenceToken(word,index)));
+    };
     document.querySelectorAll('.sentence-level').forEach(button=>button.addEventListener('click',()=>{
       sentenceLevel=button.dataset.sentenceLevel; sentenceIndex=0; sentenceScore=0;
       document.querySelectorAll('.sentence-level').forEach(item=>item.setAttribute('aria-pressed',String(item===button)));renderSentence();
