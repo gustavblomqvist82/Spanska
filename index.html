@@ -141,6 +141,8 @@
     .board-frame { border-color:#e3e6d9; background:#f2f3e9 }
     .touch-controls button { transition:background .15s,border-color .15s }
     .touch-controls button:hover { background:#edf3e9; border-color:#b7c9b4 }
+    .leaderboard-note { margin:8px 0 0; color:var(--muted); font-size:.85rem; }
+    .quiz-level-outcome { margin:12px 0 0; color:var(--muted); font-size:.95rem; }
     .leaderboard { margin-top:22px; padding-top:19px; border-top:1px solid var(--line) }
     .leaderboard-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px }
     .leaderboard-head h3 { margin:0; font-size:1rem }
@@ -179,7 +181,7 @@
       <div>
         <div class="eyebrow">Spanska, steg för steg</div>
         <h1>Lite spanska.<br><em>Varje dag.</em></h1>
-        <p>Lär dig användbara ord och fraser i din egen takt. Börja med en kort lektion och testa sedan vad du minns.</p>
+        <p>Träna på spanska ord i din egen takt. Välj ett spel och börja öva.</p>
         
       </div>
       <div class="art" aria-label="Spanskt gloskort med frasen hola, ¿qué tal?">
@@ -204,16 +206,17 @@
         <div class="quiz-progress" aria-hidden="true"><span id="quiz-progress-bar"></span></div>
         <h3 class="quiz-question" id="quiz-title">Testa dina spanska glosor</h3>
         <p class="quiz-hint" id="quiz-hint">Svara på frågor om spanska ord.</p>
-        <div class="quiz-difficulties" role="group" aria-label="Välj svårighetsgrad">
+        <div class="quiz-difficulties" role="group" aria-label="Välj svårighetsgrad" aria-describedby="quiz-level-outcome">
           <button class="quiz-difficulty" type="button" data-difficulty="easy" aria-pressed="true">Lätt</button>
           <button class="quiz-difficulty" type="button" data-difficulty="medium" aria-pressed="false">Medel</button>
           <button class="quiz-difficulty" type="button" data-difficulty="hard" aria-pressed="false">Svår</button>
           <button class="quiz-difficulty" type="button" data-difficulty="expert" aria-pressed="false">Expert</button>
         </div>
+        <p class="quiz-level-outcome" id="quiz-level-outcome" aria-live="polite">Efter rundan har du tränat på att känna igen vanliga ord bland tre svarsalternativ.</p>
         <div class="quiz-answers" id="quiz-answers"></div>
         <p class="quiz-feedback" id="quiz-feedback" aria-live="polite"></p>
         <button class="button quiz-next" id="quiz-next" type="button">Starta quizet</button>
-        <div class="leaderboard" aria-labelledby="quiz-leaderboard-title"><div class="leaderboard-head"><h3 id="quiz-leaderboard-title">Quizets topplista</h3><input class="player-name" id="quiz-player" maxlength="18" aria-label="Namn för quiztopplistan" placeholder="Ditt namn" value="Du"></div><ol id="quiz-leaderboard" aria-live="polite"></ol></div>
+        <div class="leaderboard" aria-labelledby="quiz-leaderboard-title"><div class="leaderboard-head"><h3 id="quiz-leaderboard-title">Quizets topplista</h3><input class="player-name" id="quiz-player" maxlength="18" aria-label="Namn för quiztopplistan" placeholder="Ditt namn" value="Du"></div><ol id="quiz-leaderboard" aria-live="polite"></ol><p class="leaderboard-note">Topplistan sparas i webbläsaren på den här enheten.</p></div>
       </div>
     </div>
     <div class="game-panel" id="worm-panel" hidden>
@@ -225,7 +228,7 @@
         <div class="board-frame"><canvas id="worm-board" width="720" height="432" tabindex="0" aria-label="Spelplan. Styr masken med piltangenterna eller WASD och ät det spanska ordet som matchar den svenska ledtråden."></canvas></div>
         <div class="game-controls"><p>Rätt ord: väx +1 och få ett liv. Fel ord: krymp +1. Krock: förlora ett liv.</p><button class="button" id="start-game">Starta spelet</button></div>
         <div class="touch-controls" aria-label="Pekkontroller"><button type="button" data-dir="up" aria-label="Upp">↑</button><button type="button" data-dir="left" aria-label="Vänster">←</button><button type="button" data-dir="down" aria-label="Ner">↓</button><button type="button" data-dir="right" aria-label="Höger">→</button></div>
-        <div class="leaderboard" aria-labelledby="worm-leaderboard-title"><div class="leaderboard-head"><h3 id="worm-leaderboard-title">Ordormens topplista</h3><input class="player-name" id="worm-player" maxlength="18" aria-label="Namn för Ordormens topplista" placeholder="Ditt namn" value="Du"></div><ol id="worm-leaderboard" aria-live="polite"></ol></div>
+        <div class="leaderboard" aria-labelledby="worm-leaderboard-title"><div class="leaderboard-head"><h3 id="worm-leaderboard-title">Ordormens topplista</h3><input class="player-name" id="worm-player" maxlength="18" aria-label="Namn för Ordormens topplista" placeholder="Ditt namn" value="Du"></div><ol id="worm-leaderboard" aria-live="polite"></ol><p class="leaderboard-note">Topplistan sparas i webbläsaren på den här enheten.</p></div>
       </div>
     </div>
       </div>
@@ -276,6 +279,16 @@
       hard: { choices: 4, similar: true, reverse: false },
       expert: { choices: 4, similar: true, reverse: true }
     };
+    const difficultyOutcomes = {
+      easy: 'Efter rundan har du tränat på att känna igen vanliga ord bland tre svarsalternativ.',
+      medium: 'Efter rundan har du tränat på att välja rätt översättning bland fyra svarsalternativ.',
+      hard: 'Efter rundan har du tränat på att skilja rätt översättning från ord inom närliggande ämnen.',
+      expert: 'Efter rundan har du tränat på att översätta ord från svenska till spanska och från spanska till svenska.'
+    };
+    const updateDifficultyOutcome = () => {
+      document.querySelector('#quiz-level-outcome').textContent = difficultyOutcomes[selectedDifficulty];
+    };
+    updateDifficultyOutcome();
     const saveHighScore = (game, score, total = null) => {
       const input = document.querySelector(`#${game}-player`);
       const name = input.value.trim().slice(0, 18) || 'Du';
@@ -366,6 +379,7 @@
     difficultyButtons.forEach(button => button.addEventListener('click', () => {
       selectedDifficulty = button.dataset.difficulty;
       difficultyButtons.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+      updateDifficultyOutcome();
       if (quizDeck.length) startQuiz();
     }));
     const decoys = [...new Set(wordBank.map(([,spanish])=>spanish))];
