@@ -174,12 +174,54 @@
     .game-launcher[aria-expanded="true"] { border-color:var(--green); box-shadow:0 0 0 2px #285c4320; }
     .game-panel { margin-top:32px; scroll-margin-top:20px; }
     .game-panel[hidden] { display:none; }
+
+    .sentence-game { background:#fffdf8; border:1px solid #ebe5da; border-radius:20px; padding:24px; box-shadow:0 8px 28px #3a39200b; }
+    .sentence-levels { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:9px; margin:18px 0; }
+    .sentence-level { padding:10px; border:1px solid #e9e3d8; border-radius:12px; background:#fffefa; color:var(--ink); font:inherit; font-weight:750; cursor:pointer; }
+    .sentence-level[aria-pressed="true"] { border-color:var(--green); background:#e8f0e3; color:var(--green); box-shadow:inset 0 0 0 1px var(--green); }
+    .sentence-tray,.sentence-answer { display:flex; flex-wrap:wrap; gap:9px; min-height:62px; padding:12px; border:1px dashed #c9c4b6; border-radius:14px; background:#f7f5ed; align-content:flex-start; }
+    .sentence-answer { min-height:76px; margin-top:12px; background:#f0eee4; }
+    .sentence-token { padding:9px 13px; border:1px solid #e2dccf; border-radius:999px; background:white; color:var(--ink); font:inherit; font-weight:700; cursor:grab; touch-action:manipulation; }
+    .sentence-token:active { cursor:grabbing; }
+    .sentence-token:focus-visible { outline:3px solid #d99563; outline-offset:2px; }
+    .sentence-actions { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:14px; }
+    .sentence-actions .button { margin:0; }
+    .sentence-feedback { min-height:28px; margin:14px 0 0; font-weight:750; }
+    .sentence-feedback[data-tone="success"] { display:block; padding:12px 15px; border:1px solid #98b991; border-radius:12px; background:#e7f1e2; color:#285c43; font-size:1.05rem; }
+    .sentence-answer.is-correct { border:2px solid #4d8056; background:#e7f1e2; box-shadow:0 0 0 4px #4d805620; }
+    .sentence-answer.is-correct .sentence-token { border-color:#98b991; background:#fff; color:#285c43; }
+    .sentence-outcome { margin:10px 0 0; color:var(--muted); }
+    .sentence-label { margin:18px 0 4px; color:var(--muted); font-size:.76rem; font-family:inherit; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
+    .sentence-prompt { display:block; margin:0 0 18px; padding:17px 20px; border-left:4px solid var(--coral); border-radius:0 14px 14px 0; background:#f4ead5; color:var(--ink); font-family:Georgia,"Times New Roman",serif; font-size:clamp(1.45rem,3.5vw,2rem); font-weight:600; line-height:1.25; }
+    @media (max-width:720px) { .sentence-levels { grid-template-columns:1fr 1fr; } }
+
     @media (max-width:720px) { .game-launchers { grid-template-columns:1fr; } .game-launcher { min-height:180px; } }
+    .spelling-game { background:#fffdf8; border:1px solid #ebe5da; border-radius:20px; padding:26px; box-shadow:0 8px 28px #3a39200b; }
+    .spelling-levels { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:9px; margin:18px 0; }
+    .spelling-level { padding:10px; border:1px solid #e9e3d8; border-radius:12px; background:#fffefa; color:var(--ink); font:inherit; font-weight:750; cursor:pointer; }
+    .spelling-level[aria-pressed="true"] { border-color:var(--green); background:#e8f0e3; color:var(--green); box-shadow:inset 0 0 0 1px var(--green); }
+    .spelling-toolbar { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin:18px 0; }
+    .spelling-toolbar .button { margin:0; }
+    .spelling-input { width:100%; padding:15px 17px; border:1px solid #d9d4c8; border-radius:13px; background:white; color:var(--ink); font:inherit; font-size:1.25rem; }
+    .spelling-input:focus { border-color:var(--green); }
+    .spelling-letters { display:grid; gap:8px; margin-top:12px; }
+    .spelling-letter-row { display:flex; flex-wrap:wrap; gap:6px; }
+    .spelling-letter { min-width:43px; padding:7px 9px; border:1px solid #e2dccf; border-radius:9px; background:white; color:var(--ink); font:inherit; font-weight:700; cursor:pointer; }
+    .spelling-letter:hover { border-color:var(--green); background:#f2f8f2; }
+    .spelling-feedback { min-height:30px; margin:15px 0 0; font-weight:750; }
+    .spelling-feedback[data-tone="success"] { color:var(--green); }
+    .spelling-feedback[data-tone="error"] { color:#a44735; }
+    .spelling-outcome { margin:10px 0 0; color:var(--muted); }
+    @media (max-width:720px) { .spelling-levels { grid-template-columns:1fr 1fr; } .spelling-game { padding:20px; } }
+    .brand { flex:1 1 auto; min-width:0; max-width:680px; padding-right:20px; font-size:1rem; line-height:1.3; letter-spacing:-.025em; }
+    .brand .brand-note { color:var(--green); }
+    @media (max-width:430px) { .brand { max-width:none; padding-right:8px; font-size:.82rem; } }
+    .creator-credit { margin:22px 0 0; padding-top:14px; border-top:1px solid var(--line); color:var(--ink); font-size:.88rem; font-weight:700; }
   </style>
 </head>
 <body>
   <header class="wrap">
-    <a class="brand" href="#top">hola<span>!</span></a>
+    <a class="brand" href="#top"><span class="brand-note">Hecho con cariño</span> · En liten början på din spanska.</a>
     <nav aria-label="Huvudmeny"><a href="#spel">Spel</a><a href="#spelval">Välj spel</a></nav>
   </header>
   <main id="top">
@@ -202,6 +244,12 @@
         </button>
         <button class="card game-launcher" type="button" data-game="worm" aria-expanded="false" aria-controls="worm-panel">
           <span class="number">02</span><h3>Ordorm</h3><p>Styr masken till det spanska ord som passar ledtråden.</p><span class="launcher-action">Öppna Ordorm <span aria-hidden="true">→</span></span>
+        </button>
+        <button class="card game-launcher" type="button" data-game="sentence" aria-expanded="false" aria-controls="sentence-panel">
+          <span class="number">03</span><h3>Meningsuppbyggnad</h3><p>Dra spanska ord till rätt plats och bygg en korrekt mening.</p><span class="launcher-action">Öppna övningen <span aria-hidden="true">→</span></span>
+        </button>
+<button class="card game-launcher" type="button" data-game="spelling" aria-expanded="false" aria-controls="spelling-panel">
+          <span class="number">04</span><h3>Stavning</h3><p>Lyssna på ett spanskt ord och skriv det med rätt bokstäver och accenter.</p><span class="launcher-action">Öppna Stavning <span aria-hidden="true">→</span></span>
         </button>
       </div>
       <div class="game-panels">
@@ -237,27 +285,229 @@
         <div class="leaderboard" aria-labelledby="worm-leaderboard-title"><div class="leaderboard-head"><h3 id="worm-leaderboard-title">Ordormens topplista</h3><input class="player-name" id="worm-player" maxlength="18" aria-label="Namn för Ordormens topplista" placeholder="Ditt namn" value="Du"></div><ol id="worm-leaderboard" aria-live="polite"></ol><p class="leaderboard-note">Topplistan sparas i webbläsaren på den här enheten.</p></div>
       </div>
     </div>
+
+    <div class="game-panel" id="sentence-panel" hidden>
+      <div class="section-head"><h2>Meningsuppbyggnad</h2><p>Ordna orden så att de bildar en korrekt mening.</p></div>
+      <div class="sentence-game" aria-labelledby="sentence-title">
+        <div class="quiz-meta"><span id="sentence-count">Redo när du är</span><span id="sentence-score">Rätt: 0</span></div>
+        <h3 class="sentence-label" id="sentence-title">Uppgift</h3>
+        <p class="sentence-prompt" id="sentence-prompt">Dra varje ord till meningen. Du kan också välja ord med tangentbordet och flytta dem.</p>
+        <div class="sentence-levels" role="group" aria-label="Välj svårighetsgrad">
+          <button class="sentence-level" type="button" data-sentence-level="beginner" aria-pressed="true">Nybörjare</button>
+          <button class="sentence-level" type="button" data-sentence-level="easy" aria-pressed="false">Lätt</button>
+          <button class="sentence-level" type="button" data-sentence-level="medium" aria-pressed="false">Medel</button>
+          <button class="sentence-level" type="button" data-sentence-level="advanced" aria-pressed="false">Avancerad</button>
+        </div>
+        <p class="sentence-outcome" id="sentence-outcome" aria-live="polite"></p>
+        <h4>Ord att välja</h4><div class="sentence-tray" id="sentence-tray" aria-label="Ord att välja"></div>
+        <h4>Din mening</h4><div class="sentence-answer" id="sentence-answer" aria-label="Din mening. Dra ord hit."></div>
+        <div class="sentence-actions"><button class="button" id="sentence-check" type="button">Kontrollera meningen</button><button class="button" id="sentence-reset" type="button">Börja om</button></div>
+        <p class="sentence-feedback" id="sentence-feedback" aria-live="polite"></p>
+      </div>
+    </div>
+    <div class="game-panel" id="spelling-panel" hidden>
+      <div class="section-head"><h2>Stavning</h2><p>Lyssna noga och skriv ordet så korrekt du kan.</p></div>
+      <div class="spelling-game" aria-labelledby="spelling-title">
+        <div class="quiz-meta"><span id="spelling-count">Redo när du är</span><span id="spelling-score">Rätt: 0</span></div>
+        <div class="spelling-levels" role="group" aria-label="Välj svårighetsgrad">
+          <button class="spelling-level" type="button" data-spelling-level="beginner" aria-pressed="true">Nybörjare</button>
+          <button class="spelling-level" type="button" data-spelling-level="easy" aria-pressed="false">Lätt</button>
+          <button class="spelling-level" type="button" data-spelling-level="medium" aria-pressed="false">Medel</button>
+          <button class="spelling-level" type="button" data-spelling-level="advanced" aria-pressed="false">Avancerad</button>
+        </div>
+        <p class="spelling-outcome" id="spelling-outcome" aria-live="polite"></p>
+        <h3 class="quiz-question" id="spelling-title">Hör ordet och skriv det</h3>
+        <div class="spelling-toolbar"><button class="button" id="spelling-play" type="button">▶ Lyssna på ordet</button><button class="button" id="spelling-repeat" type="button">↻ Lyssna igen</button></div>
+        <label for="spelling-input">Skriv det spanska ordet</label>
+        <input class="spelling-input" id="spelling-input" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="spelling-letters spelling-feedback">
+        <div class="spelling-letters" id="spelling-letters" aria-label="Spanska bokstäver">
+          <div class="spelling-letter-row" aria-label="Små bokstäver"><button class="spelling-letter" type="button" data-letter="á">á</button><button class="spelling-letter" type="button" data-letter="é">é</button><button class="spelling-letter" type="button" data-letter="í">í</button><button class="spelling-letter" type="button" data-letter="ó">ó</button><button class="spelling-letter" type="button" data-letter="ú">ú</button><button class="spelling-letter" type="button" data-letter="ü">ü</button><button class="spelling-letter" type="button" data-letter="ñ">ñ</button></div>
+          <div class="spelling-letter-row" aria-label="Versaler"><button class="spelling-letter" type="button" data-letter="Á">Á</button><button class="spelling-letter" type="button" data-letter="É">É</button><button class="spelling-letter" type="button" data-letter="Í">Í</button><button class="spelling-letter" type="button" data-letter="Ó">Ó</button><button class="spelling-letter" type="button" data-letter="Ú">Ú</button><button class="spelling-letter" type="button" data-letter="Ü">Ü</button><button class="spelling-letter" type="button" data-letter="Ñ">Ñ</button></div>
+        </div>
+        <div class="sentence-actions"><button class="button" id="spelling-check" type="button">Kontrollera</button><button class="button" id="spelling-next" type="button" hidden>Nästa ord</button></div>
+        <p class="spelling-feedback" id="spelling-feedback" aria-live="polite"></p>
+      </div>
+    </div>
       </div>
     </section>
   </main>
   <footer>
     <div class="wrap">
-      <p class="site-signoff">Hecho con cariño · En liten början på din spanska.</p>
       <div class="source-credit" aria-labelledby="source-credit-title">
         <h2 id="source-credit-title">Källor och kunskapsunderlag</h2>
         <ul class="source-list">
           <li><strong>Ord och översättningar i spelen:</strong> <a href="https://sprakresurser.isof.se/lexin/spanska/">Lexin: Svensk-spanskt lexikon</a> från Institutet för språk och folkminnen (Isof) och Språkrådet (2020), med medverkan av Álvaro Eljach. <a href="https://researchdata.se/sv/catalogue/dataset/ext0289-1">Datasetposten</a> anger källan och licensen.</li>
           <li><strong>Pedagogiskt underlag:</strong> <a href="https://www.skolverket.se/undervisning/grundskolan/kursplaner-for-grundskolan/subjects/GRGRMSP01">Skolverkets kursplan i moderna språk</a> är referens för skolanknuten progression. Hemsidans spelsteg och svårighetsgrader är egna träningsupplägg, inte officiella skolnivåer eller betyg.</li>
-          <li><strong>Hälsningsfraser och exempel:</strong> <a href="https://cvc.cervantes.es/ENSENANZA/biblioteca_ele/plan_curricular/niveles/05_funciones_inventario_a1-a2.htm">Instituto Cervantes</a> och <a href="https://dle.rae.es/hola">Real Academia Española (RAE), hola</a> samt <a href="https://dle.rae.es/gracia">gracias</a>.</li>
+          <li><strong>Hälsningsfraser och stavning:</strong> <a href="https://cvc.cervantes.es/ENSENANZA/biblioteca_ele/plan_curricular/niveles/05_funciones_inventario_a1-a2.htm">Instituto Cervantes</a> och <a href="https://dle.rae.es/hola">Real Academia Española (RAE), DLE</a> samt <a href="https://www.rae.es/diccionario-estudiante/docs/ortografia.pdf">RAE:s Ortografía för stavningsmönster och regionalt uttal</a>.</li>
           <li><strong>Språkreferens:</strong> <a href="https://www.coe.int/en/web/common-european-framework-reference-languages">Europarådets CEFR</a>. Ordlistans A1-etikett är hemsidans egen grova metadata och har inte validerats för varje ord.</li>
         </ul>
         <p class="source-attribution">Lexin-ordlistan är ett urval och en bearbetning. Isof och Språkrådet anges som upphovskälla; materialet återanvänds enligt <a href="https://creativecommons.org/licenses/by/4.0/deed.sv">CC BY 4.0</a>.</p>
         <p class="source-details">Se <a href="SOURCES.md">fullständig källförteckning, licenser, Lexin-ID:n, urval och ändringar</a>.</p>
       </div>
+      <p class="creator-credit">Skapad av Gustav Blomqvist</p>
     </div>
   </footer>
   <script src="wordbank.js"></script>
   <script>
+
+    const sentenceLevels = {
+      beginner: { title:'Nybörjare', outcome:'Efter den här nivån kan du bygga korta meningar med subjekt, verb och objekt.', sentences:[
+        {es:'Yo como pan', sv:'Jag äter bröd'},
+        {es:'Ella bebe agua', sv:'Hon dricker vatten'},
+        {es:'El niño lee libros', sv:'Pojken läser böcker'},
+        {es:'Nosotros vemos gatos', sv:'Vi ser katter'}
+      ]},
+      easy: { title:'Lätt', outcome:'Efter den här nivån kan du placera enkla beskrivningar och tids- eller platsord i en mening.', sentences:[
+        {es:'La niña come una manzana roja', sv:'Flickan äter ett rött äpple'},
+        {es:'Mi hermano estudia español hoy', sv:'Min bror studerar spanska i dag'},
+        {es:'Nosotros caminamos por el parque', sv:'Vi promenerar genom parken'},
+        {es:'El perro pequeño duerme aquí', sv:'Den lilla hunden sover här'}
+      ]},
+      medium: { title:'Medel', outcome:'Efter den här nivån kan du bygga frågor och nekande meningar med vanliga verbböjningar.', sentences:[
+        {es:'¿Dónde vive tu hermana?', sv:'Var bor din syster?'},
+        {es:'No quiero café ahora', sv:'Jag vill inte ha kaffe nu'},
+        {es:'¿Qué hacen ustedes mañana?', sv:'Vad gör ni i morgon?'},
+        {es:'Mis amigos nunca llegan tarde', sv:'Mina vänner kommer aldrig sent'}
+      ]},
+      advanced: { title:'Avancerad', outcome:'Efter den här nivån kan du placera pronomen och bindeord i längre meningar med bisatser.', sentences:[
+        {es:'Se lo doy cuando llega', sv:'Jag ger det till honom när han kommer'},
+        {es:'Quiero que me cuentes la verdad', sv:'Jag vill att du berättar sanningen för mig'},
+        {es:'Aunque llueve, nosotros vamos al mercado', sv:'Även om det regnar går vi till marknaden'},
+        {es:'La película que vimos ayer fue muy divertida', sv:'Filmen som vi såg i går var mycket rolig'}
+      ]}
+    };
+    let sentenceLevel='beginner', sentenceIndex=0, sentenceScore=0, sentenceLocked=false, sentenceSolved=false, sentenceSelected=null, sentenceAdvanceTimer=null;
+    const sentenceTray=document.querySelector('#sentence-tray'), sentenceAnswer=document.querySelector('#sentence-answer');
+    const sentenceFeedback=document.querySelector('#sentence-feedback');
+    const sentenceShuffle=items=>[...items].sort(()=>Math.random()-.5);
+    const makeSentenceToken=(word,index)=>{
+      const button=document.createElement('button'); button.type='button'; button.className='sentence-token'; button.textContent=word;
+      button.draggable=true; button.dataset.word=word; button.dataset.id=String(index);
+      button.addEventListener('dragstart',event=>{event.dataTransfer.setData('text/plain',button.dataset.id);event.dataTransfer.effectAllowed='move';});
+      button.addEventListener('click',event=>{
+        if(sentenceSelected && sentenceSelected!==button){
+          const rect=button.getBoundingClientRect(), after=event.clientX>rect.left+rect.width/2;
+          moveSentenceToken(sentenceSelected,button.parentElement,button,after); return;
+        }
+        sentenceSelected=button;
+        document.querySelectorAll('.sentence-token').forEach(token=>token.setAttribute('aria-pressed',String(token===button)));
+      });
+      button.addEventListener('keydown',event=>{
+        if(event.key===' '||event.key==='Enter'){event.preventDefault();moveSentenceToken(button,button.parentElement===sentenceTray?sentenceAnswer:sentenceTray);}
+        if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(event.key)){
+          event.preventDefault();
+          const earlier=event.key==='ArrowLeft'||event.key==='ArrowUp';
+          const sibling=earlier?button.previousElementSibling:button.nextElementSibling;
+          if(sibling)moveSentenceToken(button,button.parentElement,sibling,!earlier);
+        }
+      });
+      return button;
+    };
+    const moveSentenceToken=(token,target,before=null,after=false)=>{
+      if(!token||!target)return;
+      if(before&&before!==token)target.insertBefore(token,after?before.nextSibling:before); else target.append(token);
+      sentenceLocked=false; sentenceSelected=null;
+      document.querySelectorAll('.sentence-token').forEach(item=>item.removeAttribute('aria-pressed'));
+      token.focus();
+    };
+    [sentenceTray,sentenceAnswer].forEach(zone=>{
+      zone.addEventListener('dragover',event=>{event.preventDefault();event.dataTransfer.dropEffect='move';});
+      zone.addEventListener('drop',event=>{
+        event.preventDefault();
+        const id=event.dataTransfer.getData('text/plain');
+        const token=[...document.querySelectorAll('.sentence-token')].find(item=>item.dataset.id===id);
+        const target=event.target.closest('.sentence-token');
+        if(target&&target!==token){const rect=target.getBoundingClientRect();moveSentenceToken(token,zone,target,event.clientX>rect.left+rect.width/2);}
+        else moveSentenceToken(token,zone);
+      });
+      zone.addEventListener('click',event=>{if(event.target===zone&&sentenceSelected)moveSentenceToken(sentenceSelected,zone);});
+    });
+    const renderSentence=()=>{
+      clearTimeout(sentenceAdvanceTimer); sentenceAdvanceTimer=null;
+      const set=sentenceLevels[sentenceLevel], item=set.sentences[sentenceIndex%set.sentences.length];
+      sentenceLocked=false; sentenceSolved=false; sentenceSelected=null; sentenceFeedback.textContent=''; sentenceFeedback.dataset.tone='';
+      document.querySelector('#sentence-count').textContent=`${set.title} · Mening ${sentenceIndex%set.sentences.length+1} av ${set.sentences.length}`;
+      document.querySelector('#sentence-score').textContent=`Rätt: ${sentenceScore}`;
+      document.querySelector('#sentence-title').textContent='Uppgift';
+      document.querySelector('#sentence-prompt').textContent=`Översätt: ${item.sv}`;
+      document.querySelector('#sentence-outcome').textContent=set.outcome;
+      sentenceAnswer.classList.remove('is-correct');
+      sentenceAnswer.replaceChildren();
+      const words=item.es.split(' ');
+      let shuffled=sentenceShuffle(words);
+      if(shuffled.join(' ')===words.join(' '))shuffled=sentenceShuffle(words);
+      sentenceTray.replaceChildren(...shuffled.map((word,index)=>makeSentenceToken(word,index)));
+    };
+    document.querySelectorAll('.sentence-level').forEach(button=>button.addEventListener('click',()=>{
+      sentenceLevel=button.dataset.sentenceLevel; sentenceIndex=0; sentenceScore=0;
+      document.querySelectorAll('.sentence-level').forEach(item=>item.setAttribute('aria-pressed',String(item===button)));renderSentence();
+    }));
+    document.querySelector('#sentence-check').addEventListener('click',()=>{
+      if(sentenceLocked)return;
+      const expected=sentenceLevels[sentenceLevel].sentences[sentenceIndex%sentenceLevels[sentenceLevel].sentences.length].es;
+      const actual=[...sentenceAnswer.children].map(token=>token.dataset.word).join(' ');
+      if(actual===expected){if(!sentenceSolved){sentenceScore++;sentenceSolved=true;}sentenceLocked=true;sentenceAnswer.classList.add('is-correct');sentenceFeedback.textContent=`✓ Rätt svar! ${expected}. Nästa mening...`;sentenceFeedback.dataset.tone='success';document.querySelector('#sentence-score').textContent=`Rätt: ${sentenceScore}`;sentenceAdvanceTimer=setTimeout(()=>{sentenceIndex++;renderSentence();},1700);}
+      else {sentenceFeedback.textContent='Inte riktigt. Ändra ordningen och kontrollera meningen igen.';sentenceFeedback.dataset.tone='error';}
+    });
+    document.querySelector('#sentence-reset').addEventListener('click',renderSentence);
+    renderSentence();
+
+    const spellingLevels = {
+      beginner: { outcome:'Efter den här nivån kan du stava korta, vanliga ord utan accenttecken.', words:['sol','mar','pan','flor','luz','casa'] },
+      easy: { outcome:'Efter den här nivån kan du stava vanliga ord med flera stavelser och mönster som que och gue.', words:['queso','parque','guitarra','amiga','pequeño','guerra'] },
+      medium: { outcome:'Efter den här nivån kan du skriva ord med accenttecken och känna igen stavningsmönster som b/v, c/s/z och g/j. Uttalet av c, s och z varierar mellan dialekter.', words:['árbol','también','zapato','jirafa','ventana','canción','sopa','gato'] },
+      advanced: { outcome:'Efter den här nivån kan du stava längre ord med flera utmaningar, accenter och ü.', words:['vergüenza','pingüino','averiguación','desagüe','antigüedad','lingüística'] }
+    };
+    let spellingLevel='beginner', spellingIndex=0, spellingScore=0, spellingAnswered=false;
+    const spellingInput=document.querySelector('#spelling-input');
+    const spellingFeedback=document.querySelector('#spelling-feedback');
+    const currentSpellingWord=()=>spellingLevels[spellingLevel].words[spellingIndex%spellingLevels[spellingLevel].words.length];
+    const speakSpellingWord=()=>{
+      const word=currentSpellingWord();
+      if(!('speechSynthesis' in window)){spellingFeedback.textContent='Uppläsning stöds inte i den här webbläsaren.';spellingFeedback.dataset.tone='error';return;}
+      window.speechSynthesis.cancel();
+      const utterance=new SpeechSynthesisUtterance(word); utterance.lang='es-MX'; utterance.rate=.78;
+      window.speechSynthesis.speak(utterance);
+    };
+    const renderSpelling=()=>{
+      spellingAnswered=false; spellingInput.value=''; spellingFeedback.textContent=''; spellingFeedback.dataset.tone='';
+      document.querySelector('#spelling-count').textContent=spellingLevels[spellingLevel].words.length+' ord · '+(spellingIndex%spellingLevels[spellingLevel].words.length+1)+' av '+spellingLevels[spellingLevel].words.length;
+      document.querySelector('#spelling-score').textContent='Rätt: '+spellingScore;
+      document.querySelector('#spelling-outcome').textContent=spellingLevels[spellingLevel].outcome;
+      document.querySelector('#spelling-check').hidden=false; document.querySelector('#spelling-next').hidden=true;
+    };
+    document.querySelectorAll('.spelling-level').forEach(button=>button.addEventListener('click',()=>{
+      spellingLevel=button.dataset.spellingLevel; spellingIndex=0; spellingScore=0;
+      document.querySelectorAll('.spelling-level').forEach(item=>item.setAttribute('aria-pressed',String(item===button)));
+      renderSpelling();
+    }));
+    document.querySelector('#spelling-play').addEventListener('click',()=>{renderSpelling();speakSpellingWord();});
+    document.querySelector('#spelling-repeat').addEventListener('click',speakSpellingWord);
+    document.querySelectorAll('.spelling-letter').forEach(button=>button.addEventListener('click',()=>{
+      const start=spellingInput.selectionStart??spellingInput.value.length, end=spellingInput.selectionEnd??start;
+      spellingInput.setRangeText(button.dataset.letter,start,end,'end'); spellingInput.focus();
+    }));
+    const checkSpelling=()=>{
+      if(spellingAnswered)return;
+      const answer=spellingInput.value.trim().normalize('NFC');
+      const correct=currentSpellingWord().normalize('NFC');
+      spellingAnswered=true;
+      if(answer.toLocaleLowerCase('es')===correct.toLocaleLowerCase('es')){
+        spellingScore++; spellingFeedback.textContent='Rätt stavat: '+correct+'.'; spellingFeedback.dataset.tone='success';
+      } else {
+        let explanation='';
+        if(/[áéíóú]/.test(correct)) explanation=' Accenten ska stå på '+correct.match(/[áéíóú]/)[0]+'.';
+        if(correct.includes('ü')) explanation+=' Ü-markeringen visar att u:et uttalas i güe eller güi.';
+        spellingFeedback.textContent='Rätt stavning är '+correct+'.'+explanation; spellingFeedback.dataset.tone='error';
+      }
+      document.querySelector('#spelling-score').textContent='Rätt: '+spellingScore;
+      document.querySelector('#spelling-check').hidden=true; document.querySelector('#spelling-next').hidden=false;
+    };
+    document.querySelector('#spelling-check').addEventListener('click',checkSpelling);
+    spellingInput.addEventListener('keydown',event=>{if(event.key==='Enter')checkSpelling();});
+    document.querySelector('#spelling-next').addEventListener('click',()=>{spellingIndex++;renderSpelling();speakSpellingWord();});
+    renderSpelling();
+
     const canvas = document.querySelector('#worm-board');
     const ctx = canvas.getContext('2d');
     const CELL = 24, COLS = canvas.width / CELL, ROWS = canvas.height / CELL;
