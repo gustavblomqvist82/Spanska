@@ -155,7 +155,6 @@
     .leaderboard .points { color:var(--green); font-weight:850 }
     .leaderboard-empty { margin:0; color:var(--muted); font-size:.9rem }
     footer { border-top-color:#ded8ca; line-height:1.65 }
-    .site-signoff { margin:0 0 20px; color:var(--muted); font-size:.88rem }
     .source-credit { max-width:960px }
     .source-credit h2 { margin:0 0 12px; font-size:clamp(1.45rem,2.4vw,1.8rem) }
     .source-list { display:grid; gap:8px; margin:0; padding-left:20px; color:var(--muted); font-size:.9rem }
@@ -175,11 +174,14 @@
     .game-panel { margin-top:32px; scroll-margin-top:20px; }
     .game-panel[hidden] { display:none; }
     @media (max-width:720px) { .game-launchers { grid-template-columns:1fr; } .game-launcher { min-height:180px; } }
+    .brand { flex:1 1 auto; min-width:0; max-width:680px; padding-right:20px; font-size:1rem; line-height:1.3; letter-spacing:-.025em; }
+    .brand .brand-note { color:var(--green); }
+    @media (max-width:430px) { .brand { max-width:none; padding-right:8px; font-size:.82rem; } }
   </style>
 </head>
 <body>
   <header class="wrap">
-    <a class="brand" href="#top">hola<span>!</span></a>
+    <a class="brand" href="#top"><span class="brand-note">Hecho con cariño</span> · En liten början på din spanska.</a>
     <nav aria-label="Huvudmeny"><a href="#spel">Spel</a><a href="#spelval">Välj spel</a></nav>
   </header>
   <main id="top">
@@ -242,7 +244,7 @@
   </main>
   <footer>
     <div class="wrap">
-      <p class="site-signoff">Hecho con cariño · En liten början på din spanska.</p>
+      
       <div class="source-credit" aria-labelledby="source-credit-title">
         <h2 id="source-credit-title">Källor och kunskapsunderlag</h2>
         <ul class="source-list">
