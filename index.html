@@ -86,6 +86,78 @@
     footer { border-top:1px solid var(--line); padding:25px 0 35px; color:var(--muted); font-size:.9rem }
     @media (max-width:720px) { nav { gap:13px; font-size:.84rem } .hero { grid-template-columns:1fr; padding:48px 0 35px; gap:25px } .art { min-height:230px } .sun { width:145px;height:145px } .cards,.lesson { grid-template-columns:1fr } .section-head { display:block } .section-head p { margin-top:6px } .touch-controls { display:grid } }
     @media (max-width:430px) { .wrap { width:min(100% - 28px,1100px) } nav { gap:10px } nav a { font-size:.78rem } .answers { grid-template-columns:1fr } }
+    /* A warmer, more editorial look for the Spanish learning experience. */
+    :root { --ink:#20291f; --muted:#74766c; --green:#285c43; --mint:#e5eadb; --paper:#faf7ef; --coral:#d96b4b; --line:#e8e2d5 }
+    body { background:radial-gradient(ellipse at 88% 8%,#f1e9d9 0,transparent 29rem),var(--paper); letter-spacing:-.01em }
+    .wrap { width:min(1120px,calc(100% - 48px)) }
+    header.wrap { position:relative; z-index:2; padding:24px 0; border-bottom-color:#ded8ca }
+    .brand { font-size:1.45rem; letter-spacing:-.07em }
+    .brand span { color:var(--coral) }
+    nav { gap:8px; color:var(--ink); font-size:.9rem; font-weight:650 }
+    nav a { padding:9px 15px; border-radius:999px; transition:background .2s,color .2s }
+    nav a:hover { background:#e9e5d8; color:var(--green) }
+    .hero { grid-template-columns:1.08fr .92fr; gap:64px; padding:88px 0 78px }
+    .eyebrow { display:inline-flex; align-items:center; gap:9px; color:var(--coral); font-size:.72rem; letter-spacing:.16em }
+    .eyebrow::before { content:""; width:22px; height:1px; background:currentColor }
+    h1 { font-family:Georgia,"Times New Roman",serif; font-weight:500; font-size:clamp(3.35rem,7vw,6.1rem); line-height:.98; letter-spacing:-.075em; margin:20px 0 22px }
+    h1 em { color:var(--green); font-style:italic }
+    .hero p { max-width:455px; font-size:1.08rem; line-height:1.75 }
+    .button { background:var(--green); padding:14px 22px; margin-top:19px; box-shadow:0 8px 18px #285c4320; transition:transform .18s,box-shadow .18s,background .18s }
+    .button:hover { background:#1e4934; transform:translateY(-2px); box-shadow:0 12px 24px #285c4329 }
+    .art { min-height:355px; border-radius:48% 48% 24px 24px; background:#dce5d1; overflow:hidden }
+    .art::before,.art::after { content:""; position:absolute; border:1px solid #ffffff80; border-radius:50%; width:310px;height:310px; transform:rotate(-22deg) }
+    .art::before { left:-115px; bottom:-225px }
+    .art::after { left:-93px; bottom:-204px; width:270px;height:270px }
+    .sun { width:205px;height:205px; top:36px;right:45px; background:#e8ad50; box-shadow:0 0 0 14px #e8ad5024 }
+    .tile { width:224px; padding:27px; border:0; border-radius:17px; box-shadow:0 18px 38px #26372824; transform:rotate(-6deg) translate(-5px,12px) }
+    .tile small { font-size:.68rem; font-weight:800; letter-spacing:.14em }
+    .tile strong { font-family:Georgia,"Times New Roman",serif; font-size:2.45rem; letter-spacing:-.06em }
+    .tile span { font-size:.95rem; font-weight:700 }
+    section { padding:25px 0 70px; scroll-margin-top:20px }
+    .section-head { margin-bottom:25px }
+    h2 { font-family:Georgia,"Times New Roman",serif; font-size:clamp(1.8rem,3vw,2.35rem); font-weight:500; letter-spacing:-.055em }
+    .section-head p { font-size:.94rem }
+    .cards { gap:18px }
+    .card { position:relative; min-height:195px; padding:25px; border-radius:17px; background:#fffdf8; border-color:#ebe5da; box-shadow:0 5px 18px #3a39200a; transition:transform .2s,box-shadow .2s }
+    .card:hover { transform:translateY(-4px); box-shadow:0 13px 28px #3a392014 }
+    .number { width:35px;height:35px; border-radius:50%; background:#f4e7d7; color:#9f553b; font-size:.78rem }
+    h3 { letter-spacing:-.025em }
+    .card h3 { margin-top:21px; font-family:Georgia,"Times New Roman",serif; font-size:1.55rem; font-weight:500 }
+    .card p { line-height:1.65 }
+    .quiz-game,.worm-game { background:#fffdf8; border:1px solid #ebe5da; border-radius:20px; box-shadow:0 8px 28px #3a39200b }
+    .quiz-game { max-width:none; padding:30px }
+    .quiz-difficulties { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:9px; margin:18px 0 2px }
+    .quiz-difficulty { padding:10px 12px; border:1px solid #e9e3d8; border-radius:12px; background:#fffefa; color:var(--ink); font:inherit; font-weight:750; cursor:pointer }
+    .quiz-difficulty[aria-pressed="true"] { border-color:var(--green); background:#e8f0e3; color:#285c43; box-shadow:inset 0 0 0 1px var(--green) }
+    .quiz-progress { background:#eeeade }
+    .quiz-progress span { background:var(--coral) }
+    .quiz-answer { border-color:#e9e3d8; border-radius:12px; transition:background .15s,border-color .15s,transform .15s }
+    .quiz-answer:hover:not(:disabled) { transform:translateY(-1px) }
+    .quiz-answer.correct { background:#e8f0e3; border-color:#a8c3a0; color:#285c43 }
+    .quiz-next { box-shadow:none }
+    .worm-game { padding:22px }
+    .game-stat { background:#edf0e5; color:var(--green) }
+    .game-prompt,.lesson-box { background:#f0eee4 }
+    .board-frame { border-color:#e3e6d9; background:#f2f3e9 }
+    .touch-controls button { transition:background .15s,border-color .15s }
+    .touch-controls button:hover { background:#edf3e9; border-color:#b7c9b4 }
+    .leaderboard { margin-top:22px; padding-top:19px; border-top:1px solid var(--line) }
+    .leaderboard-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px }
+    .leaderboard-head h3 { margin:0; font-size:1rem }
+    .player-name { width:min(190px,48%); padding:9px 12px; border:1px solid var(--line); border-radius:10px; background:#fffefa; color:var(--ink); font:inherit; font-size:.9rem }
+    .leaderboard ol { list-style:none; padding:0; margin:0; display:grid; gap:7px }
+    .leaderboard li { display:flex; align-items:center; gap:10px; padding:9px 11px; border-radius:10px; background:#f7f5ed; font-size:.9rem }
+    .leaderboard li:first-child { background:#f4ead5 }
+    .leaderboard .rank { width:22px; color:var(--muted); font-size:.8rem; font-weight:800 }
+    .leaderboard .player { flex:1; font-weight:700 }
+    .leaderboard .points { color:var(--green); font-weight:850 }
+    .leaderboard-empty { margin:0; color:var(--muted); font-size:.9rem }
+    footer { border-top-color:#ded8ca; line-height:1.8 }
+    footer small { display:inline-block; margin-top:9px; max-width:840px; font-size:.8rem }
+    footer a { text-underline-offset:3px }
+    :focus-visible { outline:3px solid #d99563; outline-offset:3px }
+    @media (max-width:720px) { .wrap { width:min(100% - 36px,1120px) } .hero { padding:55px 0 48px; gap:30px } .art { min-height:265px; border-radius:38% 38% 22px 22px } .sun { width:155px;height:155px;right:34px } .tile { width:205px;padding:22px } section { padding-bottom:54px } }
+    @media (max-width:430px) { .wrap { width:min(100% - 30px,1120px) } header.wrap { padding:17px 0 } .brand { font-size:1.3rem } nav { gap:0 } nav a { padding:8px 10px; font-size:.78rem } .hero { padding-top:44px } h1 { font-size:3.35rem } .art { min-height:235px } .quiz-game { padding:20px } .quiz-answers { grid-template-columns:1fr } .quiz-difficulties { grid-template-columns:1fr 1fr } .quiz-difficulty { padding:9px 6px; font-size:.9rem } .worm-game { padding:14px } }
   </style>
 </head>
 <body>
@@ -114,15 +186,22 @@
       </div>
     </section>
     <section class="wrap" id="ovning">
-      <div class="section-head"><h2>Quiz: spanska ord</h2><p>Fem frågor per runda. Hur många kan du?</p></div>
+      <div class="section-head"><h2>Quiz: spanska ord</h2><p>Femton frågor per runda. Välj svårighetsgrad.</p></div>
       <div class="quiz-game" id="quiz-game" aria-labelledby="quiz-title">
         <div class="quiz-meta"><span id="quiz-count">Redo när du är</span><span id="quiz-score">Poäng: 0</span></div>
         <div class="quiz-progress" aria-hidden="true"><span id="quiz-progress-bar"></span></div>
         <h3 class="quiz-question" id="quiz-title">Testa dina spanska glosor</h3>
-        <p class="quiz-hint" id="quiz-hint">Välj rätt översättning av det svenska ordet.</p>
+        <p class="quiz-hint" id="quiz-hint">Svara på frågor om spanska ord.</p>
+        <div class="quiz-difficulties" role="group" aria-label="Välj svårighetsgrad">
+          <button class="quiz-difficulty" type="button" data-difficulty="easy" aria-pressed="true">Lätt</button>
+          <button class="quiz-difficulty" type="button" data-difficulty="medium" aria-pressed="false">Medel</button>
+          <button class="quiz-difficulty" type="button" data-difficulty="hard" aria-pressed="false">Svår</button>
+          <button class="quiz-difficulty" type="button" data-difficulty="expert" aria-pressed="false">Expert</button>
+        </div>
         <div class="quiz-answers" id="quiz-answers"></div>
         <p class="quiz-feedback" id="quiz-feedback" aria-live="polite"></p>
         <button class="button quiz-next" id="quiz-next" type="button">Starta quizet</button>
+        <div class="leaderboard" aria-labelledby="quiz-leaderboard-title"><div class="leaderboard-head"><h3 id="quiz-leaderboard-title">Quizets topplista</h3><input class="player-name" id="quiz-player" maxlength="18" aria-label="Namn för quiztopplistan" placeholder="Ditt namn" value="Du"></div><ol id="quiz-leaderboard" aria-live="polite"></ol></div>
       </div>
     </section>
     <section class="wrap" aria-labelledby="worm-title">
@@ -134,6 +213,7 @@
         <div class="board-frame"><canvas id="worm-board" width="720" height="432" tabindex="0" aria-label="Spelplan. Styr masken med piltangenterna eller WASD och ät det spanska ordet som matchar den svenska ledtråden."></canvas></div>
         <div class="game-controls"><p>Rätt ord: väx +1 och få ett liv. Fel ord: krymp +1. Krock: förlora ett liv.</p><button class="button" id="start-game">Starta spelet</button></div>
         <div class="touch-controls" aria-label="Pekkontroller"><button type="button" data-dir="up" aria-label="Upp">↑</button><button type="button" data-dir="left" aria-label="Vänster">←</button><button type="button" data-dir="down" aria-label="Ner">↓</button><button type="button" data-dir="right" aria-label="Höger">→</button></div>
+        <div class="leaderboard" aria-labelledby="worm-leaderboard-title"><div class="leaderboard-head"><h3 id="worm-leaderboard-title">Ordormens topplista</h3><input class="player-name" id="worm-player" maxlength="18" aria-label="Namn för Ordormens topplista" placeholder="Ditt namn" value="Du"></div><ol id="worm-leaderboard" aria-live="polite"></ol></div>
       </div>
     </section>
   </main>
@@ -145,14 +225,47 @@
     const CELL = 24, COLS = canvas.width / CELL, ROWS = canvas.height / CELL;
     // Any game can use HolaWordBank.getWords(), getWord(), getRandomWord() or
     // getDistractors(). This game keeps the simple pairs it expects internally.
-    const wordBank = HolaWordBank.getWords({level:'A1'}).map(({swedish,spanish})=>[swedish,spanish]);
+    const wordEntries = HolaWordBank.getWords({level:'A1'});
+    const wordBank = wordEntries.map(({swedish,spanish})=>[swedish,spanish]);
     const quizQuestions = [...wordBank];
     const quizAnswerArea = document.querySelector('#quiz-answers');
-    let quizDeck = [], quizIndex = 0, quizScore = 0, activeQuestion = null, quizLocked = false;
+    let quizDeck = [], quizIndex = 0, quizScore = 0, activeQuestion = null, quizLocked = false, selectedDifficulty = 'easy';
     const quizNextButton = document.querySelector('#quiz-next');
+    const difficultyButtons = [...document.querySelectorAll('.quiz-difficulty')];
+    const difficultySettings = {
+      easy: { choices: 3, similar: false, reverse: false },
+      medium: { choices: 4, similar: false, reverse: false },
+      hard: { choices: 4, similar: true, reverse: false },
+      expert: { choices: 4, similar: true, reverse: true }
+    };
+    const saveHighScore = (game, score, total = null) => {
+      const input = document.querySelector(`#${game}-player`);
+      const name = input.value.trim().slice(0, 18) || 'Du';
+      try {
+        const key = `hola-high-scores-${game}`;
+        const scores = JSON.parse(localStorage.getItem(key) || '[]');
+        scores.push({name, score, total, date:Date.now()});
+        scores.sort((a,b) => b.score - a.score || (b.total || 0) - (a.total || 0) || a.date - b.date);
+        localStorage.setItem(key, JSON.stringify(scores.slice(0, 5)));
+        renderHighScores(game);
+      } catch { /* Local storage can be unavailable in private browsing. */ }
+    };
+    const renderHighScores = game => {
+      const list = document.querySelector(`#${game}-leaderboard`);
+      let scores = [];
+      try { scores = JSON.parse(localStorage.getItem(`hola-high-scores-${game}`) || '[]'); } catch {}
+      list.replaceChildren(...(scores.length ? scores.map((entry,index) => {
+        const item = document.createElement('li');
+        const rank = document.createElement('span'); rank.className = 'rank'; rank.textContent = `${index + 1}.`;
+        const player = document.createElement('span'); player.className = 'player'; player.textContent = entry.name;
+        const points = document.createElement('span'); points.className = 'points'; points.textContent = game === 'quiz' ? `${entry.score}/${entry.total}` : `${entry.score} p`;
+        item.append(rank, player, points); return item;
+      }) : [Object.assign(document.createElement('li'), {className:'leaderboard-empty', textContent:'Spela en runda för att hamna på listan.'})]));
+    };
+    renderHighScores('quiz'); renderHighScores('worm');
     const shuffle = items => [...items].sort(() => Math.random() - .5);
     const startQuiz = () => {
-      quizDeck = shuffle(quizQuestions).slice(0, 5); quizIndex = 0; quizScore = 0;
+      quizDeck = shuffle(quizQuestions).slice(0, 15); quizIndex = 0; quizScore = 0;
       document.querySelector('#quiz-score').textContent = 'Poäng: 0';
       quizNextButton.textContent = 'Börja om';
       showQuizQuestion();
@@ -163,43 +276,60 @@
         document.querySelector('#quiz-progress-bar').style.width = '100%';
         document.querySelector('#quiz-title').textContent = `Du fick ${quizScore} av ${quizDeck.length} rätt!`;
         document.querySelector('#quiz-hint').textContent = quizScore === quizDeck.length ? '¡Excelente! Alla rätt.' : 'Bra jobbat. Spela igen och försök slå ditt resultat.';
+        saveHighScore('quiz', quizScore, quizDeck.length);
         quizAnswerArea.replaceChildren();
         document.querySelector('#quiz-feedback').textContent = '';
         quizNextButton.textContent = 'Spela igen';
         return;
       }
       activeQuestion = quizDeck[quizIndex]; quizLocked = false;
+      const settings = difficultySettings[selectedDifficulty];
+      const questionRecord = wordEntries.find(entry => entry.swedish === activeQuestion[0]);
+      const reverseQuestion = settings.reverse && quizIndex % 2 === 1;
+      const correctAnswer = reverseQuestion ? activeQuestion[0] : activeQuestion[1];
       document.querySelector('#quiz-count').textContent = `Fråga ${quizIndex + 1} av ${quizDeck.length}`;
       document.querySelector('#quiz-progress-bar').style.width = `${quizIndex / quizDeck.length * 100}%`;
-      document.querySelector('#quiz-title').textContent = `Vad betyder ”${activeQuestion[0]}” på spanska?`;
+      document.querySelector('#quiz-title').textContent = reverseQuestion
+        ? `Vad betyder ”${activeQuestion[1]}” på svenska?`
+        : `Vad betyder ”${activeQuestion[0]}” på spanska?`;
       document.querySelector('#quiz-hint').textContent = 'Välj ett svar.';
       document.querySelector('#quiz-feedback').textContent = '';
       document.querySelector('#quiz-feedback').dataset.tone = '';
       quizNextButton.textContent = quizIndex === quizDeck.length - 1 ? 'Visa resultat' : 'Nästa fråga';
-      const options = shuffle([activeQuestion[1], ...shuffle([...new Set(quizQuestions.map(q => q[1]).filter(word => word !== activeQuestion[1]))]).slice(0, 3)]);
+      let distractorQuestions = quizQuestions.filter(question => question !== activeQuestion);
+      if (settings.similar && questionRecord) {
+        const sameTopic = distractorQuestions.filter(question => wordEntries.find(entry => entry.swedish === question[0])?.topic === questionRecord.topic);
+        distractorQuestions = [...sameTopic, ...shuffle(distractorQuestions.filter(question => !sameTopic.includes(question)))];
+      } else distractorQuestions = shuffle(distractorQuestions);
+      const options = shuffle([correctAnswer, ...distractorQuestions.slice(0, settings.choices - 1).map(question => reverseQuestion ? question[0] : question[1])]);
       quizAnswerArea.replaceChildren(...options.map(option => {
         const button = document.createElement('button'); button.type = 'button'; button.className = 'quiz-answer'; button.textContent = option;
-        button.addEventListener('click', () => answerQuiz(button, option)); return button;
+        button.addEventListener('click', () => answerQuiz(button, option, correctAnswer)); return button;
       }));
     };
-    const answerQuiz = (button, answer) => {
+    const answerQuiz = (button, answer, correctAnswer) => {
       if (quizLocked) return; quizLocked = true;
-      const correct = answer === activeQuestion[1];
+      const correct = answer === correctAnswer;
       if (correct) { quizScore++; button.classList.add('correct'); }
       else {
         button.classList.add('incorrect');
-        [...quizAnswerArea.children].find(item => item.textContent === activeQuestion[1])?.classList.add('correct');
+        [...quizAnswerArea.children].find(item => item.textContent === correctAnswer)?.classList.add('correct');
       }
       [...quizAnswerArea.children].forEach(item => item.disabled = true);
       document.querySelector('#quiz-score').textContent = `Poäng: ${quizScore}`;
       const feedback = document.querySelector('#quiz-feedback');
-      feedback.textContent = correct ? 'Rätt svar! ¡Muy bien!' : `Inte riktigt. Rätt svar är ${activeQuestion[1]}.`;
+      feedback.textContent = correct ? 'Rätt svar! ¡Muy bien!' : `Inte riktigt. Rätt svar är ${correctAnswer}.`;
       feedback.dataset.tone = correct ? '' : 'error';
       quizIndex++;
     };
     quizNextButton.addEventListener('click', () => {
       if (!quizDeck.length || quizIndex >= quizDeck.length) startQuiz(); else if (quizLocked) showQuizQuestion();
     });
+    difficultyButtons.forEach(button => button.addEventListener('click', () => {
+      selectedDifficulty = button.dataset.difficulty;
+      difficultyButtons.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+      if (quizDeck.length) startQuiz();
+    }));
     const decoys = [...new Set(wordBank.map(([,spanish])=>spanish))];
     let worm = [], direction = {x:1,y:0}, queuedDirection = {x:1,y:0};
     let targets = [], lives = 3, score = 0, running = false, gameOver = false, tick = null, currentWord = null, wordDeck = [];
@@ -271,7 +401,7 @@
       const bodyToCheck=ate?.correct?worm:worm.slice(0,-1);
       if(head.x<0||head.x>=COLS||head.y<0||head.y>=ROWS||bodyToCheck.some(part=>part.x===head.x&&part.y===head.y)){
         lives--; updateStats();
-        if(lives<=0){running=false;gameOver=true;clearInterval(tick);say(`Spelet slut! Du fick ${score} poäng. Tryck på Starta om för en ny runda.`,'error');document.querySelector('#start-game').textContent='Spela igen';}
+        if(lives<=0){running=false;gameOver=true;clearInterval(tick);saveHighScore('worm',score);say(`Spelet slut! Du fick ${score} poäng. Tryck på Starta om för en ny runda.`,'error');document.querySelector('#start-game').textContent='Spela igen';}
         else {startWorm();say(`Aj! Du krockade. Ett liv kvar: ${lives}. Fortsätt leta efter: ${currentWord[0]}.`,'error');}
         draw();return;
       }
