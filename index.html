@@ -274,7 +274,7 @@
         <p class="sentence-outcome" id="sentence-outcome" aria-live="polite"></p>
         <h4>Ord att välja</h4><div class="sentence-tray" id="sentence-tray" aria-label="Ord att välja"></div>
         <h4>Din mening</h4><div class="sentence-answer" id="sentence-answer" aria-label="Din mening. Dra ord hit."></div>
-        <div class="sentence-actions"><button class="button" id="sentence-check" type="button">Kontrollera meningen</button><button class="button" id="sentence-next" type="button">Nästa mening</button><button class="button" id="sentence-reset" type="button">Börja om</button></div>
+        <div class="sentence-actions"><button class="button" id="sentence-check" type="button">Kontrollera meningen</button><button class="button" id="sentence-reset" type="button">Börja om</button></div>
         <p class="sentence-feedback" id="sentence-feedback" aria-live="polite"></p>
       </div>
     </div>
@@ -326,7 +326,7 @@
         {es:'La película que vimos ayer fue muy divertida', sv:'Filmen som vi såg i går var mycket rolig'}
       ]}
     };
-    let sentenceLevel='beginner', sentenceIndex=0, sentenceScore=0, sentenceLocked=false, sentenceSolved=false, sentenceSelected=null;
+    let sentenceLevel='beginner', sentenceIndex=0, sentenceScore=0, sentenceLocked=false, sentenceSolved=false, sentenceSelected=null, sentenceAdvanceTimer=null;
     const sentenceTray=document.querySelector('#sentence-tray'), sentenceAnswer=document.querySelector('#sentence-answer');
     const sentenceFeedback=document.querySelector('#sentence-feedback');
     const sentenceShuffle=items=>[...items].sort(()=>Math.random()-.5);
@@ -373,6 +373,7 @@
       zone.addEventListener('click',event=>{if(event.target===zone&&sentenceSelected)moveSentenceToken(sentenceSelected,zone);});
     });
     const renderSentence=()=>{
+      clearTimeout(sentenceAdvanceTimer); sentenceAdvanceTimer=null;
       const set=sentenceLevels[sentenceLevel], item=set.sentences[sentenceIndex%set.sentences.length];
       sentenceLocked=false; sentenceSolved=false; sentenceSelected=null; sentenceFeedback.textContent=''; sentenceFeedback.dataset.tone='';
       document.querySelector('#sentence-count').textContent=`${set.title} · Mening ${sentenceIndex%set.sentences.length+1} av ${set.sentences.length}`;
@@ -394,10 +395,9 @@
       if(sentenceLocked)return;
       const expected=sentenceLevels[sentenceLevel].sentences[sentenceIndex%sentenceLevels[sentenceLevel].sentences.length].es;
       const actual=[...sentenceAnswer.children].map(token=>token.dataset.word).join(' ');
-      if(actual===expected){if(!sentenceSolved){sentenceScore++;sentenceSolved=true;}sentenceLocked=true;sentenceFeedback.textContent=`Rätt! ${expected}. Bra jobbat.`;sentenceFeedback.dataset.tone='';document.querySelector('#sentence-score').textContent=`Rätt: ${sentenceScore}`;}
-      else {sentenceFeedback.textContent='Inte riktigt. Prova att ändra ordningen och kontrollera igen.';sentenceFeedback.dataset.tone='error';}
+      if(actual===expected){if(!sentenceSolved){sentenceScore++;sentenceSolved=true;}sentenceLocked=true;sentenceFeedback.textContent=`Rätt! ${expected}. Nästa mening...`;sentenceFeedback.dataset.tone='';document.querySelector('#sentence-score').textContent=`Rätt: ${sentenceScore}`;sentenceAdvanceTimer=setTimeout(()=>{sentenceIndex++;renderSentence();},1100);}
+      else {sentenceFeedback.textContent='Inte riktigt. Ändra ordningen och kontrollera meningen igen.';sentenceFeedback.dataset.tone='error';}
     });
-    document.querySelector('#sentence-next').addEventListener('click',()=>{sentenceIndex++;renderSentence();});
     document.querySelector('#sentence-reset').addEventListener('click',renderSentence);
     renderSentence();
 
