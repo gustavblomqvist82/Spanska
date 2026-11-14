@@ -50,3 +50,40 @@ HolaWordBank.getDistractors('vatten', 3, { topic: 'mat och dryck' });
 ```
 
 `getWords` och slumpmetoderna returnerar nya objekt, så spel kan sortera eller ändra sina kopior utan att ändra den gemensamma ordlistan. Varje objekt innehåller `id`, `sourceEntryId`, `swedish`, `spanish`, `partOfSpeech`, `topic` och `level`.
+
+
+## Egna övningsexempel: meningsbyggnad och stavning
+
+### Meningsuppbyggnad
+
+Meningsbyggnadsspelets meningar och svenska ledtrådar är redaktionella exempel skrivna för webbplatsen. De är inte hämtade från en extern text eller korpus. Orden och grammatikformerna valdes för övningens egna steg. RAE och ASALE:s [Nueva gramática de la lengua española](https://www.rae.es/sites/default/files/Sala_prensa_Dosier_Gramatica_2009.pdf) och [Diccionario de la lengua española (DLE)](https://dle.rae.es/) används som språkstöd; inga formuleringar återges som citat. De fyra svårighetsstegen är webbplatsens egna och motsvarar inte officiella skolår eller betyg.
+
+Exempelparen i spelet:
+
+1. `Yo como pan` — Jag äter bröd.
+2. `Ella bebe agua` — Hon dricker vatten.
+3. `El niño lee libros` — Pojken läser böcker.
+4. `Nosotros vemos gatos` — Vi ser katter.
+5. `La niña come una manzana roja` — Flickan äter ett rött äpple.
+6. `Mi hermano estudia español hoy` — Min bror studerar spanska i dag.
+7. `Nosotros caminamos por el parque` — Vi promenerar genom parken.
+8. `El perro pequeño duerme aquí` — Den lilla hunden sover här.
+9. `¿Dónde vive tu hermana?` — Var bor din syster?
+10. `No quiero café ahora` — Jag vill inte ha kaffe nu.
+11. `¿Qué hacen ustedes mañana?` — Vad gör ni i morgon?
+12. `Mis amigos nunca llegan tarde` — Mina vänner kommer aldrig sent.
+13. `Se lo doy cuando llega` — Jag ger det till honom när han kommer.
+14. `Quiero que me cuentes la verdad` — Jag vill att du berättar sanningen för mig.
+15. `Aunque llueve, nosotros vamos al mercado` — Även om det regnar går vi till marknaden.
+16. `La película que vimos ayer fue muy divertida` — Filmen som vi såg i går var mycket rolig.
+
+### Stavningsövningens ordlista
+
+Stavningsspelets ord är ett redaktionellt urval av övningsord, separat från Lexin-baserade poster i `wordbank.js`. Stavningarna kontrolleras mot RAE/ASALE:s [Diccionario de la lengua española (DLE)](https://dle.rae.es/), med ordlänkar nedan. RAE:s [Ortografía de la lengua española](https://www.rae.es/diccionario-estudiante/docs/ortografia.pdf) beskriver bland annat tilde, diéresis, b/v och g/j samt att uttalet av c, s och z varierar mellan regionala varieteter. Spelets etiketter beskriver stavningsmönster; de innebär inte att dessa bokstäver uttalas olika i alla spansktalande områden.
+
+- **Nybörjare:** [sol](https://dle.rae.es/sol), [mar](https://dle.rae.es/mar), [pan](https://dle.rae.es/pan), [flor](https://dle.rae.es/flor), [luz](https://dle.rae.es/luz), [casa](https://dle.rae.es/casa).
+- **Lätt:** [queso](https://dle.rae.es/queso), [parque](https://dle.rae.es/parque), [guitarra](https://dle.rae.es/guitarra), [amiga](https://dle.rae.es/amiga), [pequeño](https://dle.rae.es/peque%C3%B1o), [guerra](https://dle.rae.es/guerra).
+- **Medel:** [árbol](https://dle.rae.es/%C3%A1rbol), [también](https://dle.rae.es/tambi%C3%A9n), [zapato](https://dle.rae.es/zapato), [jirafa](https://dle.rae.es/jirafa), [ventana](https://dle.rae.es/ventana), [canción](https://dle.rae.es/canci%C3%B3n), [sopa](https://dle.rae.es/sopa), [gato](https://dle.rae.es/gato).
+- **Avancerad:** [vergüenza](https://dle.rae.es/verg%C3%BCenza), [pingüino](https://dle.rae.es/ping%C3%BCino), [averiguación](https://dle.rae.es/averiguaci%C3%B3n), [desagüe](https://dle.rae.es/desag%C3%BCe), [antigüedad](https://dle.rae.es/antig%C3%BCedad), [lingüística](https://dle.rae.es/ling%C3%BC%C3%ADstica).
+
+Uppläsningen begärs via webbläsarens talsyntes med språktaggen `es-MX`, i linje med Lexin-ordlistans huvudsakliga fokus på amerikansk spanska. Tillgängliga röster och uttal varierar mellan webbläsare och enheter; spelet visar därför också ordets rätta stavning efter kontroll.
