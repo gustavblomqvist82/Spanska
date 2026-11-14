@@ -27,7 +27,7 @@ Den första lektionens exempel (`¡Hola!`, `¿Qué tal?`, `gracias` och `muchas 
 
 - [Instituto Cervantes: Plan Curricular, funktioner på nivå A1–A2](https://cvc.cervantes.es/ensenanza/biblioteca_ele/plan_curricular/niveles/05_funciones_inventario_a1-a2.htm) innehåller exempel på hälsningsfrasen `Hola, ¿qué tal?` och svar med `gracias`.
 - [Real Academia Española: DLE, hola](https://dle.rae.es/hola) beskriver användningen av `hola` som hälsning.
-- [Real Academia Española: DLE, gracias](https://dle.rae.es/gracias) beskriver `gracias` som ett uttryck för tacksamhet.
+- [Real Academia Española: DLE, gracias](https://dle.rae.es/gracia) beskriver `gracias` som ett uttryck för tacksamhet.
 
 Beskrivningarna på hemsidan är egna, förenklade svenska förklaringar. Kontrollera dem på nytt om fraserna eller deras kontext ändras.
 
