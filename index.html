@@ -218,11 +218,16 @@
     @media (max-width:430px) { .brand { max-width:none; padding-right:8px; font-size:.82rem; } }
     .creator-credit { margin:22px 0 0; padding-top:14px; border-top:1px solid var(--line); color:var(--ink); font-size:.88rem; font-weight:700; }
   </style>
+  <style>html.auth-check body{visibility:hidden}</style>
+  <script>document.documentElement.classList.add('auth-check')</script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="auth-common.js"></script>
 </head>
 <body>
   <header class="wrap">
     <a class="brand" href="#top"><span class="brand-note">Hecho con cariño</span> · En liten början på din spanska.</a>
-    <nav aria-label="Huvudmeny"><a href="#spel">Spel</a><a href="#spelval">Välj spel</a></nav>
+    <nav aria-label="Huvudmeny"><a href="#spel">Spel</a><a href="#spelval">Välj spel</a><a href="account.html">Mitt konto</a><button type="button" id="logout-button">Logga ut</button></nav>
   </header>
   <main id="top">
     <div class="wrap hero">
@@ -345,6 +350,7 @@
         <p class="source-details">Se <a href="SOURCES.md">fullständig källförteckning, licenser, Lexin-ID:n, urval och ändringar</a>.</p>
       </div>
       <p class="creator-credit">Skapad av Gustav Blomqvist</p>
+      <p><a href="privacy.html">Integritet och personuppgifter</a></p>
     </div>
   </footer>
   <script src="wordbank.js"></script>
@@ -585,74 +591,18 @@
       }) : [Object.assign(document.createElement('li'), {className:'leaderboard-empty', textContent:'Spela en runda för att hamna på listan.'})]));
     };
     renderHighScores('quiz'); renderHighScores('worm');
-    const shuffle = items => [...items].sort(() => Math.random() - .5);
-    const startQuiz = () => {
-      quizDeck = shuffle(quizQuestions).slice(0, 15); quizIndex = 0; quizScore = 0;
-      document.querySelector('#quiz-score').textContent = 'Poäng: 0';
-      quizNextButton.textContent = 'Börja om';
-      showQuizQuestion();
-    };
-    const showQuizQuestion = () => {
-      if (quizIndex >= quizDeck.length) {
-        document.querySelector('#quiz-count').textContent = 'Rundan klar!';
-        document.querySelector('#quiz-progress-bar').style.width = '100%';
-        document.querySelector('#quiz-title').textContent = `Du fick ${quizScore} av ${quizDeck.length} rätt!`;
-        document.querySelector('#quiz-hint').textContent = quizScore === quizDeck.length ? '¡Excelente! Alla rätt.' : 'Bra jobbat. Spela igen och försök slå ditt resultat.';
-        saveHighScore('quiz', quizScore, quizDeck.length);
-        quizAnswerArea.replaceChildren();
-        document.querySelector('#quiz-feedback').textContent = '';
-        quizNextButton.textContent = 'Spela igen';
-        return;
-      }
-      activeQuestion = quizDeck[quizIndex]; quizLocked = false;
-      const settings = difficultySettings[selectedDifficulty];
-      const questionRecord = wordEntries.find(entry => entry.swedish === activeQuestion[0]);
-      const reverseQuestion = settings.reverse && quizIndex % 2 === 1;
-      const correctAnswer = reverseQuestion ? activeQuestion[0] : activeQuestion[1];
-      document.querySelector('#quiz-count').textContent = `Fråga ${quizIndex + 1} av ${quizDeck.length}`;
-      document.querySelector('#quiz-progress-bar').style.width = `${quizIndex / quizDeck.length * 100}%`;
-      document.querySelector('#quiz-title').textContent = reverseQuestion
-        ? `Vad betyder ”${activeQuestion[1]}” på svenska?`
-        : `Vad betyder ”${activeQuestion[0]}” på spanska?`;
-      document.querySelector('#quiz-hint').textContent = 'Välj ett svar.';
-      document.querySelector('#quiz-feedback').textContent = '';
-      document.querySelector('#quiz-feedback').dataset.tone = '';
-      quizNextButton.textContent = quizIndex === quizDeck.length - 1 ? 'Visa resultat' : 'Nästa fråga';
-      let distractorQuestions = quizQuestions.filter(question => question !== activeQuestion);
-      if (settings.similar && questionRecord) {
-        const sameTopic = distractorQuestions.filter(question => wordEntries.find(entry => entry.swedish === question[0])?.topic === questionRecord.topic);
-        distractorQuestions = [...sameTopic, ...shuffle(distractorQuestions.filter(question => !sameTopic.includes(question)))];
-      } else distractorQuestions = shuffle(distractorQuestions);
-      const options = shuffle([correctAnswer, ...distractorQuestions.slice(0, settings.choices - 1).map(question => reverseQuestion ? question[0] : question[1])]);
-      quizAnswerArea.replaceChildren(...options.map(option => {
-        const button = document.createElement('button'); button.type = 'button'; button.className = 'quiz-answer'; button.textContent = option;
-        button.addEventListener('click', () => answerQuiz(button, option, correctAnswer)); return button;
-      }));
-    };
-    const answerQuiz = (button, answer, correctAnswer) => {
-      if (quizLocked) return; quizLocked = true;
-      const correct = answer === correctAnswer;
-      if (correct) { quizScore++; button.classList.add('correct'); }
-      else {
-        button.classList.add('incorrect');
-        [...quizAnswerArea.children].find(item => item.textContent === correctAnswer)?.classList.add('correct');
-      }
-      [...quizAnswerArea.children].forEach(item => item.disabled = true);
-      document.querySelector('#quiz-score').textContent = `Poäng: ${quizScore}`;
-      const feedback = document.querySelector('#quiz-feedback');
-      feedback.textContent = correct ? 'Rätt svar! ¡Muy bien!' : `Inte riktigt. Rätt svar är ${correctAnswer}.`;
-      feedback.dataset.tone = correct ? '' : 'error';
-      quizIndex++;
-    };
-    quizNextButton.addEventListener('click', () => {
-      if (!quizDeck.length || quizIndex >= quizDeck.length) startQuiz(); else if (quizLocked) showQuizQuestion();
-    });
-    difficultyButtons.forEach(button => button.addEventListener('click', () => {
-      selectedDifficulty = button.dataset.difficulty;
-      difficultyButtons.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
-      updateDifficultyOutcome();
-      if (quizDeck.length) startQuiz();
-    }));
+    const saveHighScore = (game, score, total = null) => { const input=document.querySelector(`#${game}-player`); const name=input.value.trim().slice(0,18)||'Du'; try{const key=`hola-high-scores-${game}`,scores=JSON.parse(localStorage.getItem(key)||'[]');scores.push({name,score,total,date:Date.now()});scores.sort((a,b)=>b.score-a.score||a.date-b.date);localStorage.setItem(key,JSON.stringify(scores.slice(0,5)));renderHighScores(game);}catch{} };
+    const renderHighScores = game => { const list=document.querySelector(`#${game}-leaderboard`);let scores=[];try{scores=JSON.parse(localStorage.getItem(`hola-high-scores-${game}`)||'[]')}catch{}list.replaceChildren(...(scores.length?scores.map((entry,index)=>{const li=document.createElement('li');li.textContent=`${index+1}. ${entry.name} — ${game==='quiz'?`${entry.score}/${entry.total}`:`${entry.score} p`}`;return li;}):[Object.assign(document.createElement('li'),{className:'leaderboard-empty',textContent:'Spela en runda för att hamna på listan.'})]));};
+    renderHighScores('quiz');renderHighScores('worm');
+    const difficultySettings={easy:{choices:3},medium:{choices:4},hard:{choices:4},expert:{choices:4}};
+    const difficultyOutcomes={easy:'Efter rundan har du tränat på att känna igen vanliga ord bland tre svarsalternativ.',medium:'Efter rundan har du tränat på att välja rätt översättning bland fyra svarsalternativ.',hard:'Efter rundan har du tränat på att skilja rätt översättning från ord inom närliggande ämnen.',expert:'Efter rundan har du tränat på att översätta ord från svenska till spanska och från spanska till svenska.'};
+    const updateDifficultyOutcome=()=>{document.querySelector('#quiz-level-outcome').textContent=difficultyOutcomes[selectedDifficulty];};updateDifficultyOutcome();
+    let quizDeck=[],quizIndex=0,quizScore=0,quizSessionId=null,quizLocked=false,activeQuestion=null,quizCompleted=false,quizResultShown=false;
+    const showQuizQuestion=async()=>{if(quizIndex>=quizDeck.length){document.querySelector('#quiz-count').textContent='Rundan klar!';document.querySelector('#quiz-progress-bar').style.width='100%';document.querySelector('#quiz-title').textContent=`Du fick ${quizScore} av ${quizDeck.length} rätt!`;document.querySelector('#quiz-hint').textContent=quizScore===quizDeck.length?'¡Excelente! Alla rätt.':'Bra jobbat. Spela igen och försök slå ditt resultat.';quizAnswerArea.replaceChildren();document.querySelector('#quiz-feedback').textContent='Resultatet sparades på kontot.';quizNextButton.textContent='Spela igen';return;}activeQuestion=quizDeck[quizIndex];quizLocked=false;document.querySelector('#quiz-count').textContent=`Fråga ${quizIndex+1} av ${quizDeck.length}`;document.querySelector('#quiz-progress-bar').style.width=`${quizIndex/quizDeck.length*100}%`;document.querySelector('#quiz-title').textContent=activeQuestion.prompt;document.querySelector('#quiz-hint').textContent='Välj ett svar.';document.querySelector('#quiz-feedback').textContent='';quizNextButton.textContent=quizIndex===quizDeck.length-1?'Visa resultat':'Nästa fråga';quizAnswerArea.replaceChildren(...activeQuestion.options.map(option=>{const b=document.createElement('button');b.type='button';b.className='quiz-answer';b.textContent=option;b.addEventListener('click',()=>answerQuiz(b,option));return b;}));};
+    const startQuiz=async()=>{try{document.querySelector('#quiz-feedback').textContent='Startar quiz…';const data=await SpanskaAuth.api('/api/quiz/start',{difficulty:selectedDifficulty,choices:difficultySettings[selectedDifficulty].choices});quizSessionId=data.sessionId;quizDeck=data.questions;quizIndex=0;quizScore=0;quizCompleted=false;quizResultShown=false;document.querySelector('#quiz-score').textContent='Poäng: 0';quizNextButton.textContent='Nästa fråga';await showQuizQuestion();}catch(e){document.querySelector('#quiz-feedback').textContent=e.message;}};
+    const answerQuiz=async(button,answer)=>{if(quizLocked)return;quizLocked=true;try{const data=await SpanskaAuth.api('/api/quiz/answer',{sessionId:quizSessionId,answer});quizScore=data.score;if(data.correct)button.classList.add('correct');else{button.classList.add('incorrect');const correct=quizDeck[quizIndex].options.find(x=>x===data.correctAnswer);quizAnswerArea.querySelectorAll('.quiz-answer').forEach(el=>{if(el.textContent===correct)el.classList.add('correct')});}quizAnswerArea.querySelectorAll('button').forEach(el=>el.disabled=true);document.querySelector('#quiz-score').textContent=`Poäng: ${quizScore}`;const fb=document.querySelector('#quiz-feedback');fb.textContent=data.correct?'Rätt svar! ¡Muy bien!':`Inte riktigt. Rätt svar är ${data.correctAnswer}.`;fb.dataset.tone=data.correct?'':'error';quizIndex++;if(data.completed){quizCompleted=true;saveHighScore('quiz',data.score,data.total);quizNextButton.textContent='Visa resultat';}}catch(e){quizLocked=false;document.querySelector('#quiz-feedback').textContent=e.message;}};
+    quizNextButton.addEventListener('click',()=>{if(!quizSessionId)startQuiz();else if(quizCompleted&&!quizResultShown){quizResultShown=true;showQuizQuestion();}else if(quizResultShown)startQuiz();else if(quizLocked)showQuizQuestion();});
+    difficultyButtons.forEach(button=>button.addEventListener('click',()=>{selectedDifficulty=button.dataset.difficulty;difficultyButtons.forEach(item=>item.setAttribute('aria-pressed',String(item===button)));updateDifficultyOutcome();if(quizDeck.length)startQuiz();}));
     const decoys = [...new Set(wordBank.map(([,spanish])=>spanish))];
     let worm = [], direction = {x:1,y:0}, queuedDirection = {x:1,y:0};
     let targets = [], lives = 3, score = 0, running = false, paused = false, gameOver = false, tick = null, currentWord = null, wordDeck = [];
@@ -749,5 +699,6 @@
     document.querySelector('#start-game').addEventListener('click',startGame);
     startWorm();updateStats();draw();
   </script>
+<script>SpanskaAuth.requireLogin();document.getElementById("logout-button")?.addEventListener("click",()=>SpanskaAuth.logout());</script>
 </body>
 </html>
