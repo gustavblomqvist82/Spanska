@@ -117,4 +117,5 @@
     getRandomWord,
     getDistractors
   });
-})(window);
+})(typeof window !== 'undefined' ? window : globalThis);
+if (typeof module !== 'undefined' && module.exports) module.exports = globalThis.HolaWordBank;

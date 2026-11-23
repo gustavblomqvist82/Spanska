@@ -87,3 +87,10 @@ Stavningsspelets ord är ett redaktionellt urval av övningsord, separat från L
 - **Avancerad:** [vergüenza](https://dle.rae.es/verg%C3%BCenza), [pingüino](https://dle.rae.es/ping%C3%BCino), [averiguación](https://dle.rae.es/averiguaci%C3%B3n), [desagüe](https://dle.rae.es/desag%C3%BCe), [antigüedad](https://dle.rae.es/antig%C3%BCedad), [lingüística](https://dle.rae.es/ling%C3%BC%C3%ADstica).
 
 Uppläsningen begärs via webbläsarens talsyntes med språktaggen `es-MX`, i linje med Lexin-ordlistans huvudsakliga fokus på amerikansk spanska. Tillgängliga röster och uttal varierar mellan webbläsare och enheter; spelet visar därför också ordets rätta stavning efter kontroll.
+
+
+## Konton, barns personuppgifter och teknisk drift
+
+- [Integritetsskyddsmyndigheten (IMY): Personuppgifter om barn](https://www.imy.se/verksamhet/dataskydd/det-har-galler-enligt-gdpr/introduktion-till-gdpr/personuppgifter/personuppgifter-om-barn/) beskriver bland annat att vårdnadshavares samtycke krävs när en onlinetjänst behandlar personuppgifter med stöd av samtycke för barn under 13 år, samt att informationen ska vara tydlig och begriplig. Webbplatsens registreringsintyg kontrollerar inte i sig vårdnadshavarens identitet.
+- [Supabase: API keys](https://supabase.com/docs/guides/getting-started/api-keys) är teknisk referens för publishable keys och secret keys. Secret keys kan kringgå RLS och får därför bara användas på servern.
+- [Vercel Functions](https://vercel.com/docs/functions) är teknisk referens för serverfunktionerna i `/api`. Dessa leverantörskällor beskriver teknisk konfiguration, inte utbildningsinnehåll.
