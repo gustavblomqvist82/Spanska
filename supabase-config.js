@@ -1,5 +1,5 @@
-/* Supabase project settings. Publishable key is intended for browser use. */
+/* Supabase project settings. The publishable key is safe for browser use. */
 window.SUPABASE_CONFIG = {
-  url: "PASTE_YOUR_SUPABASE_PROJECT_URL_HERE",
-  publishableKey: "PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY_HERE"
+  url: "https://ncxtnnhmhrlzdgjwoqtc.supabase.co",
+  publishableKey: "sb_publishable_2ZO2fkVDYb1IEYEZ1XhXpQ_86Arc4TU"
 };
