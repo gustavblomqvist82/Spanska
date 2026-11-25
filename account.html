@@ -1,1 +1,329 @@
-<!doctype html><html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Mitt konto — Hola!</title></head><body><main><h1>Mitt konto</h1><p>Hantera barnkonton. Använd smeknamn, inte barnets riktiga namn.</p><form id="child"><label>Användarnamn <input name="username" required minlength="3"></label><label>Smeknamn <input name="nickname" required maxlength="30"></label><label>Lösenord <input name="password" type="password" required minlength="8"></label><button>Skapa barnkonto</button></form><p id="msg" role="status"></p><h2>Barnkonton</h2><ul id="children"></ul><p><a href="index.html">Till spelen</a> · <a href="privacy.html">Integritet</a></p><section><h2>Radera familjekonto</h2><p>Detta raderar föräldrakontot, barnkonton och sparade resultat permanent.</p><form id="delete"><label>Skriv användarnamnet för att bekräfta <input name="confirmUsername" required></label><button>Radera hela familjekontot</button></form></section><button id="out">Logga ut</button></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="auth-common.js"></script><script>SpanskaAuth.requireLogin();const list=document.querySelector("#children"),msg=document.querySelector("#msg");async function load(){try{const d=await SpanskaAuth.api("/api/children",undefined,"GET");list.replaceChildren(...d.children.map(c=>{const li=document.createElement("li");const label=document.createElement("p");label.textContent=c.username+" ("+c.nickname+")";const edit=document.createElement("button");edit.type="button";edit.textContent="Ändra smeknamn eller lösenord";edit.addEventListener("click",async()=>{const nickname=prompt("Nytt smeknamn för "+c.username+":",c.nickname);if(nickname===null)return;const password=prompt("Nytt lösenord (minst 8 tecken), eller lämna tomt för att behålla nuvarande:","");if(password===null)return;try{await SpanskaAuth.api("/api/children/"+encodeURIComponent(c.id),{nickname,password},"PATCH");msg.textContent="Barnkontot uppdaterades.";load();}catch(e){msg.textContent=e.message;}});const b=document.createElement("button");b.type="button";b.textContent="Radera barnkonto";b.addEventListener("click",async()=>{if(!confirm("Radera barnkontot och dess sparade resultat?"))return;try{await SpanskaAuth.api("/api/children/"+encodeURIComponent(c.id),undefined,"DELETE");load();}catch(e){msg.textContent=e.message;}});li.append(label,edit,b);return li;}));}catch(e){msg.textContent=e.message;}}document.querySelector("#child").addEventListener("submit",async e=>{e.preventDefault();const f=new FormData(e.currentTarget);try{await SpanskaAuth.api("/api/children",{username:f.get("username"),nickname:f.get("nickname"),password:f.get("password")});e.currentTarget.reset();msg.textContent="Barnkontot skapades.";load();}catch(err){msg.textContent=err.message;}});document.querySelector("#delete").addEventListener("submit",async e=>{e.preventDefault();if(!confirm("Ska hela familjens konto och alla resultat raderas permanent?"))return;try{await SpanskaAuth.api("/api/delete-account",{confirmUsername:new FormData(e.currentTarget).get("confirmUsername")});await SpanskaAuth.logout();}catch(err){msg.textContent=err.message;}});document.querySelector("#out").onclick=()=>SpanskaAuth.logout();load();</script></body></html>
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#faf7ef">
+  <meta name="description" content="Hantera barnkonton för Hola! — Lär dig spanska.">
+  <title>Mitt konto — Hola!</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #20291f;
+      --muted: #74766c;
+      --green: #285c43;
+      --mint: #e5eadb;
+      --paper: #faf7ef;
+      --coral: #d96b4b;
+      --line: #e8e2d5;
+      --card: #fffdf8;
+      --danger: #9d4634;
+      --danger-bg: #fff4ef;
+    }
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background: radial-gradient(ellipse at 88% 8%, #f1e9d9 0, transparent 29rem), var(--paper);
+      font: 16px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      letter-spacing: -.01em;
+    }
+    a { color: var(--green); text-underline-offset: 3px; }
+    .wrap { width: min(1120px, calc(100% - 48px)); margin: 0 auto; }
+    .site-header { display:flex; align-items:center; justify-content:space-between; gap:24px; min-height:78px; border-bottom:1px solid #ded8ca; }
+    .brand { color:var(--ink); font-size:1rem; font-weight:800; letter-spacing:-.035em; text-decoration:none; }
+    .brand strong { color:var(--green); }
+    .header-actions { display:flex; align-items:center; gap:10px; }
+    .header-link { padding:9px 14px; border-radius:999px; color:var(--ink); font-size:.92rem; font-weight:700; text-decoration:none; }
+    .header-link:hover { background:#e9e5d8; }
+    button { font:inherit; cursor:pointer; }
+    .button { display:inline-flex; align-items:center; justify-content:center; min-height:45px; padding:11px 18px; border:0; border-radius:999px; background:var(--green); box-shadow:0 8px 18px #285c4320; color:white; font-weight:800; text-decoration:none; transition:transform .18s,background .18s,box-shadow .18s; }
+    .button:hover { transform:translateY(-2px); background:#1e4934; box-shadow:0 12px 24px #285c4329; }
+    .button-secondary { border:1px solid var(--line); background:#fffefa; box-shadow:none; color:var(--ink); }
+    .button-secondary:hover { background:#f2f0e8; box-shadow:none; }
+    .button-danger { border:1px solid #e7c6ba; background:white; box-shadow:none; color:var(--danger); }
+    .button-danger:hover { background:#fff0eb; box-shadow:none; }
+    :focus-visible { outline:3px solid #d99563; outline-offset:3px; }
+    main { padding:56px 0 76px; }
+    .page-intro { max-width:760px; margin-bottom:34px; }
+    .eyebrow { display:inline-flex; align-items:center; gap:9px; color:var(--coral); font-size:.72rem; font-weight:800; letter-spacing:.16em; text-transform:uppercase; }
+    .eyebrow::before { width:22px; height:1px; background:currentColor; content:""; }
+    h1 { margin:13px 0 12px; font-family:Georgia,"Times New Roman",serif; font-size:clamp(2.8rem,6vw,4.6rem); font-weight:500; line-height:1; letter-spacing:-.07em; }
+    .page-intro p { max-width:660px; margin:0; color:var(--muted); font-size:1.05rem; line-height:1.75; }
+    .notice { min-height:0; margin:0 0 20px; color:var(--green); font-weight:750; }
+    .notice:empty { display:none; }
+    .notice[data-tone="error"] { color:var(--danger); }
+    .account-grid { display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr); gap:20px; align-items:start; }
+    .panel { padding:clamp(22px,3vw,30px); border:1px solid #ebe5da; border-radius:20px; background:var(--card); box-shadow:0 8px 28px #3a39200b; }
+    .panel h2 { margin:0; font-family:Georgia,"Times New Roman",serif; font-size:1.8rem; font-weight:500; letter-spacing:-.05em; }
+    .panel-intro { margin:7px 0 20px; color:var(--muted); }
+    .field { display:grid; gap:7px; margin-top:15px; }
+    label { font-size:.9rem; font-weight:750; }
+    input { width:100%; min-height:48px; padding:11px 13px; border:1px solid #d9d4c8; border-radius:11px; background:white; color:var(--ink); font:inherit; }
+    input:focus { border-color:var(--green); outline:3px solid #285c4320; }
+    .field-hint { margin:0; color:var(--muted); font-size:.83rem; }
+    .form-submit { width:100%; margin-top:20px; }
+    .child-list { display:grid; gap:12px; margin:20px 0 0; padding:0; list-style:none; }
+    .child-row { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px; border:1px solid var(--line); border-radius:15px; background:#fffefa; }
+    .child-person { display:flex; align-items:center; gap:12px; min-width:0; }
+    .child-avatar { display:grid; flex:0 0 42px; width:42px; height:42px; place-items:center; border-radius:50%; background:#f4e7d7; color:#9f553b; font-weight:850; }
+    .child-details { min-width:0; }
+    .child-details strong,.child-details span { display:block; overflow-wrap:anywhere; }
+    .child-details span { color:var(--muted); font-size:.9rem; }
+    .child-actions { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px; }
+    .child-actions .button { min-height:38px; padding:8px 12px; font-size:.84rem; }
+    .empty-state { margin:18px 0 0; padding:17px; border-radius:13px; background:#f4f2e9; color:var(--muted); }
+    .privacy-note { display:flex; gap:12px; margin-top:20px; padding:16px; border-radius:14px; background:#f0eee4; color:var(--muted); font-size:.9rem; }
+    .privacy-note strong { color:var(--ink); }
+    .danger-zone { margin-top:24px; border-color:#ecd7cf; background:var(--danger-bg); }
+    .danger-zone h2 { color:var(--danger); }
+    .danger-zone .panel-intro { color:#795e55; }
+    .danger-zone .field { max-width:480px; }
+    .danger-zone .button { margin-top:17px; }
+    .edit-dialog { width:min(440px,calc(100% - 28px)); max-width:none; padding:28px; border:1px solid #ebe5da; border-radius:22px; background:var(--card); color:var(--ink); box-shadow:0 22px 70px #20291f35; }
+    .edit-dialog::backdrop { background:#20291f70; backdrop-filter:blur(3px); }
+    .dialog-head { display:flex; align-items:flex-start; justify-content:space-between; gap:15px; }
+    .dialog-head h2 { margin:0; font-family:Georgia,"Times New Roman",serif; font-size:1.8rem; font-weight:500; letter-spacing:-.05em; }
+    .dialog-copy { margin:6px 0 18px; color:var(--muted); }
+    .dialog-actions { display:flex; flex-wrap:wrap; gap:9px; margin-top:20px; }
+    footer { padding:20px 0 28px; border-top:1px solid #ded8ca; color:var(--muted); font-size:.88rem; }
+    footer p { margin:0; }
+    footer .creator { margin-top:8px; color:var(--ink); font-weight:700; }
+    @media (max-width:820px) { .account-grid { grid-template-columns:1fr; } }
+    @media (max-width:560px) {
+      .wrap { width:min(100% - 32px,560px); }
+      .site-header { min-height:70px; gap:10px; }
+      .brand { max-width:54%; font-size:.87rem; line-height:1.3; }
+      .header-actions { gap:2px; }
+      .header-link { padding:8px 9px; font-size:.82rem; }
+      .header-actions .button { min-height:39px; padding:8px 12px; font-size:.82rem; }
+      main { padding:40px 0 52px; }
+      .page-intro { margin-bottom:25px; }
+      .child-row { align-items:flex-start; flex-direction:column; }
+      .child-actions { justify-content:flex-start; width:100%; }
+      .panel { padding:21px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header wrap">
+    <a class="brand" href="index.html"><strong>Hecho con cariño</strong> · En liten början på din spanska.</a>
+    <nav class="header-actions" aria-label="Kontomeny">
+      <a class="header-link" href="index.html">Till spelen</a>
+      <button class="button button-secondary" type="button" id="out">Logga ut</button>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <section class="page-intro" aria-labelledby="page-title">
+      <div class="eyebrow">Familjens konto</div>
+      <h1 id="page-title">Mitt konto</h1>
+      <p>Hantera barnens konton och håll koll på vilka uppgifter som används för att logga in. Använd alltid ett smeknamn, inte barnets riktiga namn.</p>
+    </section>
+
+    <p class="notice" id="msg" role="status" aria-live="polite"></p>
+
+    <div class="account-grid">
+      <section class="panel" aria-labelledby="create-title">
+        <h2 id="create-title">Skapa barnkonto</h2>
+        <p class="panel-intro">Ge barnet ett eget användarnamn och lösenord för att logga in.</p>
+        <form id="child">
+          <div class="field">
+            <label for="child-username">Användarnamn</label>
+            <input id="child-username" name="username" autocomplete="off" required minlength="3">
+          </div>
+          <div class="field">
+            <label for="child-nickname">Smeknamn</label>
+            <input id="child-nickname" name="nickname" autocomplete="off" required maxlength="30">
+            <p class="field-hint">Visas i kontot i stället för barnets riktiga namn.</p>
+          </div>
+          <div class="field">
+            <label for="child-password">Lösenord</label>
+            <input id="child-password" name="password" type="password" autocomplete="new-password" required minlength="8">
+            <p class="field-hint">Minst 8 tecken.</p>
+          </div>
+          <button class="button form-submit" type="submit">Skapa barnkonto</button>
+        </form>
+      </section>
+
+      <section class="panel" aria-labelledby="children-title">
+        <h2 id="children-title">Barnkonton</h2>
+        <p class="panel-intro">Ändra uppgifter eller ta bort ett konto när det inte längre behövs.</p>
+        <ul class="child-list" id="children" aria-live="polite"></ul>
+        <p class="empty-state" id="empty-state" hidden>Inga barnkonton ännu. Skapa ett konto så visas det här.</p>
+        <aside class="privacy-note">
+          <span aria-hidden="true">✦</span>
+          <span><strong>Skydda barnets integritet.</strong> Använd ett smeknamn och undvik personuppgifter i användarnamn och lösenord.</span>
+        </aside>
+      </section>
+    </div>
+
+    <section class="panel danger-zone" aria-labelledby="delete-title">
+      <h2 id="delete-title">Radera familjekonto</h2>
+      <p class="panel-intro">Detta raderar föräldrakontot, barnkonton och sparade resultat permanent.</p>
+      <form id="delete">
+        <div class="field">
+          <label for="confirm-username">Skriv användarnamnet för att bekräfta</label>
+          <input id="confirm-username" name="confirmUsername" autocomplete="username" required>
+        </div>
+        <button class="button button-danger" type="submit">Radera hela familjekontot</button>
+      </form>
+    </section>
+  </main>
+
+  <dialog class="edit-dialog" id="edit-dialog" aria-labelledby="edit-title">
+    <div class="dialog-head">
+      <div><h2 id="edit-title">Ändra barnkonto</h2><p class="dialog-copy">Uppdatera smeknamnet eller välj ett nytt lösenord.</p></div>
+    </div>
+    <form id="edit-child">
+      <div class="field">
+        <label for="edit-nickname">Smeknamn</label>
+        <input id="edit-nickname" name="nickname" required maxlength="30">
+      </div>
+      <div class="field">
+        <label for="edit-password">Nytt lösenord</label>
+        <input id="edit-password" name="password" type="password" autocomplete="new-password" minlength="8" placeholder="Lämna tomt för att behålla">
+        <p class="field-hint">Minst 8 tecken om du vill byta lösenord.</p>
+      </div>
+      <div class="dialog-actions">
+        <button class="button button-secondary" type="button" id="cancel-edit">Avbryt</button>
+        <button class="button" type="submit">Spara ändringar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <footer><div class="wrap"><p>Träna lite spanska, en dag i taget.</p><p class="creator">Skapad av Gustav Blomqvist</p></div></footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="auth-common.js"></script>
+  <script>
+    SpanskaAuth.requireLogin();
+
+    const list = document.querySelector("#children");
+    const message = document.querySelector("#msg");
+    const emptyState = document.querySelector("#empty-state");
+    const editDialog = document.querySelector("#edit-dialog");
+    let editingChildId = null;
+
+    function showMessage(text, tone = "") {
+      message.textContent = text;
+      message.dataset.tone = tone;
+    }
+
+    async function loadChildren() {
+      try {
+        const data = await SpanskaAuth.api("/api/children", undefined, "GET");
+        const children = data.children || [];
+        list.replaceChildren(...children.map(child => {
+          const item = document.createElement("li");
+          item.className = "child-row";
+
+          const person = document.createElement("div");
+          person.className = "child-person";
+          const avatar = document.createElement("span");
+          avatar.className = "child-avatar";
+          avatar.setAttribute("aria-hidden", "true");
+          avatar.textContent = (child.nickname || "?").trim().slice(0, 1).toLocaleUpperCase("sv");
+          const details = document.createElement("div");
+          details.className = "child-details";
+          const name = document.createElement("strong");
+          name.textContent = child.nickname || "Barnkonto";
+          const username = document.createElement("span");
+          username.textContent = "Användarnamn: " + child.username;
+          details.append(name, username);
+          person.append(avatar, details);
+
+          const actions = document.createElement("div");
+          actions.className = "child-actions";
+          const editButton = document.createElement("button");
+          editButton.type = "button";
+          editButton.className = "button button-secondary";
+          editButton.textContent = "Ändra konto";
+          editButton.addEventListener("click", () => {
+            editingChildId = child.id;
+            document.querySelector("#edit-nickname").value = child.nickname || "";
+            document.querySelector("#edit-password").value = "";
+            editDialog.showModal();
+            document.querySelector("#edit-nickname").focus();
+          });
+
+          const deleteButton = document.createElement("button");
+          deleteButton.type = "button";
+          deleteButton.className = "button button-danger";
+          deleteButton.textContent = "Radera konto";
+          deleteButton.addEventListener("click", async () => {
+            if (!confirm("Radera barnkontot och dess sparade resultat?")) return;
+            try {
+              await SpanskaAuth.api("/api/children/" + encodeURIComponent(child.id), undefined, "DELETE");
+              showMessage("Barnkontot raderades.");
+              await loadChildren();
+            } catch (error) {
+              showMessage(error.message || "Det gick inte att radera barnkontot.", "error");
+            }
+          });
+
+          actions.append(editButton, deleteButton);
+          item.append(person, actions);
+          return item;
+        }));
+        emptyState.hidden = children.length > 0;
+      } catch (error) {
+        showMessage(error.message || "Det gick inte att hämta barnkontona.", "error");
+      }
+    }
+
+    document.querySelector("#child").addEventListener("submit", async event => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const data = new FormData(form);
+      try {
+        await SpanskaAuth.api("/api/children", {
+          username: data.get("username"),
+          nickname: data.get("nickname"),
+          password: data.get("password")
+        });
+        form.reset();
+        showMessage("Barnkontot skapades.");
+        await loadChildren();
+      } catch (error) {
+        showMessage(error.message || "Det gick inte att skapa barnkontot.", "error");
+      }
+    });
+
+    document.querySelector("#edit-child").addEventListener("submit", async event => {
+      event.preventDefault();
+      const data = new FormData(event.currentTarget);
+      try {
+        await SpanskaAuth.api("/api/children/" + encodeURIComponent(editingChildId), {
+          nickname: data.get("nickname"),
+          password: data.get("password")
+        }, "PATCH");
+        editDialog.close();
+        showMessage("Barnkontot uppdaterades.");
+        await loadChildren();
+      } catch (error) {
+        showMessage(error.message || "Det gick inte att uppdatera barnkontot.", "error");
+      }
+    });
+
+    document.querySelector("#cancel-edit").addEventListener("click", () => editDialog.close());
+
+    document.querySelector("#delete").addEventListener("submit", async event => {
+      event.preventDefault();
+      if (!confirm("Ska hela familjens konto och alla resultat raderas permanent?")) return;
+      const data = new FormData(event.currentTarget);
+      try {
+        await SpanskaAuth.api("/api/delete-account", { confirmUsername: data.get("confirmUsername") });
+        await SpanskaAuth.logout();
+      } catch (error) {
+        showMessage(error.message || "Det gick inte att radera familjekontot.", "error");
+      }
+    });
+
+    document.querySelector("#out").addEventListener("click", () => SpanskaAuth.logout());
+    loadChildren();
+  </script>
+</body>
+</html>
