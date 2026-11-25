@@ -1,3 +1,229 @@
-<!doctype html><html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Logga in — Hola!</title></head><body><main><h1>Logga in</h1><p id="notice" role="status"></p><form id="login"><label>Användarnamn <input name="username" autocomplete="username" required></label><label>Lösenord <input name="password" type="password" autocomplete="current-password" required></label><button>Logga in</button></form><p><a href="register.html">Skapa föräldrakonto</a></p><a href="privacy.html">Integritet</a></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="auth-common.js"></script><script>
-const f=document.querySelector("#login"), n=document.querySelector("#notice"); if(new URLSearchParams(location.search).has("setup")) n.textContent="Webbplatsen är inte färdigkopplad: fyll i Project URL och publishable key i supabase-config.js."; f.addEventListener("submit",async e=>{e.preventDefault(); const fd=new FormData(f),u=String(fd.get("username")).trim().toLowerCase(); try {if(!SpanskaAuth.ready) throw Error("Supabase-inställningarna saknas.");const {error}=await SpanskaAuth.client.auth.signInWithPassword({email:u+"@konto.invalid",password:fd.get("password")});if(error)throw error; location.replace("index.html");}catch(err){n.textContent="Kunde inte logga in. Kontrollera användarnamn och lösenord.";}});
-</script></body></html>
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#faf7ef">
+  <title>Logga in — Hola!</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #20291f;
+      --muted: #74766c;
+      --green: #285c43;
+      --mint: #dce5d1;
+      --paper: #faf7ef;
+      --coral: #d96b4b;
+      --line: #e8e2d5;
+      --card: #fffdf8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background: radial-gradient(ellipse at 88% 8%, #f1e9d9 0, transparent 29rem), var(--paper);
+      font: 16px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      letter-spacing: -.01em;
+    }
+    a { color: var(--green); text-underline-offset: 3px; }
+    .wrap { width: min(1120px, calc(100% - 48px)); margin: 0 auto; }
+    header {
+      display: flex;
+      align-items: center;
+      min-height: 78px;
+      border-bottom: 1px solid #ded8ca;
+    }
+    .brand {
+      color: var(--ink);
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: -.035em;
+      text-decoration: none;
+    }
+    .brand strong { color: var(--green); }
+    main { display: grid; grid-template-columns: 1.08fr .92fr; gap: 64px; align-items: center; padding: 78px 0 88px; }
+    .intro { max-width: 560px; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--coral);
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before { width: 22px; height: 1px; background: currentColor; content: ""; }
+    h1 {
+      margin: 20px 0 20px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(3.35rem, 7vw, 6rem);
+      font-weight: 500;
+      line-height: .98;
+      letter-spacing: -.075em;
+    }
+    h1 em { color: var(--green); font-weight: 500; }
+    .intro-copy { max-width: 440px; color: var(--muted); font-size: 1.08rem; line-height: 1.75; }
+    .art {
+      position: relative;
+      display: grid;
+      min-height: 300px;
+      margin-top: 34px;
+      overflow: hidden;
+      place-items: center;
+      border-radius: 48% 48% 24px 24px;
+      background: var(--mint);
+    }
+    .art::before, .art::after {
+      position: absolute;
+      bottom: -220px;
+      left: -100px;
+      width: 310px;
+      height: 310px;
+      border: 1px solid #ffffff80;
+      border-radius: 50%;
+      content: "";
+    }
+    .art::after { bottom: -200px; left: -80px; width: 270px; height: 270px; }
+    .sun { position: absolute; top: 30px; right: 45px; width: 185px; height: 185px; border-radius: 50%; background: #e8ad50; box-shadow: 0 0 0 14px #e8ad5024; }
+    .phrase {
+      position: relative;
+      z-index: 1;
+      width: 218px;
+      padding: 24px;
+      transform: rotate(-6deg);
+      border-radius: 17px;
+      background: var(--card);
+      box-shadow: 0 18px 38px #26372824;
+    }
+    .phrase small { color: var(--muted); font-size: .68rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+    .phrase strong { display: block; margin: 5px 0; font-family: Georgia, "Times New Roman", serif; font-size: 2.4rem; letter-spacing: -.06em; }
+    .phrase span { color: var(--green); font-weight: 700; }
+    .login-card {
+      padding: clamp(24px, 4vw, 38px);
+      border: 1px solid #ebe5da;
+      border-radius: 22px;
+      background: var(--card);
+      box-shadow: 0 14px 40px #3a392010;
+    }
+    .login-card h2 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 2rem; font-weight: 500; letter-spacing: -.055em; }
+    .login-card > p { margin: 8px 0 24px; color: var(--muted); }
+    .field { display: grid; gap: 7px; margin-top: 16px; }
+    label { font-size: .9rem; font-weight: 750; }
+    input {
+      width: 100%;
+      min-height: 49px;
+      padding: 11px 13px;
+      border: 1px solid #d9d4c8;
+      border-radius: 11px;
+      background: white;
+      color: var(--ink);
+      font: inherit;
+    }
+    input:focus { border-color: var(--green); outline: 3px solid #285c4320; }
+    button {
+      width: 100%;
+      min-height: 49px;
+      margin-top: 20px;
+      padding: 12px 18px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--green);
+      box-shadow: 0 8px 18px #285c4320;
+      color: white;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform .18s, background .18s, box-shadow .18s;
+    }
+    button:hover { transform: translateY(-2px); background: #1e4934; box-shadow: 0 12px 24px #285c4329; }
+    button:focus-visible, a:focus-visible { outline: 3px solid #d99563; outline-offset: 3px; }
+    #notice { min-height: 24px; margin: 12px 0 0; color: #a44735; font-size: .9rem; }
+    .account-links { display: grid; gap: 11px; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); font-size: .92rem; }
+    footer { padding: 20px 0 28px; border-top: 1px solid #ded8ca; color: var(--muted); font-size: .88rem; }
+    footer p { margin: 0; }
+    footer .creator { margin-top: 8px; color: var(--ink); font-weight: 700; }
+    @media (max-width: 760px) {
+      .wrap { width: min(100% - 36px, 560px); }
+      main { grid-template-columns: 1fr; gap: 28px; padding: 48px 0 54px; }
+      .intro { order: 0; }
+      .art { min-height: 230px; margin-top: 24px; }
+      .sun { width: 150px; height: 150px; right: 35px; }
+      .login-card { order: 1; }
+    }
+    @media (max-width: 430px) {
+      .wrap { width: min(100% - 30px, 560px); }
+      header { min-height: 68px; }
+      main { padding-top: 38px; }
+      h1 { font-size: 3.35rem; }
+      .art { min-height: 205px; }
+      .phrase { width: 198px; padding: 21px; }
+      .login-card { padding: 23px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="wrap">
+    <a class="brand" href="index.html"><strong>Hecho con cariño</strong> · En liten början på din spanska.</a>
+  </header>
+  <main class="wrap">
+    <section class="intro" aria-labelledby="welcome-title">
+      <div class="eyebrow">Spanska, steg för steg</div>
+      <h1 id="welcome-title">Lite spanska.<br><em>Varje dag.</em></h1>
+      <p class="intro-copy">Logga in för att fortsätta till spelen och träna spanska ord i din egen takt.</p>
+      <div class="art" role="img" aria-label="Ett spanskt gloskort med frasen ¡Hola! som betyder hej">
+        <div class="sun"></div>
+        <div class="phrase"><small>Dagens fras</small><strong>¡Hola!</strong><span>Hej!</span></div>
+      </div>
+    </section>
+    <section class="login-card" aria-labelledby="login-title">
+      <h2 id="login-title">Välkommen tillbaka</h2>
+      <p>Logga in på ditt konto för att börja öva.</p>
+      <form id="login">
+        <div class="field">
+          <label for="username">Användarnamn</label>
+          <input id="username" name="username" autocomplete="username" placeholder="Ditt användarnamn" required>
+        </div>
+        <div class="field">
+          <label for="password">Lösenord</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Ditt lösenord" required>
+        </div>
+        <button type="submit">Logga in</button>
+      </form>
+      <p id="notice" role="status" aria-live="polite"></p>
+      <div class="account-links">
+        <a href="register.html">Skapa föräldrakonto</a>
+        <a href="privacy.html">Läs om integritet</a>
+      </div>
+    </section>
+  </main>
+  <footer><div class="wrap"><p>Träna lite spanska, en dag i taget.</p><p class="creator">Skapad av Gustav Blomqvist</p></div></footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="auth-common.js"></script>
+  <script>
+    const f = document.querySelector("#login");
+    const n = document.querySelector("#notice");
+    if (new URLSearchParams(location.search).has("setup")) {
+      n.textContent = "Webbplatsen är inte färdigkopplad. Kontakta webbplatsens administratör.";
+    }
+    f.addEventListener("submit", async event => {
+      event.preventDefault();
+      const fd = new FormData(f);
+      const username = String(fd.get("username")).trim().toLowerCase();
+      try {
+        if (!SpanskaAuth.ready) throw new Error("Supabase-inställningarna saknas.");
+        const { error } = await SpanskaAuth.client.auth.signInWithPassword({
+          email: username + "@konto.invalid",
+          password: fd.get("password")
+        });
+        if (error) throw error;
+        location.replace("index.html");
+      } catch {
+        n.textContent = "Kunde inte logga in. Kontrollera användarnamn och lösenord.";
+      }
+    });
+  </script>
+</body>
+</html>

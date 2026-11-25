@@ -217,6 +217,22 @@
     .brand .brand-note { color:var(--green); }
     @media (max-width:430px) { .brand { max-width:none; padding-right:8px; font-size:.82rem; } }
     .creator-credit { margin:22px 0 0; padding-top:14px; border-top:1px solid var(--line); color:var(--ink); font-size:.88rem; font-weight:700; }
+      .nav-button { padding:9px 15px; border:1px solid var(--line); border-radius:999px; background:var(--green); color:white; font:inherit; font-size:.9rem; font-weight:750; cursor:pointer; }
+    .nav-button:hover { background:#1e4934; }
+    #login-dialog { width:min(440px,calc(100% - 28px)); max-width:none; padding:30px; border:1px solid #ebe5da; border-radius:22px; background:#fffdf8; color:var(--ink); box-shadow:0 22px 70px #20291f35; }
+    #login-dialog::backdrop { background:#20291f70; backdrop-filter:blur(3px); }
+    .login-dialog-head { display:flex; align-items:flex-start; justify-content:space-between; gap:15px; }
+    #login-dialog h2 { margin:0; font-family:Georgia,"Times New Roman",serif; font-size:2rem; font-weight:500; letter-spacing:-.055em; }
+    .login-dialog-copy { margin:6px 0 20px; color:var(--muted); }
+    .login-dialog-close { width:38px; height:38px; border:1px solid var(--line); border-radius:50%; background:#fffefa; color:var(--ink); font-size:1.2rem; cursor:pointer; }
+    .login-field { display:grid; gap:7px; margin-top:14px; }
+    .login-field label { font-size:.9rem; font-weight:750; }
+    .login-field input { width:100%; min-height:48px; padding:11px 13px; border:1px solid #d9d4c8; border-radius:11px; background:white; color:var(--ink); font:inherit; }
+    .login-field input:focus { border-color:var(--green); outline:3px solid #285c4320; }
+    .login-submit { width:100%; margin-top:20px; }
+    #login-notice { min-height:24px; margin:10px 0 0; color:#a44735; font-size:.9rem; }
+    .login-dialog-links { display:grid; gap:9px; margin-top:16px; padding-top:16px; border-top:1px solid var(--line); font-size:.92rem; }
+    @media (max-width:430px) { nav .nav-button { padding:8px 11px; font-size:.78rem; } #login-dialog { padding:23px; } }
   </style>
   <style>html.auth-check body{visibility:hidden}</style>
   <script>document.documentElement.classList.add('auth-check')</script>
@@ -227,7 +243,7 @@
 <body>
   <header class="wrap">
     <a class="brand" href="#top"><span class="brand-note">Hecho con cariño</span> · En liten början på din spanska.</a>
-    <nav aria-label="Huvudmeny"><a href="#spel">Spel</a><a href="#spelval">Välj spel</a><a href="account.html">Mitt konto</a><button type="button" id="logout-button">Logga ut</button></nav>
+    <nav aria-label="Huvudmeny"><a href="account.html" id="account-link" hidden>Mitt konto</a><button type="button" class="nav-button" id="login-button">Logga in</button><button type="button" class="nav-button" id="logout-button" hidden>Logga ut</button></nav>
   </header>
   <main id="top">
     <div class="wrap hero">
@@ -699,6 +715,67 @@
     document.querySelector('#start-game').addEventListener('click',startGame);
     startWorm();updateStats();draw();
   </script>
-<script>SpanskaAuth.requireLogin();document.getElementById("logout-button")?.addEventListener("click",()=>SpanskaAuth.logout());</script>
+<dialog id="login-dialog" aria-labelledby="login-dialog-title">
+    <div class="login-dialog-head">
+      <div><h2 id="login-dialog-title">Välkommen tillbaka</h2><p class="login-dialog-copy">Logga in för att börja öva spanska.</p></div>
+      <button type="button" class="login-dialog-close" id="close-login-dialog" aria-label="Stäng inloggningen">×</button>
+    </div>
+    <form id="homepage-login">
+      <div class="login-field"><label for="homepage-username">Användarnamn</label><input id="homepage-username" name="username" autocomplete="username" placeholder="Ditt användarnamn" required></div>
+      <div class="login-field"><label for="homepage-password">Lösenord</label><input id="homepage-password" name="password" type="password" autocomplete="current-password" placeholder="Ditt lösenord" required></div>
+      <button type="submit" class="button login-submit">Logga in</button>
+    </form>
+    <p id="login-notice" role="status" aria-live="polite"></p>
+    <div class="login-dialog-links"><a href="register.html">Skapa föräldrakonto</a><a href="privacy.html">Läs om integritet</a></div>
+  </dialog>
+  <script>
+    (() => {
+      const loginButton = document.querySelector("#login-button");
+      const logoutButton = document.querySelector("#logout-button");
+      const accountLink = document.querySelector("#account-link");
+      const dialog = document.querySelector("#login-dialog");
+      const notice = document.querySelector("#login-notice");
+      let authenticated = false;
+
+      loginButton.addEventListener("click", () => dialog.showModal());
+      document.querySelector("#close-login-dialog").addEventListener("click", () => dialog.close());
+      logoutButton.addEventListener("click", () => SpanskaAuth.logout());
+
+      document.querySelector("#spelval").addEventListener("click", event => {
+        if (authenticated) return;
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        dialog.showModal();
+      }, true);
+
+      document.querySelector("#homepage-login").addEventListener("submit", async event => {
+        event.preventDefault();
+        notice.textContent = "";
+        const formData = new FormData(event.currentTarget);
+        const username = String(formData.get("username")).trim().toLowerCase();
+        try {
+          if (!SpanskaAuth.ready) throw new Error("Inloggningen är inte tillgänglig just nu.");
+          const { error } = await SpanskaAuth.client.auth.signInWithPassword({
+            email: username + "@konto.invalid",
+            password: formData.get("password")
+          });
+          if (error) throw error;
+          location.replace("index.html");
+        } catch {
+          notice.textContent = "Kunde inte logga in. Kontrollera användarnamn och lösenord.";
+        }
+      });
+
+      (async () => {
+        try { authenticated = Boolean(SpanskaAuth.ready && await SpanskaAuth.session()); }
+        catch { authenticated = false; }
+        loginButton.hidden = authenticated;
+        logoutButton.hidden = !authenticated;
+        accountLink.hidden = !authenticated;
+        document.documentElement.classList.remove("auth-check");
+      })();
+    })();
+  </script>
 </body>
 </html>
