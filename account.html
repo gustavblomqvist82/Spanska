@@ -105,6 +105,8 @@
       .panel { padding:21px; }
     }
   </style>
+  <style>html.account-check body{visibility:hidden}</style>
+  <script>document.documentElement.classList.add("account-check")</script>
 </head>
 <body>
   <header class="site-header wrap">
@@ -199,13 +201,35 @@
   <script src="supabase-config.js"></script>
   <script src="auth-common.js"></script>
   <script>
-    SpanskaAuth.requireLogin();
-
     const list = document.querySelector("#children");
     const message = document.querySelector("#msg");
     const emptyState = document.querySelector("#empty-state");
     const editDialog = document.querySelector("#edit-dialog");
     let editingChildId = null;
+
+    async function requireParent() {
+      if (!SpanskaAuth.ready) {
+        location.replace("login.html?setup=1");
+        return false;
+      }
+      try {
+        const session = await SpanskaAuth.session();
+        if (!session) {
+          location.replace("login.html");
+          return false;
+        }
+        const profile = await SpanskaAuth.api("/api/account-role", undefined, "GET");
+        if (profile.role !== "parent") {
+          location.replace("index.html");
+          return false;
+        }
+        document.documentElement.classList.remove("account-check");
+        return true;
+      } catch {
+        location.replace("index.html");
+        return false;
+      }
+    }
 
     function showMessage(text, tone = "") {
       message.textContent = text;
@@ -323,7 +347,7 @@
     });
 
     document.querySelector("#out").addEventListener("click", () => SpanskaAuth.logout());
-    loadChildren();
+    requireParent().then(isParent => { if (isParent) loadChildren(); });
   </script>
 </body>
 </html>
