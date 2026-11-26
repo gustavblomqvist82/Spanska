@@ -772,7 +772,15 @@
         catch { authenticated = false; }
         loginButton.hidden = authenticated;
         logoutButton.hidden = !authenticated;
-        accountLink.hidden = !authenticated;
+        accountLink.hidden = true;
+        if (authenticated) {
+          try {
+            const profile = await SpanskaAuth.api("/api/account-role", undefined, "GET");
+            accountLink.hidden = profile.role !== "parent";
+          } catch {
+            accountLink.hidden = true;
+          }
+        }
         document.documentElement.classList.remove("auth-check");
       })();
     })();
