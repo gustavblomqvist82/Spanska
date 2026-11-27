@@ -456,7 +456,7 @@
       clearTimeout(sentenceAdvanceTimer); sentenceAdvanceTimer=null;
       const set=sentenceLevels[sentenceLevel], item=set.sentences[sentenceIndex%set.sentences.length];
       sentenceLocked=false; sentenceSolved=false; sentenceSelected=null; sentenceFeedback.textContent=''; sentenceFeedback.dataset.tone='';
-      document.querySelector('#sentence-count').textContent=`${set.title} · Mening ${sentenceIndex%set.sentences.length+1} av ${set.sentences.length}`;
+      document.querySelector('#sentence-count').textContent=`${set.title} · Uppgift ${sentenceIndex+1} av 15`;
       document.querySelector('#sentence-score').textContent=`Rätt: ${sentenceScore}`;
       document.querySelector('#sentence-title').textContent='Uppgift';
       document.querySelector('#sentence-prompt').textContent=`Översätt: ${item.sv}`;
@@ -476,7 +476,7 @@
       if(sentenceLocked)return;
       const expected=sentenceLevels[sentenceLevel].sentences[sentenceIndex%sentenceLevels[sentenceLevel].sentences.length].es;
       const actual=[...sentenceAnswer.children].map(token=>token.dataset.word).join(' ');
-      if(actual===expected){if(!sentenceSolved){sentenceScore++;sentenceSolved=true;}sentenceLocked=true;sentenceAnswer.classList.add('is-correct');sentenceFeedback.textContent=`✓ Rätt svar! ${expected}. Nästa mening...`;sentenceFeedback.dataset.tone='success';document.querySelector('#sentence-score').textContent=`Rätt: ${sentenceScore}`;sentenceAdvanceTimer=setTimeout(()=>{const length=sentenceLevels[sentenceLevel].sentences.length;if(sentenceIndex%length===length-1){saveHighScore('sentence',sentenceScore,length);sentenceScore=0;}sentenceIndex++;renderSentence();},1700);}
+      if(actual===expected){if(!sentenceSolved){sentenceScore++;sentenceSolved=true;}sentenceLocked=true;sentenceAnswer.classList.add('is-correct');sentenceFeedback.textContent=`✓ Rätt svar! ${expected}. Nästa mening...`;sentenceFeedback.dataset.tone='success';document.querySelector('#sentence-score').textContent=`Rätt: ${sentenceScore}`;sentenceAdvanceTimer=setTimeout(()=>{if(sentenceIndex===14){saveHighScore('sentence',sentenceScore,15);sentenceFeedback.textContent='✓ Rundan klar! Ditt resultat är sparat.';sentenceScore=0;sentenceIndex=0;}else sentenceIndex++;renderSentence();},1700);}
       else {sentenceFeedback.textContent='Inte riktigt. Ändra ordningen och kontrollera meningen igen.';sentenceFeedback.dataset.tone='error';}
     });
     document.querySelector('#sentence-reset').addEventListener('click',renderSentence);
@@ -501,7 +501,7 @@
     };
     const renderSpelling=()=>{
       spellingAnswered=false; spellingInput.value=''; spellingFeedback.textContent=''; spellingFeedback.dataset.tone='';
-      document.querySelector('#spelling-count').textContent=spellingLevels[spellingLevel].words.length+' ord · '+(spellingIndex%spellingLevels[spellingLevel].words.length+1)+' av '+spellingLevels[spellingLevel].words.length;
+      document.querySelector('#spelling-count').textContent=({beginner:'Nybörjare',easy:'Lätt',medium:'Medel',advanced:'Avancerad'})[spellingLevel]+' · Uppgift '+(spellingIndex+1)+' av 15';
       document.querySelector('#spelling-score').textContent='Rätt: '+spellingScore;
       document.querySelector('#spelling-outcome').textContent=spellingLevels[spellingLevel].outcome;
       document.querySelector('#spelling-check').hidden=false; document.querySelector('#spelling-next').hidden=true;
@@ -531,15 +531,14 @@
         spellingFeedback.textContent='Rätt stavning är '+correct+'.'+explanation; spellingFeedback.dataset.tone='error';
       }
       document.querySelector('#spelling-score').textContent='Rätt: '+spellingScore;
-      const spellingRoundLength=spellingLevels[spellingLevel].words.length;
-      const spellingRoundComplete=spellingIndex%spellingRoundLength===spellingRoundLength-1;
-      if(spellingRoundComplete){saveHighScore('spelling',spellingScore,spellingRoundLength);spellingFeedback.textContent+=' Rundan är klar!';}
+      const spellingRoundComplete=spellingIndex===14;
+      if(spellingRoundComplete){saveHighScore('spelling',spellingScore,15);spellingFeedback.textContent+=' Rundan är klar!';}
       document.querySelector('#spelling-check').hidden=true; document.querySelector('#spelling-next').hidden=false;
       document.querySelector('#spelling-next').textContent=spellingRoundComplete?'Ny runda':'Nästa ord';
     };
     document.querySelector('#spelling-check').addEventListener('click',checkSpelling);
     spellingInput.addEventListener('keydown',event=>{if(event.key==='Enter')checkSpelling();});
-    document.querySelector('#spelling-next').addEventListener('click',()=>{if(spellingIndex%spellingLevels[spellingLevel].words.length===spellingLevels[spellingLevel].words.length-1){spellingIndex=0;spellingScore=0;}else spellingIndex++;renderSpelling();speakSpellingWord();});
+    document.querySelector('#spelling-next').addEventListener('click',()=>{if(spellingIndex===14){spellingIndex=0;spellingScore=0;}else spellingIndex++;renderSpelling();speakSpellingWord();});
     renderSpelling();
 
     const canvas = document.querySelector('#worm-board');
