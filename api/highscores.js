@@ -37,12 +37,14 @@ module.exports=async(req,res)=>{
       return send(res,200,{scores});
     }
     if(!method(req,res,"POST"))return;
-    if(ctx.profile.role!=="child")throw Object.assign(new Error("Endast barnkonton kan spara spelresultat."),{status:403});
+    if(!["child","parent"].includes(ctx.profile.role))throw Object.assign(new Error("Endast inloggade konton kan spara spelresultat."),{status:403});
     const {game,score,total=null}=req.body||{};
     if(game==="quiz")throw Object.assign(new Error("Quizresultat verifieras och sparas av quizservern."),{status:403});
     if(!validResult(game,score,total))throw Error("Resultatet är ogiltigt.");
     const {error}=await ctx.client.from("game_highscores").insert({user_id:ctx.user.id,game,score,total});
     if(error)throw error;
     return send(res,201,{ok:true});
-  }catch(e){return fail(res,e);}
+  }catch(e){
+    return fail(res,e);
+  }
 };
