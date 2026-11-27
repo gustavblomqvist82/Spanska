@@ -7,8 +7,8 @@ function validResult(game,score,total){
   if(game==="worm")return total===null;
   if(!Number.isInteger(total)||score>total)return false;
   if(game==="quiz")return total===15;
-  if(game==="sentence")return total===4;
-  return total===6||total===8;
+  if(game==="sentence"||game==="spelling")return total===15;
+  return false;
 }
 module.exports=async(req,res)=>{
   try{
