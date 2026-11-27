@@ -609,8 +609,11 @@
       catch { renderHighScores(game,[]); }
     };
     const saveHighScore = async (game, score, total = null) => {
-      try { await SpanskaAuth.api('/api/highscores',{game,score,total}); await loadHighScores(game); }
-      catch { const list=document.querySelector(`#${game}-leaderboard`); if(list)list.replaceChildren(Object.assign(document.createElement('li'),{className:'leaderboard-empty',textContent:'Resultatet kunde inte sparas just nu.'})); }
+      try {
+        if(game==='quiz'){ await loadHighScores(game); return; }
+        await SpanskaAuth.api('/api/highscores',{game,score,total});
+        await loadHighScores(game);
+      } catch { const list=document.querySelector(`#${game}-leaderboard`); if(list)list.replaceChildren(Object.assign(document.createElement('li'),{className:'leaderboard-empty',textContent:'Resultatet kunde inte sparas just nu.'})); }
     };
     
     const showQuizQuestion=async()=>{if(quizIndex>=quizDeck.length){document.querySelector('#quiz-count').textContent='Rundan klar!';document.querySelector('#quiz-progress-bar').style.width='100%';document.querySelector('#quiz-title').textContent=`Du fick ${quizScore} av ${quizDeck.length} rätt!`;document.querySelector('#quiz-hint').textContent=quizScore===quizDeck.length?'¡Excelente! Alla rätt.':'Bra jobbat. Spela igen och försök slå ditt resultat.';quizAnswerArea.replaceChildren();document.querySelector('#quiz-feedback').textContent='Resultatet sparades på kontot.';quizNextButton.textContent='Spela igen';return;}activeQuestion=quizDeck[quizIndex];quizLocked=false;document.querySelector('#quiz-count').textContent=`Fråga ${quizIndex+1} av ${quizDeck.length}`;document.querySelector('#quiz-progress-bar').style.width=`${quizIndex/quizDeck.length*100}%`;document.querySelector('#quiz-title').textContent=activeQuestion.prompt;document.querySelector('#quiz-hint').textContent='Välj ett svar.';document.querySelector('#quiz-feedback').textContent='';quizNextButton.textContent=quizIndex===quizDeck.length-1?'Visa resultat':'Nästa fråga';quizAnswerArea.replaceChildren(...activeQuestion.options.map(option=>{const b=document.createElement('button');b.type='button';b.className='quiz-answer';b.textContent=option;b.addEventListener('click',()=>answerQuiz(b,option));return b;}));};
