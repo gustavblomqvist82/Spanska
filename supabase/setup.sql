@@ -29,8 +29,8 @@ create table if not exists public.game_highscores (
  constraint game_highscores_total_check check (
    (game='worm' and total is null) or
    (game='quiz' and total=15 and score<=total) or
-   (game='sentence' and total=4 and score<=total) or
-   (game='spelling' and total in (6,8) and score<=total)
+   (game='sentence' and total=15 and score<=total) or
+   (game='spelling' and total=15 and score<=total)
  )
 );
 create index if not exists game_highscores_game_user_score_idx
