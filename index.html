@@ -166,7 +166,10 @@
     :focus-visible { outline:3px solid #d99563; outline-offset:3px }
     @media (max-width:720px) { .wrap { width:min(100% - 36px,1120px) } .hero { padding:55px 0 48px; gap:30px } .art { min-height:265px; border-radius:38% 38% 22px 22px } .sun { width:155px;height:155px;right:34px } .tile { width:205px;padding:22px } section { padding-bottom:54px } }
     @media (max-width:430px) { .wrap { width:min(100% - 30px,1120px) } header.wrap { padding:17px 0 } .brand { font-size:1.3rem } nav { gap:0 } nav a { padding:8px 10px; font-size:.78rem } .hero { padding-top:44px } h1 { font-size:3.35rem } .art { min-height:235px } .quiz-game { padding:20px } .quiz-answers { grid-template-columns:1fr } .quiz-difficulties { grid-template-columns:1fr 1fr } .quiz-difficulty { padding:9px 6px; font-size:.9rem } .worm-game { padding:14px } }
-    .game-launchers { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .game-launchers { grid-template-columns:minmax(0,1fr); gap:14px; }
+    .game-launch-row { display:grid; grid-template-columns:minmax(0,1fr); gap:14px; align-items:stretch; }
+    .game-launch-row.has-highscores { grid-template-columns:minmax(0,1.35fr) minmax(260px,.9fr); }
+    .game-launch-row .leaderboard { margin:0; padding:20px; border:1px solid var(--line); border-radius:18px; background:#fffdf8; box-shadow:0 8px 28px #3a39200b; }
     .game-launcher { display:flex; flex-direction:column; align-items:flex-start; width:100%; min-height:205px; color:var(--ink); font:inherit; text-align:left; cursor:pointer; }
     .game-launcher h3 { margin-top:20px; }
     .game-launcher p { color:var(--muted); }
@@ -196,6 +199,7 @@
     @media (max-width:720px) { .sentence-levels { grid-template-columns:1fr 1fr; } }
 
     @media (max-width:720px) { .game-launchers { grid-template-columns:1fr; } .game-launcher { min-height:180px; } }
+    @media (max-width:720px) { .game-launch-row.has-highscores { grid-template-columns:minmax(0,1fr); } }
     .spelling-game { background:#fffdf8; border:1px solid #ebe5da; border-radius:20px; padding:26px; box-shadow:0 8px 28px #3a39200b; }
     .spelling-levels { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:9px; margin:18px 0; }
     .spelling-level { padding:10px; border:1px solid #e9e3d8; border-radius:12px; background:#fffefa; color:var(--ink); font:inherit; font-weight:750; cursor:pointer; }
@@ -266,18 +270,30 @@
     <section class="wrap" id="spel">
       <div class="section-head"><h2>Spel</h2><p>Välj ett spel för att öppna det.</p></div>
       <div class="cards game-launchers" id="spelval" role="group" aria-label="Välj ett spel">
-        <button class="card game-launcher" type="button" data-game="quiz" aria-expanded="false" aria-controls="quiz-panel">
+        <div class="game-launch-row" data-game-row="quiz">
+          <button class="card game-launcher" type="button" data-game="quiz" aria-expanded="false" aria-controls="quiz-panel">
           <span class="number">01</span><h3>Quiz: spanska ord</h3><p>Träna på spanska ord och se hur många du kan.</p><span class="launcher-action">Öppna quizet <span aria-hidden="true">→</span></span>
         </button>
-        <button class="card game-launcher" type="button" data-game="worm" aria-expanded="false" aria-controls="worm-panel">
+          <div class="leaderboard" data-highscore-board="quiz" hidden aria-labelledby="quiz-leaderboard-title"><div class="leaderboard-head"><h3 id="quiz-leaderboard-title">Quizets topplista</h3></div><ol id="quiz-leaderboard" aria-live="polite"><li class="leaderboard-empty">Hämtar topplistan…</li></ol><p class="leaderboard-note">Bästa resultat i familjen</p></div>
+        </div>
+        <div class="game-launch-row" data-game-row="worm">
+          <button class="card game-launcher" type="button" data-game="worm" aria-expanded="false" aria-controls="worm-panel">
           <span class="number">02</span><h3>Ordorm</h3><p>Styr masken till det spanska ord som passar ledtråden.</p><span class="launcher-action">Öppna Ordorm <span aria-hidden="true">→</span></span>
         </button>
-        <button class="card game-launcher" type="button" data-game="sentence" aria-expanded="false" aria-controls="sentence-panel">
+          <div class="leaderboard" data-highscore-board="worm" hidden aria-labelledby="worm-leaderboard-title"><div class="leaderboard-head"><h3 id="worm-leaderboard-title">Ordormens topplista</h3></div><ol id="worm-leaderboard" aria-live="polite"><li class="leaderboard-empty">Hämtar topplistan…</li></ol><p class="leaderboard-note">Bästa resultat i familjen</p></div>
+        </div>
+        <div class="game-launch-row" data-game-row="sentence">
+          <button class="card game-launcher" type="button" data-game="sentence" aria-expanded="false" aria-controls="sentence-panel">
           <span class="number">03</span><h3>Meningsuppbyggnad</h3><p>Dra spanska ord till rätt plats och bygg en korrekt mening.</p><span class="launcher-action">Öppna övningen <span aria-hidden="true">→</span></span>
         </button>
-<button class="card game-launcher" type="button" data-game="spelling" aria-expanded="false" aria-controls="spelling-panel">
+          <div class="leaderboard" data-highscore-board="sentence" hidden aria-labelledby="sentence-leaderboard-title"><div class="leaderboard-head"><h3 id="sentence-leaderboard-title">Meningsbyggnadens topplista</h3></div><ol id="sentence-leaderboard" aria-live="polite"><li class="leaderboard-empty">Hämtar topplistan…</li></ol><p class="leaderboard-note">Bästa resultat i familjen</p></div>
+        </div>
+        <div class="game-launch-row" data-game-row="spelling">
+          <button class="card game-launcher" type="button" data-game="spelling" aria-expanded="false" aria-controls="spelling-panel">
           <span class="number">04</span><h3>Stavning</h3><p>Lyssna på ett spanskt ord och skriv det med rätt bokstäver och accenter.</p><span class="launcher-action">Öppna Stavning <span aria-hidden="true">→</span></span>
         </button>
+          <div class="leaderboard" data-highscore-board="spelling" hidden aria-labelledby="spelling-leaderboard-title"><div class="leaderboard-head"><h3 id="spelling-leaderboard-title">Stavningens topplista</h3></div><ol id="spelling-leaderboard" aria-live="polite"><li class="leaderboard-empty">Hämtar topplistan…</li></ol><p class="leaderboard-note">Bästa resultat i familjen</p></div>
+        </div>
       </div>
       <div class="game-panels">
     <div class="game-panel" id="quiz-panel" hidden>
@@ -298,7 +314,7 @@
         <p class="quiz-feedback" id="quiz-feedback" aria-live="polite"></p>
         <button class="button quiz-next" id="quiz-next" type="button">Starta quizet</button>
       </div>
-      <div class="leaderboard" data-highscore-board="quiz" hidden aria-labelledby="quiz-leaderboard-title"><div class="leaderboard-head"><h3 id="quiz-leaderboard-title">Quizets topplista</h3></div><ol id="quiz-leaderboard" aria-live="polite"><li class="leaderboard-empty">Hämtar topplistan…</li></ol><p class="leaderboard-note">Bästa resultat i familjen</p></div>
+      
     </div>
     <div class="game-panel" id="worm-panel" hidden>
       <div class="section-head"><h2 id="worm-title">Ordorm</h2><p>Styr masken till det spanska ordet som matchar ledtråden.</p></div>
@@ -310,7 +326,7 @@
         <div class="game-controls"><p>Rätt ord: väx +1 och få ett liv. Fel ord: krymp +1. Krock: förlora ett liv.</p><button class="button" id="start-game">Starta spelet</button></div>
         <div class="touch-controls" aria-label="Pekkontroller"><button type="button" data-dir="up" aria-label="Upp">↑</button><button type="button" data-dir="left" aria-label="Vänster">←</button><button type="button" data-dir="down" aria-label="Ner">↓</button><button type="button" data-dir="right" aria-label="Höger">→</button></div>
       </div>
-      <div class="leaderboard" data-highscore-board="worm" hidden aria-labelledby="worm-leaderboard-title"><div class="leaderboard-head"><h3 id="worm-leaderboard-title">Ordormens topplista</h3></div><ol id="worm-leaderboard" aria-live="polite"><li class="leaderboard-empty">Hämtar topplistan…</li></ol><p class="leaderboard-note">Bästa resultat i familjen</p></div>
+      
     </div>
 
     <div class="game-panel" id="sentence-panel" hidden>
@@ -331,7 +347,7 @@
         <div class="sentence-actions"><button class="button" id="sentence-check" type="button">Kontrollera meningen</button><button class="button" id="sentence-reset" type="button">Börja om</button></div>
         <p class="sentence-feedback" id="sentence-feedback" aria-live="polite"></p>
       </div>
-      <div class="leaderboard" data-highscore-board="sentence" hidden aria-labelledby="sentence-leaderboard-title"><div class="leaderboard-head"><h3 id="sentence-leaderboard-title">Meningsbyggnadens topplista</h3></div><ol id="sentence-leaderboard" aria-live="polite"><li class="leaderboard-empty">Hämtar topplistan…</li></ol><p class="leaderboard-note">Bästa resultat i familjen</p></div>
+      
     </div>
     <div class="game-panel" id="spelling-panel" hidden>
       <div class="section-head"><h2>Stavning</h2><p>Lyssna noga och skriv ordet så korrekt du kan.</p></div>
@@ -355,7 +371,7 @@
         <div class="sentence-actions"><button class="button" id="spelling-check" type="button">Kontrollera</button><button class="button" id="spelling-next" type="button" hidden>Nästa ord</button></div>
         <p class="spelling-feedback" id="spelling-feedback" aria-live="polite"></p>
       </div>
-      <div class="leaderboard" data-highscore-board="spelling" hidden aria-labelledby="spelling-leaderboard-title"><div class="leaderboard-head"><h3 id="spelling-leaderboard-title">Stavningens topplista</h3></div><ol id="spelling-leaderboard" aria-live="polite"><li class="leaderboard-empty">Hämtar topplistan…</li></ol><p class="leaderboard-note">Bästa resultat i familjen</p></div>
+      
     </div>
       </div>
     </section>
@@ -775,6 +791,7 @@
         loginButton.hidden = authenticated;
         logoutButton.hidden = !authenticated;
         accountLink.hidden = true;
+        document.querySelectorAll('.game-launch-row').forEach(row => row.classList.toggle('has-highscores', authenticated));
         document.querySelectorAll('[data-highscore-board]').forEach(board => { board.hidden = !authenticated; });
         if (authenticated) {
           await Promise.all(['quiz','worm','sentence','spelling'].map(loadHighScores));
