@@ -233,6 +233,12 @@
     #login-notice { min-height:24px; margin:10px 0 0; color:#a44735; font-size:.9rem; }
     .login-dialog-links { display:grid; gap:9px; margin-top:16px; padding-top:16px; border-top:1px solid var(--line); font-size:.92rem; }
     @media (max-width:430px) { nav .nav-button { padding:8px 11px; font-size:.78rem; } #login-dialog { padding:23px; } }
+    .game-panel { display:grid; grid-template-columns:minmax(0,1fr) minmax(230px,280px); gap:20px; align-items:start; }
+    .game-panel > .section-head { grid-column:1 / -1; }
+    .game-panel > .quiz-game,.game-panel > .worm-game,.game-panel > .sentence-game,.game-panel > .spelling-game { grid-column:1; grid-row:2; max-width:none; }
+    .game-panel > .leaderboard { grid-column:2; grid-row:2; position:sticky; top:18px; margin:0; padding:18px; border:1px solid var(--line); border-radius:18px; background:#fffefa; }
+    .game-panel > .leaderboard[hidden] { display:none; }
+    @media (max-width:760px) { .game-panel { grid-template-columns:1fr; } .game-panel > .leaderboard { grid-column:1; grid-row:auto; position:static; } .game-panel > .quiz-game,.game-panel > .worm-game,.game-panel > .sentence-game,.game-panel > .spelling-game { grid-row:auto; } }
   </style>
   <style>html.auth-check body{visibility:hidden}</style>
   <script>document.documentElement.classList.add('auth-check')</script>
@@ -291,8 +297,8 @@
         <div class="quiz-answers" id="quiz-answers"></div>
         <p class="quiz-feedback" id="quiz-feedback" aria-live="polite"></p>
         <button class="button quiz-next" id="quiz-next" type="button">Starta quizet</button>
-        <div class="leaderboard" aria-labelledby="quiz-leaderboard-title"><div class="leaderboard-head"><h3 id="quiz-leaderboard-title">Quizets topplista</h3><input class="player-name" id="quiz-player" maxlength="18" aria-label="Namn för quiztopplistan" placeholder="Ditt namn" value="Du"></div><ol id="quiz-leaderboard" aria-live="polite"></ol><p class="leaderboard-note">Topplistan sparas i webbläsaren på den här enheten.</p></div>
       </div>
+      <div class="leaderboard" data-highscore-board="quiz" hidden aria-labelledby="quiz-leaderboard-title"><div class="leaderboard-head"><h3 id="quiz-leaderboard-title">Quizets topplista</h3></div><ol id="quiz-leaderboard" aria-live="polite"><li class="leaderboard-empty">Hämtar topplistan…</li></ol><p class="leaderboard-note">Bästa resultat i familjen</p></div>
     </div>
     <div class="game-panel" id="worm-panel" hidden>
       <div class="section-head"><h2 id="worm-title">Ordorm</h2><p>Styr masken till det spanska ordet som matchar ledtråden.</p></div>
@@ -303,8 +309,8 @@
         <div class="board-frame"><canvas id="worm-board" width="720" height="432" tabindex="0" aria-label="Spelplan. Styr masken med piltangenterna eller WASD och ät det spanska ordet som matchar den svenska ledtråden."></canvas></div>
         <div class="game-controls"><p>Rätt ord: väx +1 och få ett liv. Fel ord: krymp +1. Krock: förlora ett liv.</p><button class="button" id="start-game">Starta spelet</button></div>
         <div class="touch-controls" aria-label="Pekkontroller"><button type="button" data-dir="up" aria-label="Upp">↑</button><button type="button" data-dir="left" aria-label="Vänster">←</button><button type="button" data-dir="down" aria-label="Ner">↓</button><button type="button" data-dir="right" aria-label="Höger">→</button></div>
-        <div class="leaderboard" aria-labelledby="worm-leaderboard-title"><div class="leaderboard-head"><h3 id="worm-leaderboard-title">Ordormens topplista</h3><input class="player-name" id="worm-player" maxlength="18" aria-label="Namn för Ordormens topplista" placeholder="Ditt namn" value="Du"></div><ol id="worm-leaderboard" aria-live="polite"></ol><p class="leaderboard-note">Topplistan sparas i webbläsaren på den här enheten.</p></div>
       </div>
+      <div class="leaderboard" data-highscore-board="worm" hidden aria-labelledby="worm-leaderboard-title"><div class="leaderboard-head"><h3 id="worm-leaderboard-title">Ordormens topplista</h3></div><ol id="worm-leaderboard" aria-live="polite"><li class="leaderboard-empty">Hämtar topplistan…</li></ol><p class="leaderboard-note">Bästa resultat i familjen</p></div>
     </div>
 
     <div class="game-panel" id="sentence-panel" hidden>
@@ -325,6 +331,7 @@
         <div class="sentence-actions"><button class="button" id="sentence-check" type="button">Kontrollera meningen</button><button class="button" id="sentence-reset" type="button">Börja om</button></div>
         <p class="sentence-feedback" id="sentence-feedback" aria-live="polite"></p>
       </div>
+      <div class="leaderboard" data-highscore-board="sentence" hidden aria-labelledby="sentence-leaderboard-title"><div class="leaderboard-head"><h3 id="sentence-leaderboard-title">Meningsbyggnadens topplista</h3></div><ol id="sentence-leaderboard" aria-live="polite"><li class="leaderboard-empty">Hämtar topplistan…</li></ol><p class="leaderboard-note">Bästa resultat i familjen</p></div>
     </div>
     <div class="game-panel" id="spelling-panel" hidden>
       <div class="section-head"><h2>Stavning</h2><p>Lyssna noga och skriv ordet så korrekt du kan.</p></div>
@@ -348,6 +355,7 @@
         <div class="sentence-actions"><button class="button" id="spelling-check" type="button">Kontrollera</button><button class="button" id="spelling-next" type="button" hidden>Nästa ord</button></div>
         <p class="spelling-feedback" id="spelling-feedback" aria-live="polite"></p>
       </div>
+      <div class="leaderboard" data-highscore-board="spelling" hidden aria-labelledby="spelling-leaderboard-title"><div class="leaderboard-head"><h3 id="spelling-leaderboard-title">Stavningens topplista</h3></div><ol id="spelling-leaderboard" aria-live="polite"><li class="leaderboard-empty">Hämtar topplistan…</li></ol><p class="leaderboard-note">Bästa resultat i familjen</p></div>
     </div>
       </div>
     </section>
@@ -468,7 +476,7 @@
       if(sentenceLocked)return;
       const expected=sentenceLevels[sentenceLevel].sentences[sentenceIndex%sentenceLevels[sentenceLevel].sentences.length].es;
       const actual=[...sentenceAnswer.children].map(token=>token.dataset.word).join(' ');
-      if(actual===expected){if(!sentenceSolved){sentenceScore++;sentenceSolved=true;}sentenceLocked=true;sentenceAnswer.classList.add('is-correct');sentenceFeedback.textContent=`✓ Rätt svar! ${expected}. Nästa mening...`;sentenceFeedback.dataset.tone='success';document.querySelector('#sentence-score').textContent=`Rätt: ${sentenceScore}`;sentenceAdvanceTimer=setTimeout(()=>{sentenceIndex++;renderSentence();},1700);}
+      if(actual===expected){if(!sentenceSolved){sentenceScore++;sentenceSolved=true;}sentenceLocked=true;sentenceAnswer.classList.add('is-correct');sentenceFeedback.textContent=`✓ Rätt svar! ${expected}. Nästa mening...`;sentenceFeedback.dataset.tone='success';document.querySelector('#sentence-score').textContent=`Rätt: ${sentenceScore}`;sentenceAdvanceTimer=setTimeout(()=>{const length=sentenceLevels[sentenceLevel].sentences.length;if(sentenceIndex%length===length-1){saveHighScore('sentence',sentenceScore,length);sentenceScore=0;}sentenceIndex++;renderSentence();},1700);}
       else {sentenceFeedback.textContent='Inte riktigt. Ändra ordningen och kontrollera meningen igen.';sentenceFeedback.dataset.tone='error';}
     });
     document.querySelector('#sentence-reset').addEventListener('click',renderSentence);
@@ -523,11 +531,15 @@
         spellingFeedback.textContent='Rätt stavning är '+correct+'.'+explanation; spellingFeedback.dataset.tone='error';
       }
       document.querySelector('#spelling-score').textContent='Rätt: '+spellingScore;
+      const spellingRoundLength=spellingLevels[spellingLevel].words.length;
+      const spellingRoundComplete=spellingIndex%spellingRoundLength===spellingRoundLength-1;
+      if(spellingRoundComplete){saveHighScore('spelling',spellingScore,spellingRoundLength);spellingFeedback.textContent+=' Rundan är klar!';}
       document.querySelector('#spelling-check').hidden=true; document.querySelector('#spelling-next').hidden=false;
+      document.querySelector('#spelling-next').textContent=spellingRoundComplete?'Ny runda':'Nästa ord';
     };
     document.querySelector('#spelling-check').addEventListener('click',checkSpelling);
     spellingInput.addEventListener('keydown',event=>{if(event.key==='Enter')checkSpelling();});
-    document.querySelector('#spelling-next').addEventListener('click',()=>{spellingIndex++;renderSpelling();speakSpellingWord();});
+    document.querySelector('#spelling-next').addEventListener('click',()=>{if(spellingIndex%spellingLevels[spellingLevel].words.length===spellingLevels[spellingLevel].words.length-1){spellingIndex=0;spellingScore=0;}else spellingIndex++;renderSpelling();speakSpellingWord();});
     renderSpelling();
 
     const canvas = document.querySelector('#worm-board');
@@ -582,31 +594,25 @@
       document.querySelector('#quiz-level-outcome').textContent = difficultyOutcomes[selectedDifficulty];
     };
     updateDifficultyOutcome();
-    const saveHighScore = (game, score, total = null) => {
-      const input = document.querySelector(`#${game}-player`);
-      const name = input.value.trim().slice(0, 18) || 'Du';
-      try {
-        const key = `hola-high-scores-${game}`;
-        const scores = JSON.parse(localStorage.getItem(key) || '[]');
-        scores.push({name, score, total, date:Date.now()});
-        scores.sort((a,b) => b.score - a.score || (b.total || 0) - (a.total || 0) || a.date - b.date);
-        localStorage.setItem(key, JSON.stringify(scores.slice(0, 5)));
-        renderHighScores(game);
-      } catch { /* Local storage can be unavailable in private browsing. */ }
-    };
-    const renderHighScores = game => {
+    const renderHighScores = (game, scores = []) => {
       const list = document.querySelector(`#${game}-leaderboard`);
-      let scores = [];
-      try { scores = JSON.parse(localStorage.getItem(`hola-high-scores-${game}`) || '[]'); } catch {}
-      list.replaceChildren(...(scores.length ? scores.map((entry,index) => {
+      if (!list) return;
+      list.replaceChildren(...(scores.length ? scores.slice(0,5).map((entry,index) => {
         const item = document.createElement('li');
         const rank = document.createElement('span'); rank.className = 'rank'; rank.textContent = `${index + 1}.`;
-        const player = document.createElement('span'); player.className = 'player'; player.textContent = entry.name;
-        const points = document.createElement('span'); points.className = 'points'; points.textContent = game === 'quiz' ? `${entry.score}/${entry.total}` : `${entry.score} p`;
+        const player = document.createElement('span'); player.className = 'player'; player.textContent = entry.nickname || 'Spelare';
+        const points = document.createElement('span'); points.className = 'points'; points.textContent = entry.total ? `${entry.score}/${entry.total}` : `${entry.score} p`;
         item.append(rank, player, points); return item;
       }) : [Object.assign(document.createElement('li'), {className:'leaderboard-empty', textContent:'Spela en runda för att hamna på listan.'})]));
     };
-    renderHighScores('quiz'); renderHighScores('worm');
+    const loadHighScores = async game => {
+      try { const data=await SpanskaAuth.api(`/api/highscores?game=${encodeURIComponent(game)}`,undefined,'GET');renderHighScores(game,data.scores||[]); }
+      catch { renderHighScores(game,[]); }
+    };
+    const saveHighScore = async (game, score, total = null) => {
+      try { await SpanskaAuth.api('/api/highscores',{game,score,total}); await loadHighScores(game); }
+      catch { const list=document.querySelector(`#${game}-leaderboard`); if(list)list.replaceChildren(Object.assign(document.createElement('li'),{className:'leaderboard-empty',textContent:'Resultatet kunde inte sparas just nu.'})); }
+    };
     
     const showQuizQuestion=async()=>{if(quizIndex>=quizDeck.length){document.querySelector('#quiz-count').textContent='Rundan klar!';document.querySelector('#quiz-progress-bar').style.width='100%';document.querySelector('#quiz-title').textContent=`Du fick ${quizScore} av ${quizDeck.length} rätt!`;document.querySelector('#quiz-hint').textContent=quizScore===quizDeck.length?'¡Excelente! Alla rätt.':'Bra jobbat. Spela igen och försök slå ditt resultat.';quizAnswerArea.replaceChildren();document.querySelector('#quiz-feedback').textContent='Resultatet sparades på kontot.';quizNextButton.textContent='Spela igen';return;}activeQuestion=quizDeck[quizIndex];quizLocked=false;document.querySelector('#quiz-count').textContent=`Fråga ${quizIndex+1} av ${quizDeck.length}`;document.querySelector('#quiz-progress-bar').style.width=`${quizIndex/quizDeck.length*100}%`;document.querySelector('#quiz-title').textContent=activeQuestion.prompt;document.querySelector('#quiz-hint').textContent='Välj ett svar.';document.querySelector('#quiz-feedback').textContent='';quizNextButton.textContent=quizIndex===quizDeck.length-1?'Visa resultat':'Nästa fråga';quizAnswerArea.replaceChildren(...activeQuestion.options.map(option=>{const b=document.createElement('button');b.type='button';b.className='quiz-answer';b.textContent=option;b.addEventListener('click',()=>answerQuiz(b,option));return b;}));};
     const startQuiz=async()=>{try{document.querySelector('#quiz-feedback').textContent='Startar quiz…';const data=await SpanskaAuth.api('/api/quiz/start',{difficulty:selectedDifficulty,choices:difficultySettings[selectedDifficulty].choices});quizSessionId=data.sessionId;quizDeck=data.questions;quizIndex=0;quizScore=0;quizCompleted=false;quizResultShown=false;document.querySelector('#quiz-score').textContent='Poäng: 0';quizNextButton.textContent='Nästa fråga';await showQuizQuestion();}catch(e){document.querySelector('#quiz-feedback').textContent=e.message;}};
@@ -767,7 +773,9 @@
         loginButton.hidden = authenticated;
         logoutButton.hidden = !authenticated;
         accountLink.hidden = true;
+        document.querySelectorAll('[data-highscore-board]').forEach(board => { board.hidden = !authenticated; });
         if (authenticated) {
+          await Promise.all(['quiz','worm','sentence','spelling'].map(loadHighScores));
           try {
             const profile = await SpanskaAuth.api("/api/account-role", undefined, "GET");
             accountLink.hidden = profile.role !== "parent";
