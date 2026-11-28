@@ -56,7 +56,7 @@
       const form=event.currentTarget,fields=new FormData(form),msg=document.querySelector("#msg"),button=form.querySelector("button");
       msg.textContent="";msg.dataset.tone="";button.disabled=true;button.textContent="Skapar konto…";
       try{
-        await SpanskaAuth.publicApi("/api/register-parent",{username:fields.get("username"),password:fields.get("password"),inviteCode:fields.get("inviteCode"),guardianConsent:fields.get("guardianConsent")==="on"});
+        await SpanskaAuth.publicApi("/api/register-parent",{username:String(fields.get("username")).trim().toLowerCase(),password:fields.get("password"),inviteCode:fields.get("inviteCode"),guardianConsent:fields.get("guardianConsent")==="on"});
         msg.textContent="Kontot skapades. Du kan nu logga in.";msg.dataset.tone="success";form.reset();
       }catch(error){msg.textContent=error.message||"Kontot kunde inte skapas. Försök igen.";}
       finally{button.disabled=false;button.textContent="Skapa konto";}
