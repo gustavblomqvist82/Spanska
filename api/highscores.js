@@ -16,18 +16,15 @@ module.exports=async(req,res)=>{
       if(!method(req,res,"GET"))return;
       const game=String(req.query?.game||"");
       if(!GAMES.has(game))throw Error("Ogiltigt spel.");
-      const rootId=ctx.profile.role==="child"?ctx.profile.parent_id:ctx.user.id;
-      const {data:family,error:fe}=await ctx.client.from("profiles").select("id,nickname").or(`id.eq.${rootId},parent_id.eq.${rootId}`);
-      if(fe)throw fe;
-      const profiles=family||[];
-      const ids=profiles.map(p=>p.id);
-      if(!ids.includes(ctx.user.id))ids.push(ctx.user.id);
-      const nicknames=new Map(profiles.map(p=>[p.id,p.nickname]));
       const scoresTable=game==="quiz"?"quiz_results":"game_highscores";
-      let query=ctx.client.from(scoresTable).select("user_id,score,total,created_at").in("user_id",ids);
+      let query=ctx.client.from(scoresTable).select("user_id,score,total,created_at");
       if(game!=="quiz")query=query.eq("game",game);
-      const {data,error}=await query.order("score",{ascending:false}).order("total",{ascending:false,nullsFirst:false}).order("created_at",{ascending:true}).limit(200);
+      const {data,error}=await query.order("score",{ascending:false}).order("total",{ascending:false,nullsFirst:false}).order("created_at",{ascending:true}).limit(5000);
       if(error)throw error;
+      const ids=[...new Set((data||[]).map(row=>row.user_id))];
+      const {data:profiles,error:pe}=ids.length?await ctx.client.from("profiles").select("id,nickname").in("id",ids):{data:[],error:null};
+      if(pe)throw pe;
+      const nicknames=new Map((profiles||[]).map(profile=>[profile.id,profile.nickname]));
       const best=new Map();
       for(const row of data||[]){
         const existing=best.get(row.user_id);
