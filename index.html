@@ -166,7 +166,10 @@
     :focus-visible { outline:3px solid #d99563; outline-offset:3px }
     @media (max-width:720px) { .wrap { width:min(100% - 36px,1120px) } .hero { padding:55px 0 48px; gap:30px } .art { min-height:265px; border-radius:38% 38% 22px 22px } .sun { width:155px;height:155px;right:34px } .tile { width:205px;padding:22px } section { padding-bottom:54px } }
     @media (max-width:430px) { .wrap { width:min(100% - 30px,1120px) } header.wrap { padding:17px 0 } .brand { font-size:1.3rem } nav { gap:0 } nav a { padding:8px 10px; font-size:.78rem } .hero { padding-top:44px } h1 { font-size:3.35rem } .art { min-height:235px } .quiz-game { padding:20px } .quiz-answers { grid-template-columns:1fr } .quiz-difficulties { grid-template-columns:1fr 1fr } .quiz-difficulty { padding:9px 6px; font-size:.9rem } .worm-game { padding:14px } }
-    .game-launchers { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .game-launchers { grid-template-columns:minmax(0,1fr); gap:14px; }
+    .game-launch-row { display:grid; grid-template-columns:minmax(0,1fr); gap:14px; align-items:stretch; }
+    .game-launch-row.has-highscores { grid-template-columns:minmax(0,1.35fr) minmax(260px,.9fr); }
+    .game-launch-row .leaderboard { margin:0; padding:20px; border:1px solid var(--line); border-radius:18px; background:#fffdf8; box-shadow:0 8px 28px #3a39200b; }
     .game-launcher { display:flex; flex-direction:column; align-items:flex-start; width:100%; min-height:205px; color:var(--ink); font:inherit; text-align:left; cursor:pointer; }
     .game-launcher h3 { margin-top:20px; }
     .game-launcher p { color:var(--muted); }
@@ -179,6 +182,7 @@
     .sentence-levels { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:9px; margin:18px 0; }
     .sentence-level { padding:10px; border:1px solid #e9e3d8; border-radius:12px; background:#fffefa; color:var(--ink); font:inherit; font-weight:750; cursor:pointer; }
     .sentence-level[aria-pressed="true"] { border-color:var(--green); background:#e8f0e3; color:var(--green); box-shadow:inset 0 0 0 1px var(--green); }
+    .sentence-level-note { margin:12px 0 0; padding:11px 14px; border-radius:12px; background:#f4ead5; color:var(--muted); font-size:.9rem; }
     .sentence-tray,.sentence-answer { display:flex; flex-wrap:wrap; gap:9px; min-height:62px; padding:12px; border:1px dashed #c9c4b6; border-radius:14px; background:#f7f5ed; align-content:flex-start; }
     .sentence-answer { min-height:76px; margin-top:12px; background:#f0eee4; }
     .sentence-token { padding:9px 13px; border:1px solid #e2dccf; border-radius:999px; background:white; color:var(--ink); font:inherit; font-weight:700; cursor:grab; touch-action:manipulation; }
@@ -196,6 +200,7 @@
     @media (max-width:720px) { .sentence-levels { grid-template-columns:1fr 1fr; } }
 
     @media (max-width:720px) { .game-launchers { grid-template-columns:1fr; } .game-launcher { min-height:180px; } }
+    @media (max-width:720px) { .game-launch-row.has-highscores { grid-template-columns:minmax(0,1fr); } }
     .spelling-game { background:#fffdf8; border:1px solid #ebe5da; border-radius:20px; padding:26px; box-shadow:0 8px 28px #3a39200b; }
     .spelling-levels { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:9px; margin:18px 0; }
     .spelling-level { padding:10px; border:1px solid #e9e3d8; border-radius:12px; background:#fffefa; color:var(--ink); font:inherit; font-weight:750; cursor:pointer; }
@@ -249,7 +254,7 @@
 <body>
   <header class="wrap">
     <a class="brand" href="#top"><span class="brand-note">Hecho con cariño</span> · En liten början på din spanska.</a>
-    <nav aria-label="Huvudmeny"><a href="account.html" id="account-link" hidden>Mitt konto</a><button type="button" class="nav-button" id="login-button">Logga in</button><button type="button" class="nav-button" id="logout-button" hidden>Logga ut</button></nav>
+    <nav aria-label="Huvudmeny"><a href="progress.html" id="progress-link" hidden>Min utveckling</a><a href="account.html" id="account-link" hidden>Mitt konto</a><button type="button" class="nav-button" id="login-button">Logga in</button><button type="button" class="nav-button" id="logout-button" hidden>Logga ut</button></nav>
   </header>
   <main id="top">
     <div class="wrap hero">
@@ -266,18 +271,30 @@
     <section class="wrap" id="spel">
       <div class="section-head"><h2>Spel</h2><p>Välj ett spel för att öppna det.</p></div>
       <div class="cards game-launchers" id="spelval" role="group" aria-label="Välj ett spel">
-        <button class="card game-launcher" type="button" data-game="quiz" aria-expanded="false" aria-controls="quiz-panel">
+        <div class="game-launch-row" data-game-row="quiz">
+          <button class="card game-launcher" type="button" data-game="quiz" aria-expanded="false" aria-controls="quiz-panel">
           <span class="number">01</span><h3>Quiz: spanska ord</h3><p>Träna på spanska ord och se hur många du kan.</p><span class="launcher-action">Öppna quizet <span aria-hidden="true">→</span></span>
         </button>
-        <button class="card game-launcher" type="button" data-game="worm" aria-expanded="false" aria-controls="worm-panel">
+          <div class="leaderboard" data-highscore-board="quiz" hidden aria-labelledby="quiz-leaderboard-title"><div class="leaderboard-head"><h3 id="quiz-leaderboard-title">Quizets topplista</h3></div><ol id="quiz-leaderboard" aria-live="polite"><li class="leaderboard-empty">Hämtar topplistan…</li></ol><p class="leaderboard-note">Bästa resultat bland inloggade spelare</p></div>
+        </div>
+        <div class="game-launch-row" data-game-row="worm">
+          <button class="card game-launcher" type="button" data-game="worm" aria-expanded="false" aria-controls="worm-panel">
           <span class="number">02</span><h3>Ordorm</h3><p>Styr masken till det spanska ord som passar ledtråden.</p><span class="launcher-action">Öppna Ordorm <span aria-hidden="true">→</span></span>
         </button>
-        <button class="card game-launcher" type="button" data-game="sentence" aria-expanded="false" aria-controls="sentence-panel">
+          <div class="leaderboard" data-highscore-board="worm" hidden aria-labelledby="worm-leaderboard-title"><div class="leaderboard-head"><h3 id="worm-leaderboard-title">Ordormens topplista</h3></div><ol id="worm-leaderboard" aria-live="polite"><li class="leaderboard-empty">Hämtar topplistan…</li></ol><p class="leaderboard-note">Bästa resultat bland inloggade spelare</p></div>
+        </div>
+        <div class="game-launch-row" data-game-row="sentence">
+          <button class="card game-launcher" type="button" data-game="sentence" aria-expanded="false" aria-controls="sentence-panel">
           <span class="number">03</span><h3>Meningsuppbyggnad</h3><p>Dra spanska ord till rätt plats och bygg en korrekt mening.</p><span class="launcher-action">Öppna övningen <span aria-hidden="true">→</span></span>
         </button>
-<button class="card game-launcher" type="button" data-game="spelling" aria-expanded="false" aria-controls="spelling-panel">
+          <div class="leaderboard" data-highscore-board="sentence" hidden aria-labelledby="sentence-leaderboard-title"><div class="leaderboard-head"><h3 id="sentence-leaderboard-title">Meningsbyggnadens topplista</h3></div><ol id="sentence-leaderboard" aria-live="polite"><li class="leaderboard-empty">Hämtar topplistan…</li></ol><p class="leaderboard-note">Bästa resultat bland inloggade spelare</p></div>
+        </div>
+        <div class="game-launch-row" data-game-row="spelling">
+          <button class="card game-launcher" type="button" data-game="spelling" aria-expanded="false" aria-controls="spelling-panel">
           <span class="number">04</span><h3>Stavning</h3><p>Lyssna på ett spanskt ord och skriv det med rätt bokstäver och accenter.</p><span class="launcher-action">Öppna Stavning <span aria-hidden="true">→</span></span>
         </button>
+          <div class="leaderboard" data-highscore-board="spelling" hidden aria-labelledby="spelling-leaderboard-title"><div class="leaderboard-head"><h3 id="spelling-leaderboard-title">Stavningens topplista</h3></div><ol id="spelling-leaderboard" aria-live="polite"><li class="leaderboard-empty">Hämtar topplistan…</li></ol><p class="leaderboard-note">Bästa resultat bland inloggade spelare</p></div>
+        </div>
       </div>
       <div class="game-panels">
     <div class="game-panel" id="quiz-panel" hidden>
@@ -298,7 +315,7 @@
         <p class="quiz-feedback" id="quiz-feedback" aria-live="polite"></p>
         <button class="button quiz-next" id="quiz-next" type="button">Starta quizet</button>
       </div>
-      <div class="leaderboard" data-highscore-board="quiz" hidden aria-labelledby="quiz-leaderboard-title"><div class="leaderboard-head"><h3 id="quiz-leaderboard-title">Quizets topplista</h3></div><ol id="quiz-leaderboard" aria-live="polite"><li class="leaderboard-empty">Hämtar topplistan…</li></ol><p class="leaderboard-note">Bästa resultat i familjen</p></div>
+      
     </div>
     <div class="game-panel" id="worm-panel" hidden>
       <div class="section-head"><h2 id="worm-title">Ordorm</h2><p>Styr masken till det spanska ordet som matchar ledtråden.</p></div>
@@ -310,7 +327,7 @@
         <div class="game-controls"><p>Rätt ord: väx +1 och få ett liv. Fel ord: krymp +1. Krock: förlora ett liv.</p><button class="button" id="start-game">Starta spelet</button></div>
         <div class="touch-controls" aria-label="Pekkontroller"><button type="button" data-dir="up" aria-label="Upp">↑</button><button type="button" data-dir="left" aria-label="Vänster">←</button><button type="button" data-dir="down" aria-label="Ner">↓</button><button type="button" data-dir="right" aria-label="Höger">→</button></div>
       </div>
-      <div class="leaderboard" data-highscore-board="worm" hidden aria-labelledby="worm-leaderboard-title"><div class="leaderboard-head"><h3 id="worm-leaderboard-title">Ordormens topplista</h3></div><ol id="worm-leaderboard" aria-live="polite"><li class="leaderboard-empty">Hämtar topplistan…</li></ol><p class="leaderboard-note">Bästa resultat i familjen</p></div>
+      
     </div>
 
     <div class="game-panel" id="sentence-panel" hidden>
@@ -325,13 +342,14 @@
           <button class="sentence-level" type="button" data-sentence-level="medium" aria-pressed="false">Medel</button>
           <button class="sentence-level" type="button" data-sentence-level="advanced" aria-pressed="false">Avancerad</button>
         </div>
+        <p class="sentence-level-note">Nivåerna är webbplatsens egna träningssteg. De motsvarar inte årskurser, betyg eller skolans bedömning.</p>
         <p class="sentence-outcome" id="sentence-outcome" aria-live="polite"></p>
         <h4>Ord att välja</h4><div class="sentence-tray" id="sentence-tray" aria-label="Ord att välja"></div>
         <h4>Din mening</h4><div class="sentence-answer" id="sentence-answer" aria-label="Din mening. Dra ord hit."></div>
         <div class="sentence-actions"><button class="button" id="sentence-check" type="button">Kontrollera meningen</button><button class="button" id="sentence-reset" type="button">Börja om</button></div>
         <p class="sentence-feedback" id="sentence-feedback" aria-live="polite"></p>
       </div>
-      <div class="leaderboard" data-highscore-board="sentence" hidden aria-labelledby="sentence-leaderboard-title"><div class="leaderboard-head"><h3 id="sentence-leaderboard-title">Meningsbyggnadens topplista</h3></div><ol id="sentence-leaderboard" aria-live="polite"><li class="leaderboard-empty">Hämtar topplistan…</li></ol><p class="leaderboard-note">Bästa resultat i familjen</p></div>
+      
     </div>
     <div class="game-panel" id="spelling-panel" hidden>
       <div class="section-head"><h2>Stavning</h2><p>Lyssna noga och skriv ordet så korrekt du kan.</p></div>
@@ -355,7 +373,7 @@
         <div class="sentence-actions"><button class="button" id="spelling-check" type="button">Kontrollera</button><button class="button" id="spelling-next" type="button" hidden>Nästa ord</button></div>
         <p class="spelling-feedback" id="spelling-feedback" aria-live="polite"></p>
       </div>
-      <div class="leaderboard" data-highscore-board="spelling" hidden aria-labelledby="spelling-leaderboard-title"><div class="leaderboard-head"><h3 id="spelling-leaderboard-title">Stavningens topplista</h3></div><ol id="spelling-leaderboard" aria-live="polite"><li class="leaderboard-empty">Hämtar topplistan…</li></ol><p class="leaderboard-note">Bästa resultat i familjen</p></div>
+      
     </div>
       </div>
     </section>
@@ -378,38 +396,15 @@
     </div>
   </footer>
   <script src="wordbank.js"></script>
+  <script src="sentence-data.js"></script>
   <script>
 
-    const sentenceLevels = {
-      beginner: { title:'Nybörjare', outcome:'Efter den här nivån kan du bygga korta meningar med subjekt, verb och objekt.', sentences:[
-        {es:'Yo como pan', sv:'Jag äter bröd'},
-        {es:'Ella bebe agua', sv:'Hon dricker vatten'},
-        {es:'El niño lee libros', sv:'Pojken läser böcker'},
-        {es:'Nosotros vemos gatos', sv:'Vi ser katter'}
-      ]},
-      easy: { title:'Lätt', outcome:'Efter den här nivån kan du placera enkla beskrivningar och tids- eller platsord i en mening.', sentences:[
-        {es:'La niña come una manzana roja', sv:'Flickan äter ett rött äpple'},
-        {es:'Mi hermano estudia español hoy', sv:'Min bror studerar spanska i dag'},
-        {es:'Nosotros caminamos por el parque', sv:'Vi promenerar genom parken'},
-        {es:'El perro pequeño duerme aquí', sv:'Den lilla hunden sover här'}
-      ]},
-      medium: { title:'Medel', outcome:'Efter den här nivån kan du bygga frågor och nekande meningar med vanliga verbböjningar.', sentences:[
-        {es:'¿Dónde vive tu hermana?', sv:'Var bor din syster?'},
-        {es:'No quiero café ahora', sv:'Jag vill inte ha kaffe nu'},
-        {es:'¿Qué hacen ustedes mañana?', sv:'Vad gör ni i morgon?'},
-        {es:'Mis amigos nunca llegan tarde', sv:'Mina vänner kommer aldrig sent'}
-      ]},
-      advanced: { title:'Avancerad', outcome:'Efter den här nivån kan du placera pronomen och bindeord i längre meningar med bisatser.', sentences:[
-        {es:'Se lo doy cuando llega', sv:'Jag ger det till honom när han kommer'},
-        {es:'Quiero que me cuentes la verdad', sv:'Jag vill att du berättar sanningen för mig'},
-        {es:'Aunque llueve, nosotros vamos al mercado', sv:'Även om det regnar går vi till marknaden'},
-        {es:'La película que vimos ayer fue muy divertida', sv:'Filmen som vi såg i går var mycket rolig'}
-      ]}
-    };
-    let sentenceLevel='beginner', sentenceIndex=0, sentenceScore=0, sentenceLocked=false, sentenceSolved=false, sentenceSelected=null, sentenceAdvanceTimer=null;
+    const sentenceLevels = window.HolaSentenceBank;
+    let sentenceLevel='beginner', sentenceIndex=0, sentenceScore=0, sentenceLocked=false, sentenceSolved=false, sentenceSelected=null, sentenceAdvanceTimer=null, sentenceRoundItems=[], sentenceSessionId=null, sentenceTrackingReady=false, sentenceRoundComplete=false, sentenceSaving=false, sentencePendingAttemptId=null;
     const sentenceTray=document.querySelector('#sentence-tray'), sentenceAnswer=document.querySelector('#sentence-answer');
     const sentenceFeedback=document.querySelector('#sentence-feedback');
-    const sentenceShuffle=items=>[...items].sort(()=>Math.random()-.5);
+    const sentenceShuffle=items=>{const copy=[...items];for(let i=copy.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[copy[i],copy[j]]=[copy[j],copy[i]];}return copy;};
+    const sentenceProgressApi=body=>SpanskaAuth.api('/api/sentence-progress',body);
     const makeSentenceToken=(word,index)=>{
       const button=document.createElement('button'); button.type='button'; button.className='sentence-token'; button.textContent=word;
       button.draggable=true; button.dataset.word=word; button.dataset.id=String(index);
@@ -436,7 +431,7 @@
     const moveSentenceToken=(token,target,before=null,after=false)=>{
       if(!token||!target)return;
       if(before&&before!==token)target.insertBefore(token,after?before.nextSibling:before); else target.append(token);
-      sentenceLocked=false; sentenceSelected=null;
+      sentenceLocked=false; sentencePendingAttemptId=null; sentenceSelected=null;
       document.querySelectorAll('.sentence-token').forEach(item=>item.removeAttribute('aria-pressed'));
       token.focus();
     };
@@ -454,34 +449,47 @@
     });
     const renderSentence=()=>{
       clearTimeout(sentenceAdvanceTimer); sentenceAdvanceTimer=null;
-      const set=sentenceLevels[sentenceLevel], item=set.sentences[sentenceIndex%set.sentences.length];
-      sentenceLocked=false; sentenceSolved=false; sentenceSelected=null; sentenceFeedback.textContent=''; sentenceFeedback.dataset.tone='';
-      document.querySelector('#sentence-count').textContent=`${set.title} · Uppgift ${sentenceIndex+1} av 15`;
-      document.querySelector('#sentence-score').textContent=`Rätt: ${sentenceScore}`;
+      const set=sentenceLevels[sentenceLevel], item=sentenceRoundItems[sentenceIndex]; if(!item)return;
+      sentenceLocked=false; sentenceSolved=false; sentenceSaving=false; sentencePendingAttemptId=null; sentenceSelected=null; sentenceFeedback.textContent=''; sentenceFeedback.dataset.tone='';
+      document.querySelector('#sentence-count').textContent=set.title+' · Uppgift '+(sentenceIndex+1)+' av 15';
+      document.querySelector('#sentence-score').textContent='Rätt: '+sentenceScore;
       document.querySelector('#sentence-title').textContent='Uppgift';
-      document.querySelector('#sentence-prompt').textContent=`Översätt: ${item.sv}`;
+      document.querySelector('#sentence-prompt').textContent='Översätt: '+item.sv;
       document.querySelector('#sentence-outcome').textContent=set.outcome;
-      sentenceAnswer.classList.remove('is-correct');
-      sentenceAnswer.replaceChildren();
-      const words=item.es.split(' ');
-      let shuffled=sentenceShuffle(words);
-      if(shuffled.join(' ')===words.join(' '))shuffled=sentenceShuffle(words);
+      document.querySelector('#sentence-check').hidden=false;
+      document.querySelector('#sentence-reset').textContent='Börja om';
+      sentenceAnswer.classList.remove('is-correct'); sentenceAnswer.replaceChildren();
+      const words=item.es.split(' ');let shuffled=sentenceShuffle(words);if(shuffled.join(' ')===words.join(' '))shuffled=sentenceShuffle(words);
       sentenceTray.replaceChildren(...shuffled.map((word,index)=>makeSentenceToken(word,index)));
     };
-    document.querySelectorAll('.sentence-level').forEach(button=>button.addEventListener('click',()=>{
-      sentenceLevel=button.dataset.sentenceLevel; sentenceIndex=0; sentenceScore=0;
-      document.querySelectorAll('.sentence-level').forEach(item=>item.setAttribute('aria-pressed',String(item===button)));renderSentence();
-    }));
-    document.querySelector('#sentence-check').addEventListener('click',()=>{
-      if(sentenceLocked)return;
-      const expected=sentenceLevels[sentenceLevel].sentences[sentenceIndex%sentenceLevels[sentenceLevel].sentences.length].es;
-      const actual=[...sentenceAnswer.children].map(token=>token.dataset.word).join(' ');
-      if(actual===expected){if(!sentenceSolved){sentenceScore++;sentenceSolved=true;}sentenceLocked=true;sentenceAnswer.classList.add('is-correct');sentenceFeedback.textContent=`✓ Rätt svar! ${expected}. Nästa mening...`;sentenceFeedback.dataset.tone='success';document.querySelector('#sentence-score').textContent=`Rätt: ${sentenceScore}`;sentenceAdvanceTimer=setTimeout(()=>{if(sentenceIndex===14){saveHighScore('sentence',sentenceScore,15);sentenceFeedback.textContent='✓ Rundan klar! Ditt resultat är sparat.';sentenceScore=0;sentenceIndex=0;}else sentenceIndex++;renderSentence();},1700);}
-      else {sentenceFeedback.textContent='Inte riktigt. Ändra ordningen och kontrollera meningen igen.';sentenceFeedback.dataset.tone='error';}
+    const finishSentenceRound=async()=>{
+      sentenceRoundComplete=true;sentenceTrackingReady=false;sentenceLocked=true;clearTimeout(sentenceAdvanceTimer);sentenceAdvanceTimer=null;
+      document.querySelector('#sentence-count').textContent='Rundan klar · '+sentenceLevels[sentenceLevel].title;
+      document.querySelector('#sentence-check').hidden=true;document.querySelector('#sentence-reset').textContent='Spela en ny runda';
+      try{await sentenceProgressApi({action:'complete',sessionId:sentenceSessionId});await saveHighScore('sentence',sentenceScore,15);sentenceFeedback.textContent='Rundan klar! Du klarade '+sentenceScore+' av 15 uppgifter. Det här är ett övningsresultat, inte ett betyg. '+sentenceLevels[sentenceLevel].outcome;sentenceFeedback.dataset.tone='success';}
+      catch{sentenceFeedback.textContent='Rundan är klar, men sammanställningen kunde inte sparas just nu. Dina svar kan finnas kvar i historiken.';sentenceFeedback.dataset.tone='error';}
+    };
+    const startSentenceRound=async()=>{
+      clearTimeout(sentenceAdvanceTimer);sentenceAdvanceTimer=null;
+      sentenceRoundItems=sentenceShuffle(sentenceLevels[sentenceLevel].sentences).slice(0,15);
+      sentenceIndex=0;sentenceScore=0;sentenceLocked=true;sentenceSolved=false;sentenceSaving=false;sentenceRoundComplete=false;sentenceTrackingReady=false;sentencePendingAttemptId=null;sentenceSessionId=crypto.randomUUID();
+      document.querySelectorAll('.sentence-level').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.sentenceLevel===sentenceLevel)));
+      renderSentence();sentenceLocked=true;
+      try{await sentenceProgressApi({action:'start',sessionId:sentenceSessionId,level:sentenceLevel,sentenceIds:sentenceRoundItems.map(item=>item.id)});sentenceTrackingReady=true;sentenceLocked=false;sentenceFeedback.textContent='';}
+      catch{sentenceFeedback.textContent='Övningshistoriken kunde inte startas. Kontrollera anslutningen och försök igen.';sentenceFeedback.dataset.tone='error';}
+    };
+    document.querySelectorAll('.sentence-level').forEach(button=>button.addEventListener('click',()=>{sentenceLevel=button.dataset.sentenceLevel;startSentenceRound();}));
+    document.querySelector('#sentence-check').addEventListener('click',async()=>{
+      if(sentenceLocked||sentenceSaving||sentenceRoundComplete||!sentenceTrackingReady)return;
+      const item=sentenceRoundItems[sentenceIndex],actual=[...sentenceAnswer.children].map(token=>token.dataset.word).join(' '),correct=actual===item.es;
+      sentenceSaving=true;sentenceLocked=true;sentencePendingAttemptId ||= crypto.randomUUID();
+      try{await sentenceProgressApi({action:'answer',attemptId:sentencePendingAttemptId,sessionId:sentenceSessionId,level:sentenceLevel,sentenceId:item.id,correct});}
+      catch{sentenceSaving=false;sentenceLocked=false;sentenceFeedback.textContent='Svaret kunde inte sparas. Kontrollera anslutningen och försök igen.';sentenceFeedback.dataset.tone='error';return;}
+      sentencePendingAttemptId=null;sentenceSaving=false;
+      if(correct){sentenceScore++;sentenceSolved=true;sentenceLocked=true;sentenceAnswer.classList.add('is-correct');sentenceFeedback.textContent='✓ Rätt svar! '+item.es+'. Nästa mening...';sentenceFeedback.dataset.tone='success';document.querySelector('#sentence-score').textContent='Rätt: '+sentenceScore;sentenceAdvanceTimer=setTimeout(()=>{if(sentenceIndex===14)finishSentenceRound();else{sentenceIndex++;renderSentence();}},1200);}
+      else{sentenceLocked=false;sentenceFeedback.textContent='Inte riktigt. Ändra ordningen och kontrollera meningen igen.';sentenceFeedback.dataset.tone='error';}
     });
-    document.querySelector('#sentence-reset').addEventListener('click',renderSentence);
-    renderSentence();
-
+    document.querySelector('#sentence-reset').addEventListener('click',()=>{if(sentenceRoundComplete){startSentenceRound();return;}if(sentenceSaving||sentenceLocked)return;renderSentence();});
     const spellingLevels = {
       beginner: { outcome:'Efter den här nivån kan du stava korta, vanliga ord utan accenttecken.', words:['sol','mar','pan','flor','luz','casa'] },
       easy: { outcome:'Efter den här nivån kan du stava vanliga ord med flera stavelser och mönster som que och gue.', words:['queso','parque','guitarra','amiga','pequeño','guerra'] },
@@ -561,6 +569,7 @@
         item.setAttribute('aria-expanded', String(active));
         document.querySelector(`#${item.dataset.game}-panel`).hidden = !active;
       });
+      if (open && button.dataset.game === 'sentence' && !sentenceSessionId) startSentenceRound();
       if (!open || button.dataset.game !== 'worm') {
         if (running) {
           clearInterval(tick); tick = null; running = false; paused = true;
@@ -735,6 +744,7 @@
       const loginButton = document.querySelector("#login-button");
       const logoutButton = document.querySelector("#logout-button");
       const accountLink = document.querySelector("#account-link");
+      const progressLink = document.querySelector("#progress-link");
       const dialog = document.querySelector("#login-dialog");
       const notice = document.querySelector("#login-notice");
       let authenticated = false;
@@ -775,6 +785,8 @@
         loginButton.hidden = authenticated;
         logoutButton.hidden = !authenticated;
         accountLink.hidden = true;
+        progressLink.hidden = !authenticated;
+        document.querySelectorAll('.game-launch-row').forEach(row => row.classList.toggle('has-highscores', authenticated));
         document.querySelectorAll('[data-highscore-board]').forEach(board => { board.hidden = !authenticated; });
         if (authenticated) {
           await Promise.all(['quiz','worm','sentence','spelling'].map(loadHighScores));

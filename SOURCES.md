@@ -58,24 +58,68 @@ HolaWordBank.getDistractors('vatten', 3, { topic: 'mat och dryck' });
 
 Meningsbyggnadsspelets meningar och svenska ledtrådar är redaktionella exempel skrivna för webbplatsen. De är inte hämtade från en extern text eller korpus. Orden och grammatikformerna valdes för övningens egna steg. RAE och ASALE:s [Nueva gramática de la lengua española](https://www.rae.es/sites/default/files/Sala_prensa_Dosier_Gramatica_2009.pdf) och [Diccionario de la lengua española (DLE)](https://dle.rae.es/) används som språkstöd; inga formuleringar återges som citat. De fyra svårighetsstegen är webbplatsens egna och motsvarar inte officiella skolår eller betyg.
 
-Exempelparen i spelet:
+Exempelbanken innehåller 15 meningar i vart och ett av webbplatsens fyra egna träningssteg. Samtliga är redaktionella exempel skrivna för webbplatsen:
 
 1. `Yo como pan` — Jag äter bröd.
 2. `Ella bebe agua` — Hon dricker vatten.
 3. `El niño lee libros` — Pojken läser böcker.
 4. `Nosotros vemos gatos` — Vi ser katter.
-5. `La niña come una manzana roja` — Flickan äter ett rött äpple.
-6. `Mi hermano estudia español hoy` — Min bror studerar spanska i dag.
-7. `Nosotros caminamos por el parque` — Vi promenerar genom parken.
-8. `El perro pequeño duerme aquí` — Den lilla hunden sover här.
-9. `¿Dónde vive tu hermana?` — Var bor din syster?
-10. `No quiero café ahora` — Jag vill inte ha kaffe nu.
-11. `¿Qué hacen ustedes mañana?` — Vad gör ni i morgon?
-12. `Mis amigos nunca llegan tarde` — Mina vänner kommer aldrig sent.
-13. `Se lo doy cuando llega` — Jag ger det till honom när han kommer.
-14. `Quiero que me cuentes la verdad` — Jag vill att du berättar sanningen för mig.
-15. `Aunque llueve, nosotros vamos al mercado` — Även om det regnar går vi till marknaden.
-16. `La película que vimos ayer fue muy divertida` — Filmen som vi såg i går var mycket rolig.
+5. `Tú comes una manzana` — Du äter ett äpple.
+6. `Mi madre canta` — Min mamma sjunger.
+7. `El gato duerme` — Katten sover.
+8. `Nosotros vivimos aquí` — Vi bor här.
+9. `Ana abre la puerta` — Ana öppnar dörren.
+10. `El profesor habla español` — Läraren talar spanska.
+11. `Los niños juegan en el parque` — Barnen leker i parken.
+12. `Yo tengo un perro` — Jag har en hund.
+13. `Marta escribe una carta` — Marta skriver ett brev.
+14. `Ellos comen arroz` — De äter ris.
+15. `La casa tiene una ventana` — Huset har ett fönster.
+16. `La niña come una manzana roja` — Flickan äter ett rött äpple.
+17. `Mi hermano estudia español hoy` — Min bror studerar spanska i dag.
+18. `Nosotros caminamos por el parque` — Vi promenerar genom parken.
+19. `El perro pequeño duerme aquí` — Den lilla hunden sover här.
+20. `El chico prepara una cena deliciosa` — Pojken lagar en utsökt middag.
+21. `Mi amiga compra flores en el mercado` — Min vän köper blommor på marknaden.
+22. `Los estudiantes trabajan juntos en clase` — Eleverna arbetar tillsammans i klassrummet.
+23. `La familia visita a sus abuelos los domingos` — Familjen hälsar på sina morföräldrar på söndagar.
+24. `El autobús llega a la estación a las ocho` — Bussen kommer till stationen klockan åtta.
+25. `Nosotros desayunamos en la terraza` — Vi äter frukost på terrassen.
+26. `Mi padre cocina una sopa caliente` — Min pappa lagar en varm soppa.
+27. `La tienda pequeña abre por la tarde` — Den lilla butiken öppnar på eftermiddagen.
+28. `Los turistas buscan un hotel cerca del centro` — Turisterna letar efter ett hotell nära centrum.
+29. `Ella lleva una chaqueta azul en invierno` — Hon har på sig en blå jacka på vintern.
+30. `El partido empieza después de la cena` — Matchen börjar efter middagen.
+31. `¿Dónde vive tu hermana?` — Var bor din syster?.
+32. `No quiero café ahora` — Jag vill inte ha kaffe nu.
+33. `¿Qué hacen ustedes mañana?` — Vad gör ni i morgon?.
+34. `Mis amigos nunca llegan tarde` — Mina vänner kommer aldrig sent.
+35. `¿Por qué estudias español?` — Varför studerar du spanska?.
+36. `No tenemos tiempo esta mañana` — Vi har inte tid i morse.
+37. `¿A qué hora sale el tren?` — Vilken tid går tåget?.
+38. `Los vecinos nunca hacen ruido por la noche` — Grannarna väsnas aldrig på natten.
+39. `Mi hermana no puede venir porque trabaja` — Min syster kan inte komma eftersom hon arbetar.
+40. `¿Quién quiere jugar conmigo?` — Vem vill spela med mig?.
+41. `No encuentro mis llaves en la mochila` — Jag hittar inte mina nycklar i ryggsäcken.
+42. `Cuando hace frío, bebemos té caliente` — När det är kallt dricker vi varmt te.
+43. `¿Cuántos libros has leído este mes?` — Hur många böcker har du läst den här månaden?.
+44. `No me gusta esperar en la fila` — Jag tycker inte om att stå i kö.
+45. `¿Dónde dejaron ustedes las bicicletas?` — Var lämnade ni cyklarna?.
+46. `Se lo doy cuando llega` — Jag ger det till honom när han kommer.
+47. `Quiero que me cuentes la verdad` — Jag vill att du berättar sanningen för mig.
+48. `Aunque llueve, nosotros vamos al mercado` — Även om det regnar går vi till marknaden.
+49. `La película que vimos ayer fue muy divertida` — Filmen som vi såg i går var mycket rolig.
+50. `Aunque estoy cansado, termino el ejercicio antes de cenar` — Även om jag är trött gör jag klart övningen före middagen.
+51. `Mi abuela me cuenta historias que aprendió de su madre` — Min mormor berättar historier för mig som hon lärde sig av sin mamma.
+52. `Si tenemos tiempo, visitaremos el museo que está junto al río` — Om vi har tid besöker vi museet som ligger vid floden.
+53. `No sabía que tu hermana ya había llegado a casa` — Jag visste inte att din syster redan hade kommit hem.
+54. `El libro que me recomendaste explica cómo se prepara este plato` — Boken som du rekommenderade förklarar hur man lagar den här rätten.
+55. `Mientras los niños juegan en el jardín, nosotros ponemos la mesa` — Medan barnen leker i trädgården dukar vi bordet.
+56. `Quiero saber si puedes ayudarme con la tarea que tenemos para mañana` — Jag vill veta om du kan hjälpa mig med läxan som ska vara klar till i morgon.
+57. `La profesora nos pidió que escribiéramos una historia sobre un viaje` — Läraren bad oss skriva en berättelse om en resa.
+58. `Después de que termine la película, iremos a buscar algo de comer` — När filmen är slut går vi och letar efter något att äta.
+59. `Aunque no conozco bien la ciudad, puedo encontrar la estación` — Även om jag inte känner staden så bra kan jag hitta stationen.
+60. `Mi amigo dijo que llamaría cuando llegara a la oficina` — Min vän sa att han skulle ringa när han kom till kontoret.
 
 ### Stavningsövningens ordlista
 
