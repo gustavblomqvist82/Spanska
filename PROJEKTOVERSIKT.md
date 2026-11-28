@@ -24,6 +24,26 @@ Webbplatsen är en liten, ramverksfri webbapp. HTML, CSS och JavaScript ligger i
 
 Vercel publicerar de statiska sidorna och kör `api/` som serverfunktioner. Supabase Auth hanterar inloggning; Supabase Database lagrar profiler, quizdata, topplistor och privata övningsförsök. Webbplatsens publika URL är `spanska.vercel.app`.
 
+### Samarbete och ansvar mellan GitHub, Vercel och Supabase
+
+| Tjänst | Huvudansvar i projektet | Äger inte |
+| --- | --- | --- |
+| **GitHub** | Förvarar versionshanterad källkod och projektinstruktioner. Grenar och pull requests används för ändringar och granskning. `main` är källan för produktionskod. | Kör inte webbplatsen för besökare och lagrar inte konton eller spelresultat. |
+| **Vercel** | Hämtar koden från GitHub, bygger/publicerar webbplatsen och kör serverfunktionerna i `api/`. Skapar förhandsvisning för grenar/PR:ar och produktionsdeployment från `main`. Lagrar runtime-inställningar och serverhemligheter som miljövariabler. | Är inte projektets källa till koden eller databasen för användarkonton och resultat. |
+| **Supabase** | Hanterar Auth (inloggning och identitet) och Postgres-databasen (profiler, familjerelationer, quizsessioner, resultat, highscores och privata övningsförsök). RLS och tabellbehörigheter skyddar data. | Bygger eller publicerar inte webbplatsens HTML/CSS/JavaScript. |
+
+**När kod ändras:** utvecklaren gör en ändring på en `codex/`-gren och öppnar en PR i GitHub. Vercel känner av grenen/PR:en och bygger en separat Preview-URL. Den kan granskas utan att ändra produktionen. När PR:en uttryckligen slås ihop till `main` skapar GitHub/Vercel-integrationen en ny Production-deployment. En lyckad Preview innebär alltså inte i sig att produktionen har ändrats.
+
+**När en användare använder sidan:**
+
+1. Webbläsaren hämtar sidfiler och `/api/*`-funktioner från Vercel.
+2. Klientkoden använder Supabase Project URL och en **publishable key** från `supabase-config.js` för att logga in via Supabase Auth. Sessionen/token används av webbläsaren för inloggade API-anrop.
+3. Föräldraregistrering och andra skyddade operationer går till Vercels serverfunktioner. API-anrop från inloggade användare skickar sin bearer-token.
+4. Vercel-funktionen validerar token med Supabase Auth, hämtar spelarens profil/roll och utför den tillåtna databasoperationen.
+5. Servern returnerar ett begränsat JSON-svar till webbläsaren. GitHub deltar inte i dessa live-anrop.
+
+**Nycklar och gränser:** Project URL och publishable key är avsedda att finnas i webbläsarkoden. `SUPABASE_SECRET_KEY` får bara finnas som Vercel-miljövariabel för serverfunktionerna; den får aldrig läggas i HTML, JavaScript som skickas till webbläsaren eller GitHub. `PARENT_INVITE_CODE` lagras också i Vercels miljö och kontrolleras av servern. Secret key kan gå förbi RLS, därför måste varje API-endpoint först kontrollera identitet, roll och vid behov att barnet tillhör just den föräldern. GitHub förvarar källkod, Vercel kör appen och Supabase ansvarar för användardata — de här rollerna ska inte blandas ihop.
+
 ## 2. Konton och föräldrakontroll
 
 ### Föräldrakonto
