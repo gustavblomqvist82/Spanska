@@ -29,6 +29,16 @@
     .notice{min-height:24px;margin:12px 0 0;color:#9d4634;font-size:.9rem}.notice[data-tone=success]{color:var(--green)}
     .links{display:grid;gap:10px;margin-top:18px;padding-top:17px;border-top:1px solid var(--line);font-size:.92rem}
     .links a:hover{color:var(--green)}
+    #privacy-dialog{width:min(760px,calc(100% - 28px));max-width:none;max-height:calc(100dvh - 28px);overflow:auto;padding:30px;border:1px solid #ebe5da;border-radius:22px;background:#fffdf8;color:var(--ink);box-shadow:0 22px 70px #20291f35}
+    #privacy-dialog::backdrop{background:#20291f70;backdrop-filter:blur(3px)}
+    #privacy-dialog h2{margin:0;font-family:Georgia,"Times New Roman",serif;font-size:2rem;font-weight:500;letter-spacing:-.055em}
+    .dialog-head{display:flex;align-items:flex-start;justify-content:space-between;gap:15px}
+    .dialog-copy{margin:6px 0 20px;color:var(--muted)}
+    .dialog-close{width:38px;height:38px;border:1px solid var(--line);border-radius:50%;background:#fffefa;color:var(--ink);font-size:1.2rem;cursor:pointer}
+    .privacy-dialog-content{padding-top:18px;border-top:1px solid var(--line);color:var(--muted);line-height:1.65}
+    .privacy-dialog-content p{margin:0 0 14px}.privacy-dialog-content p:last-child{margin-bottom:0}
+    .privacy-dialog-content a{color:var(--green);text-underline-offset:3px}
+    @media(max-width:480px){#privacy-dialog{padding:23px}}
     @media(max-width:480px){body{padding:16px}.card{padding:28px 22px 24px;border-radius:20px}h1{font-size:1.8rem}}
   </style>
 </head>
@@ -42,15 +52,29 @@
       <div class="field"><label for="username">Användarnamn</label><input id="username" name="username" minlength="3" maxlength="30" autocomplete="username" placeholder="Välj ett användarnamn" required></div>
       <div class="field"><label for="password">Lösenord</label><input id="password" name="password" type="password" minlength="8" autocomplete="new-password" placeholder="Minst 8 tecken" required><p class="hint">Använd minst 8 tecken.</p></div>
       <div class="field"><label for="invite-code">Inbjudningskod</label><input id="invite-code" name="inviteCode" autocomplete="off" placeholder="Ange din inbjudningskod" required></div>
-      <label class="consent"><input name="guardianConsent" type="checkbox" required><span>Jag är vårdnadshavare och har läst <a href="privacy.html">integritetstexten</a>. Jag godkänner behandlingen enligt den.</span></label>
+      <label class="consent"><input name="guardianConsent" type="checkbox" required><span>Jag är vårdnadshavare och har läst <a href="privacy.html" class="open-privacy-dialog">integritetstexten</a>. Jag godkänner behandlingen enligt den.</span></label>
       <button class="submit" type="submit">Skapa konto</button>
       <p class="notice" id="msg" role="status" aria-live="polite"></p>
     </form>
-    <nav class="links" aria-label="Kontohjälp"><a href="login.html">Till inloggning</a><a href="privacy.html">Läs om integritet</a></nav>
+    <nav class="links" aria-label="Kontohjälp"><a href="login.html">Till inloggning</a><a href="privacy.html" class="open-privacy-dialog">Läs om integritet</a></nav>
   </main>
+  <dialog id="privacy-dialog" aria-labelledby="privacy-dialog-title">
+    <div class="dialog-head">
+      <div><h2 id="privacy-dialog-title">Integritet</h2><p class="dialog-copy">Information om kontouppgifter och övningsresultat.</p></div>
+      <button type="button" class="dialog-close" id="close-privacy-dialog" aria-label="Stäng integritetsinformationen">×</button>
+    </div>
+    <div class="privacy-dialog-content" id="register-privacy-content"></div>
+  </dialog>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js"></script><script src="auth-common.js"></script>
+  <script src="supabase-config.js"></script><script src="auth-common.js"></script><script src="privacy-content.js"></script>
   <script>
+    const privacyDialog=document.querySelector("#privacy-dialog"),privacyContent=document.querySelector("#register-privacy-content");
+    document.querySelector("#close-privacy-dialog").addEventListener("click",()=>privacyDialog.close());
+    document.querySelectorAll(".open-privacy-dialog").forEach(link=>link.addEventListener("click",event=>{
+      event.preventDefault();
+      if(!privacyContent.dataset.loaded){HolaPrivacy.render(privacyContent);privacyContent.dataset.loaded="true";}
+      privacyDialog.showModal();
+    }));
     document.querySelector("#reg").addEventListener("submit",async event=>{
       event.preventDefault();
       const form=event.currentTarget,fields=new FormData(form),msg=document.querySelector("#msg"),button=form.querySelector("button");
