@@ -182,7 +182,7 @@ Den här översikten är en introduktion, inte en ersättning för källkoden, p
 
 ### Vad assistenten behöver läsa
 
-1. **Det aktuella GitHub-repot:** `gustavblomqvist82/Spanska`. Börja med aktuell `main), grenar och öppna pull requests; utgå inte från att en lokal kopia är aktuell.
+1. **Det aktuella GitHub-repot:** `gustavblomqvist82/Spanska`. Börja med aktuell `main`, grenar och öppna pull requests; utgå inte från att en lokal kopia är aktuell.
 2. **`AGENTS.md`:** arbetsflöde, godkännanden och projektets regler. Följ det även om en annan AI:s standardarbetsflöde skiljer sig.
 3. **`PROJEKTOVERSIKT.md`:** systemets delar, funktioner, ansvarsfördelning och kända avgränsningar.
 4. **`SOURCES.md`:** obligatorisk läsning före ändringar i orddata, pedagogiskt innehåll eller källhänvisningar.
