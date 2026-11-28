@@ -176,3 +176,37 @@ Se `SOURCES.md` för fullständig citering, licenser, Lexin-ID:n, källänkar oc
 6. **Mobilappar ingår inte.** Det här är en webbplats. Särskild mobil-layout och appar för iOS/Android ligger utanför den nuvarande arbetsfasen.
 7. `SUPABASE-SETUP.md` säger också att en samlad resultatsida/export hör till ett senare steg; en privat utvecklingssida finns nu för Meningsuppbyggnad. Export och motsvarande framstegsöversikter för de andra spelen återstår.
 
+## 9. Överlämning till en annan AI-assistent
+
+Den här översikten är en introduktion, inte en ersättning för källkoden, projektreglerna eller tjänsternas egna inställningar. För att fortsätta arbetet säkert och med aktuell information behöver nästa assistent följande:
+
+### Vad assistenten behöver läsa
+
+1. **Det aktuella GitHub-repot:** `gustavblomqvist82/Spanska`. Börja med aktuell `main), grenar och öppna pull requests; utgå inte från att en lokal kopia är aktuell.
+2. **`AGENTS.md`:** arbetsflöde, godkännanden och projektets regler. Följ det även om en annan AI:s standardarbetsflöde skiljer sig.
+3. **`PROJEKTOVERSIKT.md`:** systemets delar, funktioner, ansvarsfördelning och kända avgränsningar.
+4. **`SOURCES.md`:** obligatorisk läsning före ändringar i orddata, pedagogiskt innehåll eller källhänvisningar.
+5. **`SUPABASE-SETUP.md` och `supabase/migrations/`:** databasens installation och schema. Jämför installationsdokumentationen med migreringarna eftersom äldre instruktioner kan vara inaktuella.
+6. **Berörda HTML-, JavaScript- och API-filer:** kontrollera den faktiska implementationen innan du beskriver eller ändrar en funktion.
+7. **Öppna PR:ar och deras Vercel-förhandsvisningar:** de kan innehålla arbete som ännu inte finns i `main`. Kontrollera om en ändring redan är under granskning innan du börjar om.
+
+`kom ihåg lista.md` är en backlog med sådant som kan arbetas vidare med. Backlogpunkter är inte automatiskt genomförda krav eller funktioner; be projektägaren om prioritering när nästa uppgift inte redan är tydligt bestämd.
+
+### Hur projektägaren ger repoåtkomst
+
+- För **läsning och analys**: dela GitHub-länken till repot och anslut eller auktorisera GitHub i den AI-produkt som används, om den har en sådan integration. Kontrollera att integrationen får läsa just repot.
+- För **kodändringar**: ge assistenten åtkomst till repot genom den godkända GitHub-integrationen eller dess arbetsmiljö. Be den skapa/arbeta på en separat `codex/`-gren och öppna en PR mot `main). Granska ändringen och Vercel Preview innan du beslutar om sammanslagning.
+- Om AI:n saknar GitHub-integration kan projektägaren själv klona repot i AI:ns godkända utvecklingsmiljö och dela nödvändiga filer. Den kopian måste hämtas från aktuell gren/PR; en gammal lokal kopia kan sakna viktiga uppdateringar.
+- Dela relevanta beslut eller konversationsutdrag separat. En ny AI får inte automatiskt tillgång till den här Codex-konversationens historik bara genom att läsa GitHub-repot.
+
+### Vercel- och Supabase-åtkomst
+
+- **Vercel:** för att granska en ändring räcker det normalt att dela PR:en och dess Preview-URL. Om assistenten måste läsa projektinställningar eller loggar, auktorisera den via en officiell Vercel-integration med minsta behörighet som uppgiften kräver. Deployment till produktion får inte göras utan projektägarens uttryckliga godkännande.
+- **Supabase:** för kodgranskning räcker normalt schema, migreringar och konfigurationens icke-hemliga variabelnamn i repot. Ge bara dashboardåtkomst om en specifik databasuppgift kräver det, helst med minsta möjliga behörighet. Databasändringar och migreringar mot produktion kräver uttryckligt godkännande.
+- **Lämna aldrig ut** lösenord, `SUPABASE_SECRET_KEY`, `PARENT_INVITE_CODE), access tokens, sessionscookies eller andra hemligheter i en prompt, dokument, kodändring eller GitHub-issue. De ska stanna i respektive tjänsts säkra miljövariabler. Project URL och publishable key är publika klientvärden, men ska ändå hanteras enligt projektets konfiguration.
+- Använd inga betaltjänster eller uppgraderingar utan projektägarens uttryckliga tillåtelse.
+
+### Startprompt att ge nästa assistent
+
+> Du arbetar med webbplatsprojektet Spanska i GitHub-repot `gustavblomqvist82/Spanska`. Läs först `AGENTS.md`, `PROJEKTOVERSIKT.md`, aktuell `main), alla relevanta öppna PR:ar och de filer som berör uppgiften. Läs `SOURCES.md` före ändringar som påverkar orddata eller källor. Behandla `kom ihåg lista.md` som backlog, inte som redan genomförda funktioner. Följ repoarbetsflödet: arbeta på en `codex/`-gren och öppna PR mot `main); invänta projektägarens beslut innan merge, produktionspublicering eller produktionsdatabasändringar. Köp inga tjänster. Visa aldrig hemligheter. Beskriv vad du kontrollerat och vad som återstår.
+
