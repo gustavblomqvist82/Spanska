@@ -237,6 +237,16 @@
     .login-submit { width:100%; margin-top:20px; }
     #login-notice { min-height:24px; margin:10px 0 0; color:#a44735; font-size:.9rem; }
     .login-dialog-links { display:grid; gap:9px; margin-top:16px; padding-top:16px; border-top:1px solid var(--line); font-size:.92rem; }
+    #register-dialog { width:min(480px,calc(100% - 28px)); max-width:none; max-height:calc(100dvh - 28px); overflow:auto; padding:30px; border:1px solid #ebe5da; border-radius:22px; background:#fffdf8; color:var(--ink); box-shadow:0 22px 70px #20291f35; }
+    #register-dialog::backdrop { background:#20291f70; backdrop-filter:blur(3px); }
+    #register-dialog h2 { margin:0; font-family:Georgia,"Times New Roman",serif; font-size:2rem; font-weight:500; letter-spacing:-.055em; }
+    .register-consent { display:flex; align-items:flex-start; gap:10px; margin-top:17px; color:var(--muted); font-size:.88rem; line-height:1.45; }
+    .register-consent input { width:18px; height:18px; flex:0 0 18px; margin:2px 0 0; accent-color:var(--green); }
+    .register-consent a { color:var(--green); }
+    .register-links { display:grid; gap:9px; margin-top:16px; padding-top:16px; border-top:1px solid var(--line); font-size:.92rem; }
+    .register-links button { width:fit-content; padding:0; border:0; background:none; color:inherit; font:inherit; text-decoration:underline; text-underline-offset:3px; cursor:pointer; }
+    .register-links a:hover,.register-links button:hover { color:var(--green); }
+    @media (max-width:430px) { #register-dialog { padding:23px; } }
     @media (max-width:430px) { nav .nav-button { padding:8px 11px; font-size:.78rem; } #login-dialog { padding:23px; } }
     .game-panel { display:grid; grid-template-columns:minmax(0,1fr) minmax(230px,280px); gap:20px; align-items:start; }
     .game-panel > .section-head { grid-column:1 / -1; }
@@ -737,7 +747,22 @@
       <button type="submit" class="button login-submit">Logga in</button>
     </form>
     <p id="login-notice" role="status" aria-live="polite"></p>
-    <div class="login-dialog-links"><a href="register.html">Skapa föräldrakonto</a><a href="privacy.html">Läs om integritet</a></div>
+    <div class="login-dialog-links"><a href="register.html" id="open-register-dialog">Skapa föräldrakonto</a><a href="privacy.html">Läs om integritet</a></div>
+  </dialog>
+  <dialog id="register-dialog" aria-labelledby="register-dialog-title">
+    <div class="login-dialog-head">
+      <div><h2 id="register-dialog-title">Skapa föräldrakonto</h2><p class="login-dialog-copy">Kontot är till för en vårdnadshavare. Barnkonton skapar du när du har loggat in.</p></div>
+      <button type="button" class="login-dialog-close" id="close-register-dialog" aria-label="Stäng registreringen">×</button>
+    </div>
+    <form id="homepage-register">
+      <div class="login-field"><label for="register-username">Användarnamn</label><input id="register-username" name="username" minlength="3" maxlength="30" autocomplete="username" placeholder="Välj ett användarnamn" required></div>
+      <div class="login-field"><label for="register-password">Lösenord</label><input id="register-password" name="password" type="password" minlength="8" autocomplete="new-password" placeholder="Minst 8 tecken" required></div>
+      <div class="login-field"><label for="register-invite-code">Inbjudningskod</label><input id="register-invite-code" name="inviteCode" autocomplete="off" placeholder="Ange din inbjudningskod" required></div>
+      <label class="register-consent"><input name="guardianConsent" type="checkbox" required><span>Jag är vårdnadshavare och har läst <a href="privacy.html" target="_blank" rel="noopener">integritetstexten</a>. Jag godkänner behandlingen enligt den.</span></label>
+      <button type="submit" class="button login-submit" id="register-submit">Skapa konto</button>
+    </form>
+    <p id="register-notice" role="status" aria-live="polite"></p>
+    <div class="register-links"><button type="button" id="back-to-login">Till inloggning</button><a href="privacy.html">Läs om integritet</a></div>
   </dialog>
   <script>
     (() => {
@@ -746,11 +771,45 @@
       const accountLink = document.querySelector("#account-link");
       const progressLink = document.querySelector("#progress-link");
       const dialog = document.querySelector("#login-dialog");
+      const registerDialog = document.querySelector("#register-dialog");
       const notice = document.querySelector("#login-notice");
+      const registerNotice = document.querySelector("#register-notice");
       let authenticated = false;
 
       loginButton.addEventListener("click", () => dialog.showModal());
       document.querySelector("#close-login-dialog").addEventListener("click", () => dialog.close());
+      document.querySelector("#open-register-dialog").addEventListener("click", event => {
+        event.preventDefault();
+        dialog.close();
+        requestAnimationFrame(() => registerDialog.showModal());
+      });
+      document.querySelector("#close-register-dialog").addEventListener("click", () => registerDialog.close());
+      document.querySelector("#back-to-login").addEventListener("click", () => {
+        registerDialog.close();
+        requestAnimationFrame(() => dialog.showModal());
+      });
+      document.querySelector("#homepage-register").addEventListener("submit", async event => {
+        event.preventDefault();
+        const form = event.currentTarget, fields = new FormData(form), button = document.querySelector("#register-submit");
+        registerNotice.textContent = ""; registerNotice.dataset.tone = "";
+        button.disabled = true; button.textContent = "Skapar konto…";
+        try {
+          await SpanskaAuth.publicApi("/api/register-parent", {
+            username: String(fields.get("username")).trim().toLowerCase(),
+            password: fields.get("password"),
+            inviteCode: fields.get("inviteCode"),
+            guardianConsent: fields.get("guardianConsent") === "on"
+          });
+          registerNotice.textContent = "Kontot skapades. Du kan nu logga in.";
+          registerNotice.dataset.tone = "success";
+          form.reset();
+        } catch (error) {
+          registerNotice.textContent = error.message || "Kontot kunde inte skapas. Försök igen.";
+          registerNotice.dataset.tone = "error";
+        } finally {
+          button.disabled = false; button.textContent = "Skapa konto";
+        }
+      });
       logoutButton.addEventListener("click", () => SpanskaAuth.logout());
 
       document.querySelector("#spelval").addEventListener("click", event => {
